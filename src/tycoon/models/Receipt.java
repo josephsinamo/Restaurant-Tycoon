@@ -3,19 +3,19 @@ package models;
 
 import java.util.HashMap;
 
-public class Resep {
+public class Receipt {
 
-    private HashMap<BahanBaku, Integer> resep;
+    private HashMap<RawMaterial, Integer> resep;
 
-    public Resep(HashMap<BahanBaku, Integer> resep) {
+    public Receipt(HashMap<RawMaterial, Integer> resep) {
         this.resep = resep;
     }
 
-    public void setResep(HashMap<BahanBaku, Integer> resep) {
+    public void setReceipt(HashMap<RawMaterial, Integer> resep) {
         this.resep = resep;
     }
 
-    public HashMap<BahanBaku, Integer> getResep() {
+    public HashMap<RawMaterial, Integer> getReceipt() {
         return resep;
     }
 }

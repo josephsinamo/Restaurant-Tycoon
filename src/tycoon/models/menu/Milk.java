@@ -1,7 +1,8 @@
 package models.menu;
 
-public class Milk extends Minuman {
-    public Milk(String nama, double harga){
-        super(nama, harga);
+
+public class Milk extends Drink {
+    public Milk(String name, double price){
+        super(name, price);
     }
 }

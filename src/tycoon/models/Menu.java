@@ -1,19 +1,18 @@
-package models.menu;
-import models.Resep;
+package models;
 
 public abstract class Menu {
-    private String nama;
-    private Resep resep;
+    private String name;
+    private Receipt receipt;
 
-    public Menu(String nama){
-        this.nama = nama;
+    public Menu(String name){
+        this.name = name;
     }
-    public Menu(String nama, Resep resep){
-        this.nama = nama;
-        this.resep = resep;
+    public Menu(String name, Receipt receipt){
+        this.name = name;
+        this.receipt = receipt;
     }
 
-    public void setResep(Resep resep){
-        this.resep = resep;
+    public void setReceipt(Receipt receipt){
+        this.receipt = receipt;
     }
 }

@@ -3,10 +3,10 @@ package models;
 
 import core.Restoran;
 
-public class BahanBaku implements IPurchasable {
+public class RawMaterial implements IPurchasable {
     private String nama;
     
-    public BahanBaku(String nama) {
+    public RawMaterial(String nama) {
        this.nama=nama;
     }
 

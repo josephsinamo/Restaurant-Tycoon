@@ -1,11 +1,11 @@
 
 package models.menu;
+import models.Menu;
+public class Drink extends Menu {
+    private double price;
 
-public class Minuman extends Menu {
-    private double harga;
-
-    public Minuman(String nama,double harga){
-        super(nama);
-        this.harga=harga;
+    public Drink(String name,double price){
+        super(name);
+        this.price=price;
     }
 }
