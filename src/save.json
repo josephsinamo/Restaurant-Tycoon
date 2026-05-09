@@ -1,0 +1,95 @@
+{
+    "level": 5,
+    "money": 3000,
+    "gametime": 20,
+    "restaurant": {
+        "customer-capacity": 20,
+        "storage-capacity": 100
+
+    },
+    "customer": {
+        "total-customer": 36,
+        "individual": {
+            "customer": 18
+        },
+        "group": {
+            "total-group": 6,
+            "group": [
+                {
+                    "name": "group1",
+                    "customer": 3
+                },
+                {
+                    "name": "group2",
+                    "customer": 3
+                },
+                {
+                    "name": "group3",
+                    "customer": 3
+                },
+                {
+                    "name": "group4",
+                    "customer": 3
+                },
+                {
+                    "name": "group5",
+                    "customer": 3
+                },
+                {
+                    "name": "group6",
+                    "customer": 3
+                }
+            ]
+        }
+    },
+    "disaster": {
+        "name": {
+            "rat": {
+                "active": true,
+                "duration": 5
+            },
+            "Storm": {
+                "active": true,
+                "duration": 9
+            },
+            "unpaid-customer": {
+                "active": true,
+                "duration": 12
+            }
+        }
+    },
+    "items": {
+        "amulet": {
+            "protection": {
+                "active": true,
+                "duration": 10
+            },
+            "rat-repellent": {
+                "active": false
+            }
+        },
+        "talisman": {
+            "foodbuff": {
+                "active": true,
+                "duration": 30
+            },
+            "luckycoin": {
+                "active": false
+            }
+        }
+    },
+    "raw-material": {
+        "food": {
+            "rice": 60,
+            "bread": 30,
+            "fruit": 25
+        },
+        "drink": {
+            "milk-base": {
+                "milk": 30
+            }
+        }
+    },
+    "items2": {
+    }
+}

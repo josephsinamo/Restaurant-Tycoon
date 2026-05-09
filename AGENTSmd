@@ -1,0 +1,13 @@
+# AGENTS.md biar ainya ga mabok dan halu, biar semua ai rujukannya sama dan ga bikin game sendiri
+
+- Buatlah game tycoon
+- Code bla bla bla
+- Jangan bla bla bla
+- Struktur bla bla bla
+
+save file bebas asal bisa dibaca kalau tidak diinstall save ditaruh di root saja,
+kalau diinstall ditaruh diantara ini:
+~/.local/share/Restaurant-Tycoon/<name safe file>.json
+~/.config/Restaurant-Tycoon/<name safe file>.json
+~/AppData/Local/Restaurant-Tycoon/<name safe file>.json
+~/AppData/Roaming/Restaurant-Tycoon/<name safe file>.json
