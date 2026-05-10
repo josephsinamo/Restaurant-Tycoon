@@ -1,6 +1,6 @@
 
 package entities;
 
-public class Pelanggan {
+public class Customer {
     
 }

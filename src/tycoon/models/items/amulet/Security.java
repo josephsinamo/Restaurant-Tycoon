@@ -1,5 +1,5 @@
 
-package models.jimat;
+package models.items.amulet;
 
 public class Security {
     
