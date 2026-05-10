@@ -1,6 +1,7 @@
+package tycoon.models.menu;
 
-package models.menu;
-import models.Menu;
+import tycoon.models.Menu;
+
 public class Drink extends Menu {
     private double price;
 

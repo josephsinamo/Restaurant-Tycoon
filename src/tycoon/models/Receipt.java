@@ -1,11 +1,13 @@
 
-package models;
+package tycoon.models;
 
 import java.util.HashMap;
 
+import tycoon.models.RawMaterial;
+
 public class Receipt {
 
-    private HashMap<RawMaterial, Integer> resep;
+    private HashMap <RawMaterial, Integer> resep = new HashMap <> ();
 
     public Receipt(HashMap<RawMaterial, Integer> resep) {
         this.resep = resep;

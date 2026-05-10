@@ -1,9 +1,10 @@
 
-package models;
+package tycoon.models;
 
 import core.Restoran;
 
 public class RawMaterial implements IPurchasable {
+    
     private String name;
     
     public RawMaterial(String name) {

@@ -1,5 +1,6 @@
 package controller;
-import models.*;;
+
+import tycoon.models.*;
 
 public class GameManager {
     Receipt receipt;

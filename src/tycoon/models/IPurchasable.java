@@ -1,4 +1,5 @@
-package models;
+package tycoon.models;
+
 import core.Restoran;
 
 public interface IPurchasable {
