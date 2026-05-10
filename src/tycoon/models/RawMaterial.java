@@ -4,15 +4,15 @@ package models;
 import core.Restoran;
 
 public class RawMaterial implements IPurchasable {
-    private String nama;
+    private String name;
     
-    public RawMaterial(String nama) {
-       this.nama=nama;
+    public RawMaterial(String name) {
+       this.name=name;
     }
 
     @Override
     public void applyEffect(Restoran resto) {
-        System.out.println(nama + " berhasil dibeli dan masuk stok.");
+        System.out.println(name + " berhasil dibeli dan masuk stok.");
     }
     
 }
