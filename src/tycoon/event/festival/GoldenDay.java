@@ -1,9 +1,8 @@
-
-package models.items.talisman;
+package event.festival;
 
 import controller.GameEvent; 
 
-public class Charming implements GameEvent{
+public class GoldenDay implements GameEvent{
     @Override
     public void execute() {
         

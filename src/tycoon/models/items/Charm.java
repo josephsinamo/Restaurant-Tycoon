@@ -1,5 +1,5 @@
 package models.items;
 
-public class Items {
+public class Charm {
     
 }

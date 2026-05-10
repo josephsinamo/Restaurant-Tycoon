@@ -1,6 +1,11 @@
 
 package models.items.talisman;
 
-public class Cleaner {
-    
+import controller.GameEvent; 
+
+public class Cleaner implements GameEvent{
+    @Override
+    public void execute() {
+        
+    }
 }

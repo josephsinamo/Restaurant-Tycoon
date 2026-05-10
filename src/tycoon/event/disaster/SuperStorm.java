@@ -1,9 +1,8 @@
-
-package models.items.talisman;
+package event.disaster;
 
 import controller.GameEvent; 
 
-public class Charming implements GameEvent{
+public class SuperStorm implements GameEvent{
     @Override
     public void execute() {
         

@@ -1,6 +1,11 @@
 
 package models.items.amulet;
 
-public class Security {
-    
+import controller.GameEvent; 
+
+public class Security implements GameEvent{
+    @Override
+    public void execute() {
+        
+    }
 }

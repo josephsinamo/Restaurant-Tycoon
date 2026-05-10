@@ -1,7 +1,5 @@
 {
-    "level": 5,
     "money": 3000,
-    "gametime": 20,
     "restaurant": {
         "customer-capacity": 20,
         "storage-capacity": 100
@@ -44,36 +42,30 @@
     },
     "disaster": {
         "name": {
-            "rat": {
+            "Rats": {
                 "active": true,
                 "duration": 5
             },
             "Storm": {
                 "active": true,
                 "duration": 9
-            },
-            "unpaid-customer": {
-                "active": true,
-                "duration": 12
             }
         }
     },
     "items": {
         "amulet": {
             "protection": {
-                "active": true,
-                "duration": 10
+                "active": true
             },
             "rat-repellent": {
                 "active": false
             }
         },
         "talisman": {
-            "foodbuff": {
-                "active": true,
-                "duration": 30
+            "Charming": {
+                "active": true
             },
-            "luckycoin": {
+            "Cleaner": {
                 "active": false
             }
         }
@@ -89,7 +81,5 @@
                 "milk": 30
             }
         }
-    },
-    "items2": {
     }
 }
