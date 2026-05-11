@@ -1,4 +1,4 @@
-package tycoon.models;
+package models;
 
 public abstract class Menu {
     private String name;

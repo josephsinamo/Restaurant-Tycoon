@@ -1,4 +1,4 @@
-package tycoon.models.menu;
+package models.menu;
 
 public class Fruit extends Drink {
     public Fruit(String name, double price){

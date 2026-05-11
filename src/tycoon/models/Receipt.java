@@ -1,5 +1,5 @@
 
-package tycoon.models;
+package models;
 
 import java.util.HashMap;
 

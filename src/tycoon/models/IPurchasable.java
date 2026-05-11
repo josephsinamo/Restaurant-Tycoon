@@ -1,4 +1,5 @@
-package tycoon.models;
+
+package models;
 
 import core.Restoran;
 

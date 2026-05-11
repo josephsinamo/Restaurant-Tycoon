@@ -3,7 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/restaurant/tycoon/RestaurantTycoon.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/controller/GameManager.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/Receipt.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/RawMaterial.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/controller/GameEvent.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/controller/GameStorage.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/IPurchasable.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/Menu.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/menu/Drink.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/menu/Food.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/menu/Coffe.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/menu/Fruit.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/menu/Milk.java</file>
+            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/tycoon/models/menu/Snack.java</file>
         </group>
     </open-files>
 </project-private>
