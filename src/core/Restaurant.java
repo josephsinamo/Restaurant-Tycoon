@@ -1,6 +1,6 @@
 
 package core;
 
-public class Restoran {
+public class Restaurant {
     
 }
