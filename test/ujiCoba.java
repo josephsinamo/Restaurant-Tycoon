@@ -7,29 +7,19 @@
  *
  * @author WINDOWS
  */
-public class ujiCoba {
 
+class ujiCoba{
+    public static void lol(){
+        System.out.println("nigga");
+    }
+}
+
+class uji2{
     
+}
 
+class mainUjiCoba{
     public static void main(String[] args) {
-        resto r = new resto();
-        pelanggan p = new pelanggan();
-        
-        r.layani(p);
+        ujiCoba.lol();
     }
-}
-
-class resto{
-    int [] lol = new int [3];
-    
-    public void layani(pelanggan p){
-        p.pesanan(lol);
-    }
-}
-
-class pelanggan{
-    public void pesanan(int [] l){
-        
-    }
-    
 }
