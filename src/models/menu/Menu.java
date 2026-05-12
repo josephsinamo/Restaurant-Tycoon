@@ -1,17 +1,17 @@
 package models.menu;
 
+import java.util.*;
+import models.RawMaterial;
 import models.Receipt;
 
 public abstract class Menu {
     private String name;
+    private Set <RawMaterial> daftarBahan;
     private Receipt receipt;
 
-    public Menu(String name){
+    public Menu(String name, Set <RawMaterial> daftarBahan ){
         this.name = name;
-    }
-    public Menu(String name, Receipt receipt){
-        this.name = name;
-        this.receipt = receipt;
+        this.daftarBahan = daftarBahan;
     }
 
     public void setReceipt(Receipt receipt){
