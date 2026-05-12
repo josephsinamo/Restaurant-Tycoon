@@ -12,46 +12,26 @@ import models.ISupplierItem;
 public abstract class Jimat implements ISupplierItem {
 
     private final String name;
-    private final int kekuatanPerUnitPembelian;
-    private int kekuatanAktif;
+    private int power;
 
-    protected Jimat(String name, int kekuatanPerUnitPembelian) {
+    protected Jimat(String name, int power) {
         this.name = name;
-        this.kekuatanPerUnitPembelian = kekuatanPerUnitPembelian;
-        this.kekuatanAktif = 0;
+        this.power = power;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getKekuatanPerUnitPembelian() {
-        return kekuatanPerUnitPembelian;
-    }
-
-    public int kekuatanEfekPerSatuan() {
-        return kekuatanAktif;
-    }
-
-    protected void tambahKekuatanDariPembelian(int jumlah) {
-        if (jumlah < 1) {
-            return;
-        }
-        kekuatanAktif += kekuatanPerUnitPembelian * jumlah;
-    }
-
-    /**
-     * Satu unit jimat baru di inventori: kekuatan = satu kali nilai per unit (bukan menumpuk di template supplier).
-     */
-    protected void initSebagaiItemInventori() {
-        kekuatanAktif = kekuatanPerUnitPembelian;
+    public int getPower() {
+        return power;
     }
 
     public void kurangiKekuatan(int jumlah) {
         if (jumlah < 1) {
             return;
         }
-        kekuatanAktif = Math.max(0, kekuatanAktif - jumlah);
+        power = Math.max(0, power - jumlah);
         setelahKurangiKekuatan();
     }
 
@@ -60,27 +40,15 @@ public abstract class Jimat implements ISupplierItem {
     }
 
     /** Salinan konkret untuk dimasukkan ke inventori (beda referensi per pembelian). */
-    protected abstract Jimat buatInstanceSalinan();
-
-    protected Jimat buatSalinanUntukInventori() {
-        Jimat salinan = buatInstanceSalinan();
-        salinan.initSebagaiItemInventori();
-        return salinan;
-    }
 
     @Override
     public void applyEffect(Restaurant resto) {
-        applyPurchase(resto, 1);
+        applyPurchase(resto);
     }
 
     @Override
-    public void applyPurchase(Restaurant resto, int jumlah) {
-        if (jumlah < 1) {
-            return;
-        }
-        for (int i = 0; i < jumlah; i++) {
-            resto.tambahKeInventoriJimat(buatSalinanUntukInventori());
-        }
+    public void applyPurchase(Restaurant resto) {
+        resto.tambahKeInventoriJimat(this);
     }
 
     @Override

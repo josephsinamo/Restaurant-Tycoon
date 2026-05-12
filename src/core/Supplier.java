@@ -3,31 +3,51 @@ package core;
 
 import java.util.HashMap;
 import models.ISupplierItem;
+import models.RawMaterial;
+import models.jimat.Jimat;
 
 /**
- * Toko / katalog: harga per objek barang di {@link #getDaftarHarga()}, bukan di dalam {@link models.RawMaterial} atau {@link models.jimat.Jimat}.
+ * Toko supplier: harga terpisah untuk {@link Jimat} dan {@link RawMaterial}.
  */
 public class Supplier {
 
-    /** Kunci biasanya {@link models.RawMaterial} atau {@link models.jimat.Jimat} yang sama dengan yang dipakai saat beli. */
-    private final HashMap<Object, Double> daftarHarga = new HashMap<>();
+    private final HashMap<Jimat, Double> daganganJimat = new HashMap<>();
+    private final HashMap<RawMaterial, Double> daganganBahanBaku = new HashMap<>();
 
-    public HashMap<Object, Double> getDaftarHarga() {
-        return daftarHarga;
+    public HashMap<Jimat, Double> getDaganganJimat() {
+        return daganganJimat;
     }
 
-    public void setHargaBarang(Object barang, double hargaBeli) {
-        if (barang == null) {
-            throw new IllegalArgumentException("barang tidak boleh null");
+    public HashMap<RawMaterial, Double> getDaganganBahanBaku() {
+        return daganganBahanBaku;
+    }
+
+    public void setHargaJimat(Jimat jimat, double hargaBeli) {
+        if (jimat == null) {
+            throw new IllegalArgumentException("jimat tidak boleh null");
         }
         if (hargaBeli < 0) {
             throw new IllegalArgumentException("harga tidak boleh negatif");
         }
-        daftarHarga.put(barang, hargaBeli);
+        daganganJimat.put(jimat, hargaBeli);
     }
 
-    public Double getHargaBarang(Object barang) {
-        return daftarHarga.get(barang);
+    public void setHargaBahanBaku(RawMaterial bahan, double hargaBeli) {
+        if (bahan == null) {
+            throw new IllegalArgumentException("bahan tidak boleh null");
+        }
+        if (hargaBeli < 0) {
+            throw new IllegalArgumentException("harga tidak boleh negatif");
+        }
+        daganganBahanBaku.put(bahan, hargaBeli);
+    }
+
+    public Double getHargaJimat(Jimat jimat) {
+        return daganganJimat.get(jimat);
+    }
+
+    public Double getHargaBahanBaku(RawMaterial bahan) {
+        return daganganBahanBaku.get(bahan);
     }
 
     public boolean jual(Restaurant pembeli, ISupplierItem barang) {
@@ -38,7 +58,12 @@ public class Supplier {
         if (pembeli == null || barang == null || jumlah < 1) {
             return false;
         }
-        Double hargaSatuan = daftarHarga.get(barang);
+        Double hargaSatuan = null;
+        if (barang instanceof Jimat j) {
+            hargaSatuan = daganganJimat.get(j);
+        } else if (barang instanceof RawMaterial r) {
+            hargaSatuan = daganganBahanBaku.get(r);
+        }
         if (hargaSatuan == null) {
             return false;
         }

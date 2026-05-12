@@ -40,15 +40,6 @@ public class Restaurant {
         }
     }
 
-    public List<Jimat> getInventarisJimat() {
-        return Collections.unmodifiableList(inventarisJimat);
-    }
-
-    /**
-     * Memasang jimat yang ada di inventori ke slot. Jimat yang sebelumnya terpasang di slot yang sama (jika ada) dikembalikan ke inventori.
-     *
-     * @return false jika {@code jimat} bukan anggota inventori (berdasarkan {@code ==}).
-     */
     public boolean pakaiJimatDariInventori(Jimat jimat) {
         if (jimat == null || !hapusDariInventoriJimatIdentik(jimat)) {
             return false;
@@ -85,36 +76,16 @@ public class Restaurant {
         return false;
     }
 
-    public Kitchen getKitchen() {
-        return kitchen;
-    }
-
-    public HashMap<RawMaterial, Integer> getStokBahanBaku() {
-        return stokBahanBaku;
-    }
-
-    public Charming getJimatMenarik() {
-        return jimatMenarik;
-    }
-
-    public Cleaner getJimatKebersihan() {
-        return jimatKebersihan;
-    }
-
-    public Security getJimatKeamanan() {
-        return jimatKeamanan;
-    }
-
     public int getPoinJimatMenarik() {
-        return jimatMenarik == null ? 0 : jimatMenarik.kekuatanEfekPerSatuan();
+        return jimatMenarik == null ? 0 : jimatMenarik.getPower();
     }
 
     public int getPoinJimatKebersihan() {
-        return jimatKebersihan == null ? 0 : jimatKebersihan.kekuatanEfekPerSatuan();
+        return jimatKebersihan == null ? 0 : jimatKebersihan.getPower();
     }
 
     public int getPoinJimatKeamanan() {
-        return jimatKeamanan == null ? 0 : jimatKeamanan.kekuatanEfekPerSatuan();
+        return jimatKeamanan == null ? 0 : jimatKeamanan.getPower();
     }
 
     /**
@@ -133,9 +104,6 @@ public class Restaurant {
         }
     }
 
-    /**
-     * Jual / buang jimat: hilang dari inventori dan/atau slot (tanpa supplier). Memakai kesetaraan referensi ({@code ==}).
-     */
     public void jualJimat(Jimat jimat) {
         if (jimat == null) {
             return;

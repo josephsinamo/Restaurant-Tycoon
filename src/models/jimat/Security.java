@@ -7,8 +7,4 @@ public class Security extends Jimat {
         super(name, kekuatanPerUnitPembelian);
     }
 
-    @Override
-    protected Jimat buatInstanceSalinan() {
-        return new Security(getName(), getKekuatanPerUnitPembelian());
-    }
 }

@@ -7,8 +7,4 @@ public class Cleaner extends Jimat {
         super(name, kekuatanPerUnitPembelian);
     }
 
-    @Override
-    protected Jimat buatInstanceSalinan() {
-        return new Cleaner(getName(), getKekuatanPerUnitPembelian());
-    }
 }
