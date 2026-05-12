@@ -2,9 +2,8 @@
 package core;
 
 import java.util.HashMap;
-import models.menu.Menu;
-
 import models.RawMaterial;
+import models.menu.Menu;
 
 public class Kitchen {
     private HashMap<RawMaterial, Integer> stokBahanBaku = new HashMap<>();
@@ -18,16 +17,20 @@ public class Kitchen {
     }
 
     public void setResep(Menu menu) {
+        // tunggu menu selesai
     }
 
     public int masak(Menu menu, int qty) {
+        // tunggu resep
         return 0; 
     }
 
     public void buangBahanSisa() {
+        stokBahanBaku.clear();
     }
 
-    public void getDisasterTikusAttack(Double rate) {
+    public void getDisasterTikusAttack(Double rate) {  
+        // tunggu GameEvent
     }
 }
 

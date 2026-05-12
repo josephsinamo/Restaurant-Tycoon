@@ -42,7 +42,8 @@ public class Restaurant {
     }
 
     public void beli(){
-        // masih  dipikirkan 
+        // masih  dipikirkan
+        // nunggu menu 
     }
 
     public void layaniPelanggan(Customer pelanggan){
