@@ -6,10 +6,14 @@ import models.RawMaterial;
 import models.menu.Menu;
 
 public class Kitchen {
-    private HashMap<RawMaterial, Integer> stokBahanBaku = new HashMap<>();
+    private final HashMap<RawMaterial, Integer> stokBahanBaku;
 
     public Kitchen(HashMap<RawMaterial, Integer> stokBahanBaku) {
         this.stokBahanBaku = stokBahanBaku;
+    }
+
+    public HashMap<RawMaterial, Integer> getStokBahanBaku() {
+        return stokBahanBaku;
     }
 
     public void addBahanBaku(RawMaterial bahan, Integer qty) {
@@ -33,4 +37,3 @@ public class Kitchen {
         // tunggu GameEvent
     }
 }
-

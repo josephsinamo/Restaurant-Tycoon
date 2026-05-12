@@ -1,6 +1,14 @@
-
 package models.jimat;
 
-public class Charming {
-    
+/** Jimat menarik pelanggan; satu slot {@link Charming} terpasang per restoran. */
+public class Charming extends Jimat {
+
+    public Charming(String name, int kekuatanPerUnitPembelian) {
+        super(name, kekuatanPerUnitPembelian);
+    }
+
+    @Override
+    protected Jimat buatInstanceSalinan() {
+        return new Charming(getName(), getKekuatanPerUnitPembelian());
+    }
 }

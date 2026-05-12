@@ -9,7 +9,7 @@ public abstract class Menu {
     private Set <RawMaterial> daftarBahan;
     private Receipt receipt;
 
-    public Menu(String name, Set <RawMaterial> daftarBahan ){
+    public Menu(String name, Set <RawMaterial> daftarBahan){
         this.name = name;
         this.daftarBahan = daftarBahan;
     }
