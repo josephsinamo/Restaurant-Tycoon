@@ -2,7 +2,7 @@
 package models.menu;
 
 public class Coffe extends Drink {
-    public Coffe(String name, int price) {
-        super(name, price);
+    public Coffe(String name) {
+        super(name);
     }
 }

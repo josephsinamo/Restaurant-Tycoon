@@ -26,10 +26,5 @@ public abstract class Menu {
     public void setReceipt(Receipt receipt) { 
         this.receipt = receipt; 
     }
-
-    public abstract int getPrice();
-
-    @Override
-    public String toString() { return name + " (Rp " + getPrice() + ")"; }
 }
 

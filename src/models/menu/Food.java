@@ -3,13 +3,7 @@ package models.menu;
 import java.util.Collections;
 
 public class Food extends Menu {
-    int price;
-    public Food(String name, int price) {
+    public Food(String name) {
         super(name, Collections.emptySet());
-        this.price = price;
-    }
-
-    @Override public int getPrice() { 
-        return price; 
     }
 }
