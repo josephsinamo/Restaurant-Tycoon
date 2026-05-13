@@ -1,6 +1,10 @@
-
 package exception;
+public class StokHabisException extends Exception {
+    public StokHabisException() {
+        super("Stok bahan baku telah habis!");
+    }
 
-public class StokHabisException {
-    
+    public StokHabisException(String message) {
+        super(message); 
+    }
 }

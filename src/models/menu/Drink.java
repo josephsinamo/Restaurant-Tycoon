@@ -9,4 +9,8 @@ public class Drink extends Menu {
         super(name, Collections.emptySet());
         this.price = price;
     }
+
+    @Override public int getPrice() { 
+        return price; 
+    }   
 }
