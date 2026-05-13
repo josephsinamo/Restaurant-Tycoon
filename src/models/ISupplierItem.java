@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 
-interface IPurchasable {
-    void applyEffect(Restaurant resto);
-}
 
 public interface ISupplierItem extends IPurchasable {
     default void applyPurchase(Restaurant resto, int jumlah) {

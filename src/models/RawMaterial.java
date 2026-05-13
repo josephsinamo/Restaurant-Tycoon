@@ -43,4 +43,4 @@ public class RawMaterial {
         return String.format("%s: %.1f %s (Rp%.0f/%s)", name, quantity, unit, pricePerUnit, unit);
     }
 }
->>>>>>> Stashed changes
+
