@@ -1,52 +1,46 @@
 
 package models;
 
-import core.Restaurant;
-import java.util.Objects;
+public class RawMaterial {
+    private String name;
+    private double quantity;
+    private double pricePerUnit;
+    private String unit;
 
-public class RawMaterial implements ISupplierItem {
-
-    private final String name;
-
-    public RawMaterial(String name) {
+    public RawMaterial(String name, double quantity, double pricePerUnit, String unit) {
         this.name = name;
+        this.quantity = quantity;
+        this.pricePerUnit = pricePerUnit;
+        this.unit = unit;
     }
 
-    public String getName() {
-        return name;
+    public String getName() { return name; }
+    public double getQuantity() { return quantity; }
+    public double getPricePerUnit() { return pricePerUnit; }
+    public String getUnit() { return unit; }
+
+    public void setQuantity(double quantity) { this.quantity = quantity; }
+
+    public boolean isAvailable(double required) {
+        return quantity >= required;
     }
 
-    @Override
-    public void applyEffect(Restaurant resto) {
-        applyPurchase(resto, 1);
+    public void consume(double amount) {
+        this.quantity = Math.max(0, this.quantity - amount);
     }
 
-    @Override
-    public void applyPurchase(Restaurant resto, int jumlah) {
-        if (jumlah < 1) {
-            return;
-        }
-        resto.tambahBahanBaku(this, jumlah);
+    public void reduceByFraction(int fraction) {
+        this.quantity -= Math.floor(this.quantity / fraction);
+        if (this.quantity < 0) this.quantity = 0;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        RawMaterial that = (RawMaterial) o;
-        return Objects.equals(name, that.name);
+    public double getTotalValue() {
+        return quantity * pricePerUnit;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-    @Override
-    public String toString() { 
-        return name; 
+    public String toString() {
+        return String.format("%s: %.1f %s (Rp%.0f/%s)", name, quantity, unit, pricePerUnit, unit);
     }
 }
+>>>>>>> Stashed changes
