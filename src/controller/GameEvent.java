@@ -8,6 +8,8 @@ package controller;
  *
  * @author WINDOWS
  */
-public class GameEvent {
-    
+
+public interface GameEvent {
+    void execute();
+    String getEventName();
 }
