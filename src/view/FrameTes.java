@@ -4,7 +4,7 @@ package view;
 import java.awt.*;
 import javax.swing.*;
 
-public class Frame extends JFrame{
+public class FrameTes extends JFrame{
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
@@ -12,7 +12,7 @@ public class Frame extends JFrame{
     public static final String KARTU_MENU = "menu";
     public static final String KARTU_PERMAINAN = "permainan";
 
-    public Frame() {
+    public FrameTes() {
 
         setTitle("Game Restoran");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,6 +69,6 @@ public class Frame extends JFrame{
 
 class mainSementara{
     public static void main(String[] args) {
-        Frame f = new Frame();
+        FrameTes f = new FrameTes();
     }
 }

@@ -6,9 +6,7 @@ import models.ISupplierItem;
 import models.RawMaterial;
 import models.jimat.Jimat;
 
-/**
- * Toko supplier: harga terpisah untuk {@link Jimat} dan {@link RawMaterial}.
- */
+
 public class Supplier {
 
     private final HashMap<Jimat, Double> daganganJimat = new HashMap<>();

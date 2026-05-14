@@ -20,7 +20,6 @@ public class Restaurant {
     private final HashMap <RawMaterial, Integer> stokBahanBaku;
     private final Kitchen kitchen;
 
-    /** Maksimal satu referensi per kategori; poin efek = {@link Jimat#kekuatanEfekPerSatuan()} yang terpasang. */
     private Charming jimatMenarik;
     private Cleaner jimatKebersihan;
     private Security jimatKeamanan;
