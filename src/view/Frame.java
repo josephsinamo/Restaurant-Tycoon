@@ -1,5 +1,6 @@
-package tesView;
+package view;
 
+import view.modelsDaftarPanel.PanelRestoranMenu;
 import controller.GameManager;
 import java.awt.*;
 import java.awt.event.*;
@@ -11,6 +12,8 @@ import javax.swing.Timer;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import models.jimat.Jimat;
+
+import view.modelsDaftarPanel.*;
 
 public class Frame extends JFrame {
 
@@ -199,52 +202,19 @@ public class Frame extends JFrame {
         tabs.setForeground(TEXT_MAIN);
         tabs.setFont(FONT_HEADING);
 
-        tabs.addTab("🛒 Bahan Baku",  buildBahanBakuPanel());
-        tabs.addTab("🧿 Jimat",        buildJimatPanel());
-        tabs.addTab("📋 Menu",         buildMenuPanel());
         tabs.addTab("📊 Status",       buildStatusPanel());
+        tabs.addTab("🏪 Restoran",       buildRestoranPanel());
+        tabs.addTab("🛒 Supplier",  buildBahanBakuPanel());
+        tabs.addTab("📋 Menu",         buildMenuPanel());
+        tabs.addTab("🧿 Jimat",        buildJimatPanel());
 
         return tabs;
     }
 
     // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
     private JPanel buildBahanBakuPanel() {
-        JPanel p = darkPanel(new BorderLayout(6, 6));
-        p.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        JLabel heading = heading("Daftar Bahan Baku Supplier");
-        p.add(heading, BorderLayout.NORTH);
-
-        String[] cols = {"Bahan", "Harga/unit (Rp)", "Stok Dimiliki", "Beli (qty)"};
-        modelBahanShop = new DefaultTableModel(cols, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return c == 3; }
-        };
-        JTable tbl = styledTable(modelBahanShop);
-        p.add(new JScrollPane(tbl), BorderLayout.CENTER);
-
-        JPanel south = darkPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnBeli = styledButton("Beli Bahan", ACCENT2, BG_CARD, 12);
-        // btnBeli.addActionListener(e -> {
-        //     int row = tbl.getSelectedRow();
-        //     if (row < 0) { showMsg("Pilih bahan terlebih dahulu."); return; }
-        //     String namaStr = (String) modelBahanShop.getValueAt(row, 0);
-        //     Object qtyObj = modelBahanShop.getValueAt(row, 3);
-        //     int qty = 1;
-        //     try { qty = Integer.parseInt(qtyObj.toString()); } catch (Exception ignored) {}
-        //     if (qty < 1) { showMsg("Qty minimal 1."); return; }
-
-        //     // Restaurant resto = gameManager.getRestaurant();
-        //     // Supplier sup = gameManager.getSupplier();
-        //     // Find matching RawMaterial from supplier catalogue
-        //     // RawMaterial target = sup.getDaganganBahanBaku().keySet().stream()
-        //     //         .filter(rm -> rm.getName().equals(namaStr)).findFirst().orElse(null);
-        //     if (target == null) { showMsg("Bahan tidak ditemukan."); return; }
-        //     boolean ok = resto.beli(sup, target, qty);
-        //     if (!ok) showMsg("Gagal membeli — uang tidak cukup?");
-        //     refreshAll();
-        // });
-        south.add(btnBeli);
-        p.add(south, BorderLayout.SOUTH);
+        JPanel p = new PanelSuplierMenu();
+        
         return p;
     }
 
@@ -433,6 +403,13 @@ public class Frame extends JFrame {
         north.add(btnUpgrade, BorderLayout.SOUTH);
         p.add(north, BorderLayout.CENTER);
 
+        return p;
+    }
+
+    // Build Restoan Menu
+    private JPanel buildRestoranPanel() {
+        JPanel p = new PanelRestoranMenu();
+        
         return p;
     }
 
