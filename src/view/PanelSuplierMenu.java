@@ -21,6 +21,8 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
      */
     public PanelSuplierMenu() {
         initComponents();
+        
+        // dummy
         for(int i = 0 ; i < 20 ; i++){
             container.add(createItemCard("Nigas","2"));
         }
