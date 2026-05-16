@@ -12,10 +12,13 @@ public class Receipt {
         }
     }
 
-    public void setReceipt(HashMap<RawMaterial, Integer> resep) {
-        this.resep = resep;
+    public void setReceipt(RawMaterial rw , Integer qty) {
+        resep.put(rw, qty);
     }
 
+    public HashMap <RawMaterial, Integer> getResep(){
+        return resep;
+    } 
     public HashMap<RawMaterial, Integer> getReceipt() {
         return resep;
     }

@@ -14,7 +14,7 @@ import models.menu.Menu;
 public class Restaurant {
     private int kapasitasRestoran; // banyaknya pelanggan yang bisa di terima dalam satu waktu
     private double money = 50000.0;
-    private HashMap<Menu, Double> daftarMenu;
+    private Map <String,Menu> daftarMenu;
     /**
      * Satu map dengan {@link Kitchen#getStokBahanBaku()} — stok bahan dari supplier
      * / dapur.
@@ -48,6 +48,7 @@ public class Restaurant {
         }
     }
 
+    // method kurang jelas
     public boolean pakaiJimatDariInventori(Jimat jimat) {
         if (jimat == null || !hapusDariInventoriJimatIdentik(jimat)) {
             return false;
@@ -113,6 +114,8 @@ public class Restaurant {
         }
     }
 
+    // masih perlu di perbaiki
+    
     public void jualJimat(Jimat jimat) {
         if (jimat == null) {
             return;
@@ -136,26 +139,37 @@ public class Restaurant {
         kapasitasRestoran += t;
     }
 
+
+    // bisa di satukan dengan setHarga
     public void addMenu(Menu menu, double harga) {
-        if (!daftarMenu.containsKey(menu)) {
-            daftarMenu.put(menu, harga);
+        if (!daftarMenu.containsKey(menu.getName())) {
+            menu.setHarga(harga);
+            daftarMenu.put(menu.getName(),menu);
         } else {
-            System.out.println("Menu sudah ada di daftar");
+            //System.out.println("Menu sudah ada di daftar");
         }
     }
-
+    
+    // konsep sama dengan addMenu
     public void setHarga(Menu menu, double harga) {
-        if (daftarMenu.containsKey(menu)) {
-            daftarMenu.put(menu, harga);
+        if (daftarMenu.containsKey(menu.getName())) {
+            menu.setHarga(harga);
+            daftarMenu.put(menu.getName(),menu);
         } else {
-            System.out.println("Menu tidak tersedia di daftar menu");
+            //System.out.println("Menu tidak tersedia di daftar menu");
         }
     }
 
-    public void racikMenu(Menu menu) {
-        // masih proges selesai dapur baru bisa
+    public void racikMenu(Menu menu,RawMaterial rw, Integer qty) {
+        if (!daftarMenu.containsKey(menu.getName())){
+            return;
+        } else{
+            daftarMenu.get(menu.getName()).setReceipt(rw, qty);
+        }
     }
 
+
+    // coba ke void
     public boolean beli(Supplier supplier, ISupplierItem item) {
         return beli(supplier, item, 1);
     }
@@ -191,6 +205,10 @@ public class Restaurant {
         pelanggan.buatPesanan(lihatDaftarMenu());
         // masih harus di integrasikan dengan dapur
 
+        for (Menu menu : pelanggan.getPesanan().keySet()){
+            int totPesan = kitchen.masak(menu, pelanggan.getPesanan().get(menu));
+            totalBelanja += (double)(daftarMenu.get(menu.getName()).getPrice()*totPesan);
+        }
         getPayment(pelanggan, money);
     }
 

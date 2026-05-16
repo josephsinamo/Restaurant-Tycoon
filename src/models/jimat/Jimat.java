@@ -28,7 +28,7 @@ public abstract class Jimat implements ISupplierItem {
     }
 
     public void kurangiKekuatan(int jumlah) {
-        if (jumlah < 1) {
+        if (jumlah < 0) {
             return;
         }
         power = Math.max(0, power - jumlah);
@@ -41,6 +41,7 @@ public abstract class Jimat implements ISupplierItem {
 
     /** Salinan konkret untuk dimasukkan ke inventori (beda referensi per pembelian). */
 
+    // ambigu
     @Override
     public void applyEffect(Restaurant resto) {
         applyPurchase(resto);

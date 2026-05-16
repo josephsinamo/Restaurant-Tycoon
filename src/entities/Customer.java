@@ -23,7 +23,6 @@ public class Customer {
     public Customer (){
         jumlahPelanggan = (int)(Math.random()*10) + 1;
         pesanan = new HashMap<>();
-
     }
 
     public HashMap <Menu,Integer> getPesanan(){
@@ -49,8 +48,12 @@ public class Customer {
     }
 
     public double  bayarPesanan(double money){
-        
+        // hubungan dengan logika disaster
         return money;
+    }
+
+    private double review(){
+        return 0;
     }
     
 }

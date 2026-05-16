@@ -6,6 +6,8 @@ import exception.StorageFullException;
 import java.util.HashMap;
 import java.util.Map;
 
+
+// pertimbangi
 public class Storage {
     private static Storage instance;
 

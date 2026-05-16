@@ -20,13 +20,17 @@ public class Kitchen {
         stokBahanBaku.put(bahan, stokBahanBaku.getOrDefault(bahan, 0) + qty);
     }
 
-    public void setResep(Menu menu) {
-        // tunggu menu selesai
-    }
-
     public int masak(Menu menu, int qty) {
-        // tunggu resep
-        return 0; 
+        int hasil = 0;
+        for (int i = 0; i < qty ; i++){
+            for (RawMaterial rw : menu.getReceipt().keySet() ){
+                if (stokBahanBaku.get(rw) < menu.getReceipt().get(rw)){
+                    return hasil;
+                }
+            } 
+            hasil++;
+        }
+        return hasil; 
     }
 
     public void buangBahanSisa() {
