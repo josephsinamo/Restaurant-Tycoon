@@ -15,17 +15,17 @@ import view.modelsDaftarPanel.*;
  *
  * @author WINDOWS
  */
-public class PanelSuplierMenu extends javax.swing.JPanel {
+public class PanelMakananMenu extends javax.swing.JPanel {
 
     /**
      * Creates new form PanelSuplierMenu
      */
-    public PanelSuplierMenu() {
+    public PanelMakananMenu() {
         initComponents();
         
         // dummy
-    for(int i = 0 ; i < 20 ; i++){
-            jPanel3.add(new PanelUntukDaftarMenu() );
+        for(int i = 0 ; i < 20 ; i++){
+            container.add(new PanelUntukDaftarMenu() );
         }
         
     }
@@ -60,13 +60,8 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jPanel4 = new javax.swing.JPanel();
+        container = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(26, 30, 42));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -76,50 +71,24 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 1, 20, 1));
         add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanel1.setLayout(new java.awt.BorderLayout());
-
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 1, 1, 1));
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
-        jScrollPane1.setViewportView(jPanel3);
+        container.setBackground(new java.awt.Color(26, 30, 42));
+        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 3, 10, 3));
+        container.setAutoscrolls(true);
+        container.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.LINE_AXIS));
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+        jScrollPane1.setViewportView(container);
 
-        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jTabbedPane1.addTab("tab1", jPanel1);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 3, 1, 1));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
-        jScrollPane2.setViewportView(jPanel4);
-
-        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
-        jTabbedPane1.addTab("tab2", jPanel2);
-
-        add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

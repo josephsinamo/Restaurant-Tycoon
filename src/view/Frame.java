@@ -1,6 +1,5 @@
 package view;
 
-import view.modelsDaftarPanel.PanelRestoranMenu;
 import controller.GameManager;
 import java.awt.*;
 import java.awt.event.*;
@@ -233,38 +232,6 @@ public class Frame extends JFrame {
         slots.add(wrapJimatSlot("Security", lblJimatKeamanan));
         p.add(slots, BorderLayout.NORTH);
 
-        // Split: shop top, inventory bottom
-        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        split.setBackground(BG_PANEL);
-        split.setDividerLocation(190);
-
-        // Jimat shop
-        JPanel shopPanel = darkPanel(new BorderLayout(4, 4));
-        shopPanel.setBorder(titled("Toko Jimat"));
-        String[] shopCols = {"Jimat", "Tipe", "Power", "Harga (Rp)"};
-        modelJimatShop = new DefaultTableModel(shopCols, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JTable shopTbl = styledTable(modelJimatShop);
-        shopPanel.add(new JScrollPane(shopTbl), BorderLayout.CENTER);
-
-        JPanel shopBtns = darkPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnBeliJimat = styledButton("Beli Jimat", ACCENT2, BG_CARD, 11);
-        // btnBeliJimat.addActionListener(e -> {
-        //     int row = shopTbl.getSelectedRow();
-        //     if (row < 0) { showMsg("Pilih jimat dari toko."); return; }
-        //     String nama = (String) modelJimatShop.getValueAt(row, 0);
-        //     Jimat target = gameManager.getSupplier().getDaganganJimat().keySet().stream()
-        //             .filter(j -> j.getName().equals(nama)).findFirst().orElse(null);
-        //     if (target == null) return;
-        //     boolean ok = gameManager.getRestaurant().beli(gameManager.getSupplier(), target, 1);
-        //     if (!ok) showMsg("Gagal membeli jimat — uang tidak cukup?");
-        //     refreshAll();
-        // });
-        shopBtns.add(btnBeliJimat);
-        shopPanel.add(shopBtns, BorderLayout.SOUTH);
-        split.setTopComponent(shopPanel);
-
         // Inventory
         JPanel invPanel = darkPanel(new BorderLayout(4, 4));
         invPanel.setBorder(titled("Inventaris Jimat"));
@@ -298,82 +265,14 @@ public class Frame extends JFrame {
         invBtns.add(btnPasang);
         invBtns.add(btnJual);
         invPanel.add(invBtns, BorderLayout.SOUTH);
-        split.setBottomComponent(invPanel);
 
-        p.add(split, BorderLayout.CENTER);
+        p.add(invPanel, BorderLayout.CENTER);
         return p;
     }
 
     // ── PANEL: Menu Management ─────────────────────────────────────────────
     private JPanel buildMenuPanel() {
-        JPanel p = darkPanel(new BorderLayout(6, 6));
-        p.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        String[] cols = {"Nama Menu", "Tipe", "Harga (Rp)"};
-        modelMenu = new DefaultTableModel(cols, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return c == 2; }
-        };
-        JTable tbl = styledTable(modelMenu);
-        p.add(new JScrollPane(tbl), BorderLayout.CENTER);
-
-        // Add new menu form
-        JPanel form = darkPanel(new GridBagLayout());
-        form.setBorder(titled("Tambah / Atur Menu"));
-        GridBagConstraints gc = new GridBagConstraints();
-        gc.insets = new Insets(4, 6, 4, 6);
-        gc.fill = GridBagConstraints.HORIZONTAL;
-
-        JTextField fldNama  = darkField();
-        JTextField fldHarga = darkField();
-        JComboBox<String> cmbTipe = new JComboBox<>(new String[]{"Food", "Snack", "Coffe"});
-        cmbTipe.setBackground(BG_CARD); cmbTipe.setForeground(TEXT_MAIN);
-
-        gc.gridx = 0; gc.gridy = 0; form.add(lbl("Nama:"), gc);
-        gc.gridx = 1; form.add(fldNama, gc);
-        gc.gridx = 0; gc.gridy = 1; form.add(lbl("Tipe:"), gc);
-        gc.gridx = 1; form.add(cmbTipe, gc);
-        gc.gridx = 0; gc.gridy = 2; form.add(lbl("Harga (Rp):"), gc);
-        gc.gridx = 1; form.add(fldHarga, gc);
-
-        JButton btnAdd = styledButton("+ Tambah Menu", ACCENT, BG_CARD, 11);
-        // btnAdd.addActionListener(e -> {
-        //     String nama = fldNama.getText().trim();
-        //     String hargaStr = fldHarga.getText().trim();
-        //     if (nama.isEmpty() || hargaStr.isEmpty()) { showMsg("Isi nama dan harga."); return; }
-        //     double harga;
-        //     try { harga = Double.parseDouble(hargaStr); } catch (Exception ex) { showMsg("Harga tidak valid."); return; }
-        //     String tipe = (String) cmbTipe.getSelectedItem();
-        //     Menu menu = switch (tipe) {
-        //         case "Snack" -> new Snack(nama, (int) harga);
-        //         case "Coffe" -> new Coffe(nama, (int) harga);
-        //         default      -> new Food(nama, (int) harga);
-        //     };
-        //     gameManager.getRestaurant().addMenu(menu, harga);
-        //     fldNama.setText(""); fldHarga.setText("");
-        //     refreshAll();
-        // });
-
-        JButton btnSetHarga = styledButton("💲 Set Harga Terpilih", ACCENT2, BG_CARD, 11);
-        // btnSetHarga.addActionListener(e -> {
-        //     int row = tbl.getSelectedRow();
-        //     if (row < 0) { showMsg("Pilih menu dari tabel."); return; }
-        //     String hargaStr = (String) modelMenu.getValueAt(row, 2);
-        //     try {
-        //         double h = Double.parseDouble(hargaStr);
-        //         String nama = (String) modelMenu.getValueAt(row, 0);
-        //         Menu target = Arrays.stream(gameManager.getRestaurant().lihatDaftarMenu())
-        //                 .filter(m -> m.getName().equals(nama)).findFirst().orElse(null);
-        //         if (target != null) gameManager.getRestaurant().setHarga(target, h);
-        //     } catch (Exception ex) { showMsg("Nilai harga tidak valid."); }
-        //     refreshAll();
-        // });
-
-        gc.gridx = 0; gc.gridy = 3; gc.gridwidth = 2;
-        JPanel btnRow = darkPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        btnRow.add(btnAdd); btnRow.add(btnSetHarga);
-        form.add(btnRow, gc);
-
-        p.add(form, BorderLayout.SOUTH);
+        JPanel p = new PanelMakananMenu();
         return p;
     }
 

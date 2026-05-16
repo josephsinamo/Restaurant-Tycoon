@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package view.modelsDaftarPanel;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class PanelRestoranMenu extends javax.swing.JPanel {
     public PanelRestoranMenu() {
         initComponents();
         
-        for (int i = 1; i <= 20; i++) {
+    for (int i = 1; i <= 20; i++) {
             container.add(createItemCard("l","lo"));
         }
         
