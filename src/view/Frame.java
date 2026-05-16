@@ -12,9 +12,6 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import models.jimat.Jimat;
 
-import view.modelsDaftarPanel.*;
-import controller.*;
-
 public class Frame extends JFrame {
 
     // ── Card layout constants ──────────────────────────────────────────────
@@ -46,7 +43,7 @@ public class Frame extends JFrame {
     // ── Status widgets ─────────────────────────────────────────────────────
     private JLabel lblMoney;
     private JLabel lblKapasitas;
-    private JLabel lblRound;
+    private JLabel lblDay;
     private JTextArea txtLog;
     private DefaultTableModel modelStok;
 
@@ -54,7 +51,7 @@ public class Frame extends JFrame {
     private JLabel lblJimatMenarik, lblJimatKebersihan, lblJimatKeamanan;
     private DefaultListModel<Jimat> listModelInventaris;
     private JList<Jimat> listInventaris;
-    private DefaultTableModel modelJimatShop;
+    private JPanel modelJimatShop;
 
     // ── Bahan baku shop ────────────────────────────────────────────────────
     private DefaultTableModel modelBahanShop;
@@ -172,15 +169,15 @@ public class Frame extends JFrame {
 
         lblMoney     = statusLabel("💰 Rp 0");
         lblKapasitas = statusLabel("🏠 Kapasitas: 0");
-        lblRound     = statusLabel("📅 Ronde: -/-");
+        lblDay     = statusLabel("📅 Day: 1");
 
 
         JButton btnMenu = styledButton("← Menu", TEXT_DIM, BG_CARD, 11);
 
-        // btnMenu.addActionListener(e -> {
-        //     if (gameManager != null) gameManager.pauseGame();
-        //     cardLayout.show(mainPanel, KARTU_MENU);
-        // });
+        btnMenu.addActionListener(e -> {
+            if (gameManager != null) gameManager.pauseGame();
+            cardLayout.show(mainPanel, KARTU_MENU);
+        });
 
         bar.add(logo);
         bar.add(sep());
@@ -188,7 +185,7 @@ public class Frame extends JFrame {
         bar.add(sep());
         bar.add(lblKapasitas);
         bar.add(sep());
-        bar.add(lblRound);
+        bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
         bar.add(btnMenu);
 
@@ -521,51 +518,10 @@ public class Frame extends JFrame {
         // Restaurant resto = gameManager.getRestaurant();
 
         // Top bar
-        lblMoney.setText("💰 Rp " + String.format("l"));
-        lblKapasitas.setText("🏠 Kapasitas: " );
-
-        // Stok table
-        modelStok.setRowCount(0);
-        // resto.getStokBahanBaku().forEach((rm, qty) ->
-        //     modelStok.addRow(new Object[]{rm.getName(), qty}));
-
-        // Bahan shop table
-        modelBahanShop.setRowCount(0);
-        // gameManager.getSupplier().getDaganganBahanBaku().forEach((rm, harga) -> {
-        //     int stok = resto.getStokBahanBaku().getOrDefault(rm, 0);
-        //     modelBahanShop.addRow(new Object[]{rm.getName(), (int)(double)harga, stok, 1});
-        // });
-
-        // Jimat shop
-        modelJimatShop.setRowCount(0);
-        // gameManager.getSupplier().getDaganganJimat().forEach((jimat, harga) ->
-        //     modelJimatShop.addRow(new Object[]{
-        //         jimat.getName(),
-        //         jimat.getClass().getSimpleName(),
-        //         jimat.getPower(),
-        //         (int)(double)harga
-        //     }));
-
-        // Jimat inventory
-        listModelInventaris.clear();
-        // resto.getInventarisJimat().forEach(listModelInventaris::addElement);
-
-        // Equipped jimat labels
-        // lblJimatMenarik.setText(resto.getJimatMenarik() != null
-        //     ? resto.getJimatMenarik().getName() + " (" + resto.getPoinJimatMenarik() + ")" : "—");
-        // lblJimatKebersihan.setText(resto.getJimatKebersihan() != null
-        //     ? resto.getJimatKebersihan().getName() + " (" + resto.getPoinJimatKebersihan() + ")" : "—");
-        // lblJimatKeamanan.setText(resto.getJimatKeamanan() != null
-        //     ? resto.getJimatKeamanan().getName() + " (" + resto.getPoinJimatKeamanan() + ")" : "—");
-
-        // Menu table
-        modelMenu.setRowCount(0);
-        // resto.getDaftarMenuMap().forEach((menu, harga) ->
-        //     modelMenu.addRow(new Object[]{
-        //         menu.getName(),
-        //         menu.getClass().getSimpleName(),
-        //         String.valueOf(harga.intValue())
-        //     }));
+        lblMoney.setText("💰 Rp " + String.format("%.0f",gameManager.getRestaurant().getMoney()));
+        lblKapasitas.setText("🏠 Kapasitas: "+ String.format("%d", gameManager.getRestaurant().getKapasitas()) );
+        lblDay.setText("📅 Day: "+String.format("%d", gameManager.getCurrentDay()));
+        
     }
 
     private void appendLog(String msg) {

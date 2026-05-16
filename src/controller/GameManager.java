@@ -20,6 +20,14 @@ public class GameManager {
         this.eventManager = new EventManager();
         this.currentDay = 1;    
     }
+
+    public void save(){
+
+    }
+
+    public void pauseGame(){
+        
+    }
     
     public static GameManager getInstance() {
         if (instance == null) {

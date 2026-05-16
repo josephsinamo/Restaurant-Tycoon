@@ -137,6 +137,10 @@ public class Restaurant {
         kapasitasRestoran += t;
     }
 
+    public int getKapasitas(){
+        return kapasitasRestoran;
+    }
+
 
     // bisa di satukan dengan setHarga
     public void addMenu(Menu menu, double harga) {
