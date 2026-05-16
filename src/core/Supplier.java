@@ -20,6 +20,8 @@ public class Supplier {
         return daganganBahanBaku;
     }
 
+
+    // biar agak seru nanti jimat di buat seperti gacha
     public void setHargaJimat(Jimat jimat, double hargaBeli) {
         if (jimat == null) {
             throw new IllegalArgumentException("jimat tidak boleh null");
@@ -48,6 +50,7 @@ public class Supplier {
         return daganganBahanBaku.get(bahan);
     }
 
+    // coba ke void
     public boolean jual(Restaurant pembeli, ISupplierItem barang) {
         return jual(pembeli, barang, 1);
     }

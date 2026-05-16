@@ -3,13 +3,12 @@ package controller;
 import event.GameEvent;
 import event.disaster.*;
 import event.festival.*;
-import models.items.amulet.Security;
-import models.items.talisman.Charming;
-import models.items.talisman.Cleaner;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import models.items.amulet.Security;
+import models.items.talisman.Charming;
+import models.items.talisman.Cleaner;
 
 public class EventManager {
     private static final int FESTIVAL_CHANCE = 25;
@@ -48,6 +47,8 @@ public class EventManager {
         return null;
     }
 
+
+    // masih perlu di cek
     public void activateItems(int[] activeItems) {
         for (int i = 0; i < activeItems.length && i < itemEvents.size(); i++) {
             if (activeItems[i] == 1) {

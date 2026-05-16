@@ -11,20 +11,29 @@ import models.jimat.Jimat;
 import models.jimat.Security;
 import models.menu.Menu;
 
-
 public class Restaurant {
-    private int kapasitasRestoran; //banyaknya pelanggan yang bisa di terima dalam satu waktu
-    private double money;
-    private HashMap <Menu, Double> daftarMenu;
-    /** Satu map dengan {@link Kitchen#getStokBahanBaku()} — stok bahan dari supplier / dapur. */
-    private final HashMap <RawMaterial, Integer> stokBahanBaku;
+    private int kapasitasRestoran; // banyaknya pelanggan yang bisa di terima dalam satu waktu
+    private double money = 50000.0;
+    private Map <String,Menu> daftarMenu;
+    /**
+     * Satu map dengan {@link Kitchen#getStokBahanBaku()} — stok bahan dari supplier
+     * / dapur.
+     */
+    private final HashMap<RawMaterial, Integer> stokBahanBaku;
     private final Kitchen kitchen;
 
+    /**
+     * Maksimal satu referensi per kategori; poin efek =
+     * {@link Jimat#kekuatanEfekPerSatuan()} yang terpasang.
+     */
     private Charming jimatMenarik;
     private Cleaner jimatKebersihan;
     private Security jimatKeamanan;
 
-    /** Jimat yang dibeli; hapus/pakai memakai referensi objek yang sama ({@code ==}). */
+    /**
+     * Jimat yang dibeli; hapus/pakai memakai referensi objek yang sama
+     * ({@code ==}).
+     */
     private final List<Jimat> inventarisJimat = new ArrayList<>();
 
     public Restaurant() {
@@ -39,6 +48,7 @@ public class Restaurant {
         }
     }
 
+    // method kurang jelas
     public boolean pakaiJimatDariInventori(Jimat jimat) {
         if (jimat == null || !hapusDariInventoriJimatIdentik(jimat)) {
             return false;
@@ -88,7 +98,8 @@ public class Restaurant {
     }
 
     /**
-     * Pasang jimat pada slot tipenya. Hanya satu referensi per kategori (ganti = referensi baru menggantikan yang lama).
+     * Pasang jimat pada slot tipenya. Hanya satu referensi per kategori (ganti =
+     * referensi baru menggantikan yang lama).
      */
     public void equipJimatSlot(Jimat jimat) {
         if (jimat == null) {
@@ -103,6 +114,8 @@ public class Restaurant {
         }
     }
 
+    // masih perlu di perbaiki
+    
     public void jualJimat(Jimat jimat) {
         if (jimat == null) {
             return;
@@ -117,35 +130,46 @@ public class Restaurant {
         }
     }
 
-    public Menu [] lihatDaftarMenu(){
+    public Menu[] lihatDaftarMenu() {
         Menu[] daftarMenus = daftarMenu.keySet().toArray(new Menu[0]);
         return daftarMenus;
     }
 
-    public void upgradeKapasitas(int t){
+    public void upgradeKapasitas(int t) {
         kapasitasRestoran += t;
     }
 
-    public void addMenu(Menu menu, double harga){
-        if (!daftarMenu.containsKey(menu)){
-            daftarMenu.put(menu, harga);
-        }else{
-            System.out.println("Menu sudah ada di daftar");
+
+    // bisa di satukan dengan setHarga
+    public void addMenu(Menu menu, double harga) {
+        if (!daftarMenu.containsKey(menu.getName())) {
+            menu.setHarga(harga);
+            daftarMenu.put(menu.getName(),menu);
+        } else {
+            //System.out.println("Menu sudah ada di daftar");
+        }
+    }
+    
+    // konsep sama dengan addMenu
+    public void setHarga(Menu menu, double harga) {
+        if (daftarMenu.containsKey(menu.getName())) {
+            menu.setHarga(harga);
+            daftarMenu.put(menu.getName(),menu);
+        } else {
+            //System.out.println("Menu tidak tersedia di daftar menu");
         }
     }
 
-    public void setHarga(Menu menu, double harga){
-        if (daftarMenu.containsKey(menu)){
-            daftarMenu.put(menu, harga);
-        }else{
-            System.out.println("Menu tidak tersedia di daftar menu");
+    public void racikMenu(Menu menu,RawMaterial rw, Integer qty) {
+        if (!daftarMenu.containsKey(menu.getName())){
+            return;
+        } else{
+            daftarMenu.get(menu.getName()).setReceipt(rw, qty);
         }
     }
 
-    public void racikMenu(Menu menu){
-        // masih proges selesai dapur baru bisa
-    }
 
+    // coba ke void
     public boolean beli(Supplier supplier, ISupplierItem item) {
         return beli(supplier, item, 1);
     }
@@ -176,15 +200,19 @@ public class Restaurant {
         return money;
     }
 
-    public void layaniPelanggan(Customer pelanggan){
+    public void layaniPelanggan(Customer pelanggan) {
         double totalBelanja = 0;
         pelanggan.buatPesanan(lihatDaftarMenu());
         // masih harus di integrasikan dengan dapur
-        
+
+        for (Menu menu : pelanggan.getPesanan().keySet()){
+            int totPesan = kitchen.masak(menu, pelanggan.getPesanan().get(menu));
+            totalBelanja += (double)(daftarMenu.get(menu.getName()).getPrice()*totPesan);
+        }
         getPayment(pelanggan, money);
     }
 
-    private void getPayment(Customer pelanggan, double money){
+    private void getPayment(Customer pelanggan, double money) {
         money += pelanggan.bayarPesanan(money);
     }
 }
