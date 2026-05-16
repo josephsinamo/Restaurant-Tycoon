@@ -15,11 +15,9 @@ public class Restaurant {
     private int kapasitasRestoran; // banyaknya pelanggan yang bisa di terima dalam satu waktu
     private double money = 50000.0;
     private Map <String,Menu> daftarMenu;
-    /**
-     * Satu map dengan {@link Kitchen#getStokBahanBaku()} — stok bahan dari supplier
-     * / dapur.
-     */
+
     private final HashMap<RawMaterial, Integer> stokBahanBaku;
+    private int maxStorage;
     private final Kitchen kitchen;
 
     /**

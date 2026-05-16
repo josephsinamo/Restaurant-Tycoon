@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import models.jimat.Jimat;
 
 import view.modelsDaftarPanel.*;
+import controller.*;
 
 public class Frame extends JFrame {
 

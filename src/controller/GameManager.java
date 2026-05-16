@@ -14,7 +14,7 @@ public class GameManager {
     private Frame gameFrame;
     private int currentDay;
     
-    private GameManager() {
+    public GameManager() {
         this.restaurant = new Restaurant();
         this.supplier = new Supplier();
         this.eventManager = new EventManager();
