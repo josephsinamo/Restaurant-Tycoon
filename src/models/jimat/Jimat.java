@@ -28,6 +28,9 @@ public abstract class Jimat implements ISupplierItem {
     public double  getPower() {
         return power;
     }
+    public double getHarga() {
+        return harga;
+    }
 
     public double hitungTips(double hargaMenu) {
         return 0;

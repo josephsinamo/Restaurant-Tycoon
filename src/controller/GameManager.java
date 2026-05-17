@@ -76,6 +76,7 @@ public class GameManager {
 
         // ── Kapasitas awal ─────────────────────────────────────────────
         restaurant.setKapasitas(10);
+        supplier.initKatalogJimat(); 
     }
 
     // ══ Singleton ═════════════════════════════════════════════════════════
@@ -127,6 +128,34 @@ public class GameManager {
         restaurant.resetDataHarian();
         faseSekarang = Fase.PERSIAPAN;
         System.out.println("\n=== Hari ke-" + currentDay + " — FASE PERSIAPAN ===");
+    }
+    public Fase getFaseSekarang() { 
+    return faseSekarang; 
+}
+
+    public void mulaierjualan() {
+        if (faseSekarang != Fase.PERSIAPAN) return;
+        faseSekarang = Fase.BERJUALAN;
+        System.out.println("=== FASE BERJUALAN DIMULAI ===");
+
+        int[] activeItems = getActiveItems();
+        eventManager.runDailyEvents(activeItems, restaurant);
+
+        int kapasitas = restaurant.getKapasitas();
+        int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
+        System.out.println("Pembeli hari ini: " + jumlahPembeli);
+
+        for (int i = 0; i < jumlahPembeli; i++) {
+            Customer pelanggan = new Customer();
+            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
+                    > kapasitas * 1.5) break;
+            restaurant.layaniPelanggan(pelanggan);
+        }
+
+        restaurant.akhirHari();
+        System.out.println("Total penjualan: Rp " +
+            String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
+        System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
     }
 
     /** Tandai game sebagai di-pause (misal saat kembali ke main menu). */

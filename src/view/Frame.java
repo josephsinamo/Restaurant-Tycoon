@@ -183,7 +183,24 @@ public class Frame extends JFrame {
         bar.add(sep());
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
-
+    // tombol fase
+        JButton btnFase = styledButton("▶ Mulai Berjualan", ACCENT2, BG_CARD, 12);
+        btnFase.addActionListener(e -> {
+            if (gameManager == null) return;
+            if (gameManager.getFaseSekarang() == GameManager.Fase.PERSIAPAN) {
+                gameManager.mulaiberjualan();
+                btnFase.setText("➡ Hari Berikutnya");
+                refreshAll();
+                appendLog("=== Fase Berjualan Dimulai ===");
+            } else {
+                gameManager.nextDay();
+                btnFase.setText("▶ Mulai Berjualan");
+                refreshAll();
+                appendLog("=== Hari ke-" + gameManager.getCurrentDay() + " — Persiapan ===");
+            }
+        });
+        bar.add(sep());
+        bar.add(btnFase);
         bar.add(btnMenu);
 
         return bar;
@@ -257,6 +274,42 @@ public class Frame extends JFrame {
                 }
             }
         });
+   
+        JPanel tokoPanel = darkPanel(new BorderLayout(4, 4));
+        tokoPanel.setBorder(titled("🏪 Toko Jimat"));
+
+        DefaultListModel<Jimat> modelToko = new DefaultListModel<>();
+        JList<Jimat> listToko = new JList<>(modelToko);
+        listToko.setCellRenderer(new PanelInventarisJimat());
+
+        // load katalog jimat
+        if (gameManager != null) {
+            for (Jimat j : gameManager.getSupplier().getKatalogJimat()) {
+                modelToko.addElement(j);
+            }
+        }
+
+        JButton btnBeli = styledButton("Beli", ACCENT2, BG_CARD, 11);
+        btnBeli.addActionListener(e -> {
+            Jimat sel = listToko.getSelectedValue();
+            if (sel == null) { showMsg("Pilih jimat dulu."); return; }
+            boolean ok = gameManager.getSupplier().beliJimat(
+                gameManager.getRestaurant(), sel);
+            if (ok) {
+                modelToko.removeElement(sel);
+                refreshAll();
+                appendLog("Jimat " + sel.getName() + " dibeli!");
+            } else {
+                showMsg("Uang tidak cukup!");
+            }
+        });
+
+        JPanel tokoBtns = darkPanel(new FlowLayout(FlowLayout.RIGHT));
+        tokoBtns.add(btnBeli);
+        tokoPanel.add(new JScrollPane(listToko), BorderLayout.CENTER);
+        tokoPanel.add(tokoBtns, BorderLayout.SOUTH);
+
+        p.add(tokoPanel, BorderLayout.SOUTH);
 
         btnJual.addActionListener(e -> {
             Jimat sel = listInventaris.getSelectedValue();
@@ -282,8 +335,7 @@ public class Frame extends JFrame {
 
     // ── PANEL: Menu Management ─────────────────────────────────────────────
     private JPanel buildMenuPanel() {
-        JPanel p = new PanelMakananMenu();
-        return p;
+        return new PanelMakananMenu(gameManager);
     }
 
     // ── PANEL: Status ──────────────────────────────────────────────────────
