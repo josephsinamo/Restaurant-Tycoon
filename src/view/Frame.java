@@ -13,6 +13,7 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import models.jimat.*;
 import view.modelsDaftarPanel.PanelInventarisJimat;
+import javax.swing.SwingUtilities;
 
 public class Frame extends JFrame {
 

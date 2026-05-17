@@ -1,21 +1,3 @@
-/*
- * Click nbfs://nbhost    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public int getIconWidth() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public int getIconHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package view.modelsDaftarPanel;
 
 import models.*;
@@ -52,15 +34,14 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
         }
     }
     
-    public PanelUntukDaftarMenu(RawMaterial rw, GameManager gm) {
+   public PanelUntukDaftarMenu(RawMaterial rw, GameManager gm) {
         this.rw = rw;
         this.gm = gm;
+        // tambah ini — ambil frame dari window
         initComponents();
-        
         jLabel2.setText(rw.getName());
-        jLabel3.setText("Rp "+String.valueOf(gm.getSupplier().getHargaBahanBaku(rw)));
+        jLabel3.setText("Rp " + String.valueOf(gm.getSupplier().getHargaBahanBaku(rw)));
     }
-    
     public PanelUntukDaftarMenu() {
         initComponents();
     }
@@ -191,30 +172,29 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
         if (qty > 0 && gm != null && gm.getRestaurant() != null) {
-            
-            // 1. Jalankan fungsi beli (Uang di Object Restaurant otomatis berkurang)
             boolean suksesBeli = gm.getRestaurant().beli(gm.getSupplier(), rw, qty);
             
             if (suksesBeli) {
-                // 2. Reset tampilan counter menjadi 0 kembali
                 qty = 0;
                 jTextField1.setText(String.valueOf(qty));
                 jButton1.setEnabled(false);
                 
-                
+                // cari Frame dari ancestor window saat tombol diklik
+                java.awt.Window window = SwingUtilities.getWindowAncestor(this);
+                if (window instanceof Frame f) {
+                    f.refreshAll();
+                }
                 
             } else {
-                // Jika return dari backend bernilai false (dana restoran tidak cukup)
                 JOptionPane.showMessageDialog(this, 
-                    "Maaf, Saldo Kas Restoran tidak mencukupi untuk pembelian ini!", 
-                    "Transaksi Dagal", 
+                    "Maaf, Saldo Kas Restoran tidak mencukupi!", 
+                    "Transaksi Gagal", 
                     JOptionPane.WARNING_MESSAGE);
             }
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
