@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import core.Kitchen;
-import models.items.amulet.Security;
-import models.items.talisman.Charming;
-import models.items.talisman.Cleaner;
+
 import event.disaster.Rats;
 
 public class EventManager {
@@ -30,9 +28,6 @@ public class EventManager {
         festivals.add(new GoldenDay());
         festivals.add(new MarketDay());
 
-        itemEvents.add(new Security());
-        itemEvents.add(new Charming());
-        itemEvents.add(new Cleaner());
     }
     
 

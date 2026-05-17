@@ -13,10 +13,12 @@ public abstract class Jimat implements ISupplierItem {
 
     private final String name;
     private double power;
+    private double harga;
 
-    protected Jimat(String name, int power) {
+    protected Jimat(String name, double power, double harga) {
         this.name = name;
         this.power = power;
+        this.harga = harga;
     }
 
     public String getName() {
