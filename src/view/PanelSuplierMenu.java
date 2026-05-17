@@ -13,6 +13,7 @@ import view.modelsDaftarPanel.*;
 
 import controller.*;
 import models.*;
+import models.jimat.*;
 /**
  *
  * @author WINDOWS
@@ -125,6 +126,7 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         jLabel2.setBounds(210, 60, 37, 16);
 
         jButton1.setText("jButton1");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
         jPanel5.add(jButton1);
         jButton1.setBounds(190, 110, 75, 23);
 
@@ -134,6 +136,22 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int p = (int) (Math.random()*3)+1;
+        switch (p) {
+            case 1:
+                gm.getRestaurant().beli(gm.getSupplier(), new Charming());
+            return;
+            case 2:
+                gm.getRestaurant().beli(gm.getSupplier(), new Security());
+            return;
+            case 3:
+                gm.getRestaurant().beli(gm.getSupplier(), new Cleaner());
+            return;
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

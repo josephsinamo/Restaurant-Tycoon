@@ -51,13 +51,6 @@ public class GameManager {
         supplier.setHargaBahanBaku(tepung, 1_500);
         supplier.setHargaBahanBaku(bumbu,  2_500);
 
-        // ── Harga katalog supplier — jimat ─────────────────────────────
-        Charming jimatPesona  = new Charming("Jimat Pesona",      5);
-        Cleaner  jimatBersih  = new Cleaner ("Jimat Kebersihan",  5);
-        Security jimatPagar   = new Security("Jimat Pagar",       5);
-        supplier.setHargaJimat(jimatPesona, 8_000);
-        supplier.setHargaJimat(jimatBersih, 7_000);
-        supplier.setHargaJimat(jimatPagar,  9_000);
 
         // ── Menu default ───────────────────────────────────────────────
         Menu nasiGoreng   = new Food ("NasiGoreng",   Set.of(beras, telor, bumbu));
