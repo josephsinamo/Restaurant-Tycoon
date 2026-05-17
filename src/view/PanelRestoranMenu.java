@@ -9,6 +9,7 @@ import java.awt.*;
 import models.*;
 import controller.*;
 import javax.swing.border.EmptyBorder;
+import models.*;
 /**
  *
  * @author WINDOWS
@@ -26,19 +27,20 @@ public class PanelRestoranMenu extends javax.swing.JPanel {
         container.repaint();
     }
     
-    public PanelRestoranMenu(RawMaterial rw, GameManager gm) {
-        this.rw = rw;
+    public PanelRestoranMenu(GameManager gm) {
         this.gm = gm;
         
         initComponents();
-        
+        for (RawMaterial material : gm.getRestaurant().getStok().keySet()){
+            container.add(createItemCard(material,gm));
+        }
         container.revalidate();
         container.repaint();
     }
     
     
     // masih uji coba
-    private JPanel createItemCard(RawMaterial rw, GameManager gm) {
+    public JPanel createItemCard(RawMaterial rw, GameManager gm) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(new Color(255, 253, 228));
         
