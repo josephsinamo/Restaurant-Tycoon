@@ -13,7 +13,6 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import models.jimat.*;
 import view.modelsDaftarPanel.PanelInventarisJimat;
-import javax.swing.SwingUtilities;
 
 public class Frame extends JFrame {
 
@@ -204,7 +203,7 @@ public class Frame extends JFrame {
         btnFase.addActionListener(e -> {
             if (gameManager == null) return;
             if (gameManager.getFaseSekarang() == GameManager.Fase.PERSIAPAN) {
-                gameManager.mulaiberjualan();
+                gameManager.mulaiBerjualan();
                 btnFase.setText("➡ Hari Berikutnya");
                 refreshAll();
                 appendLog("=== Fase Berjualan Dimulai ===");
@@ -654,6 +653,7 @@ public class Frame extends JFrame {
     // ══ GAME LIFECYCLE ═════════════════════════════════════════════════════
     private void startGame() {
         gameManager = new GameManager();
+        gameManager.setGameStateListener(() -> refreshAll());
         cardLayout.show(mainPanel, KARTU_PERMAINAN);
         npcPanel.setNpcCount(5);
         refreshAll();
