@@ -286,7 +286,7 @@ public class Frame extends JFrame {
 
     // ── PANEL: Status ──────────────────────────────────────────────────────
     private JPanel buildStatusPanel() {
-        JPanel p = darkPanel(new BorderLayout(6, 6));
+        JPanel p = new PanelRekapanHari();
 
 
         return p;
