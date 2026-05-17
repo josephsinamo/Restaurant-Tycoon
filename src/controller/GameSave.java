@@ -70,6 +70,7 @@ public class GameSave {
 
         // ── Data dasar ────────────────────────────────────────────────
         sb.append("  \"day\": ").append(gm.getCurrentDay()).append(",\n");
+        sb.append("  \"fase\": \"").append(gm.getFaseSekarang().name()).append("\",\n");
         sb.append("  \"paused\": ").append(gm.isPaused()).append(",\n");
         sb.append("  \"money\": ").append(resto.getMoney()).append(",\n");
         sb.append("  \"kapasitas\": ").append(resto.getKapasitas()).append(",\n");
@@ -165,6 +166,7 @@ sb.append(mapDoubleToJson(hargaBahanMap));
         try {
             // ── Data dasar ────────────────────────────────────────────
             gm.setCurrentDay((int) extractLong(json, "day"));
+            gm.setFaseDariSave(extractString(json, "fase"));
             resto.setMoney(extractDouble(json, "money"));
             resto.setKapasitas((int) extractLong(json, "kapasitas"));
 
@@ -309,6 +311,14 @@ sb.append(mapDoubleToJson(hargaBahanMap));
         Matcher m = p.matcher(json);
         if (m.find()) return Double.parseDouble(m.group(1));
         throw new NoSuchElementException("Key tidak ditemukan: " + key);
+    }
+
+    /** Ekstrak string dari field top-level: "key": "nilai" */
+    private static String extractString(String json, String key) {
+        Pattern p = Pattern.compile("\"" + key + "\"\\s*:\\s*\"([^\"]*)\"");
+        Matcher m = p.matcher(json);
+        if (m.find()) return m.group(1);
+        return "PERSIAPAN";
     }
 
     /**

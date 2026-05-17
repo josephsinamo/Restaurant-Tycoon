@@ -1,0 +1,25 @@
+{
+  "day": 2,
+  "fase": "BERJUALAN",
+  "paused": false,
+  "money": 46000.0,
+  "kapasitas": 10,
+  "stokBahanBaku": {},
+  "hargaBahanBaku": {
+    "Gula": 1000.0,
+    "Beras": 2000.0,
+    "Telor": 1500.0,
+    "Bumbu": 2500.0,
+    "Tepung": 1500.0,
+    "Ayam": 5000.0,
+    "Kopi": 3000.0
+  },
+  "hargaMenu": {
+    "NasiGoreng": 19000.0,
+    "MilkDrink": 15000.0,
+    "KentangGoreng": 15000.0
+  },
+  "inventarisJimat": [
+    {"nama": "Security 3", "tipe": "Security", "power": 44.0, "aktifDiSlot": true}
+  ]
+}

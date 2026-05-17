@@ -24,15 +24,21 @@ public class Kitchen {
 
     public int masak(Menu menu, int qty) {
         int hasil = 0;
-        for (int i = 0; i < qty ; i++){
-            for (RawMaterial rw : menu.getReceipt().keySet() ){
-                if (stokBahanBaku.get(rw) < menu.getReceipt().get(rw)){
+        for (int i = 0; i < qty; i++) {
+            for (RawMaterial rw : menu.getReceipt().keySet()) {
+                int butuh = menu.getReceipt().get(rw);
+                int ada = stokBahanBaku.getOrDefault(rw, 0);
+                if (ada < butuh) {
                     return hasil;
                 }
-            } 
+            }
+            for (RawMaterial rw : menu.getReceipt().keySet()) {
+                int butuh = menu.getReceipt().get(rw);
+                stokBahanBaku.merge(rw, -butuh, Integer::sum);
+            }
             hasil++;
         }
-        return hasil; 
+        return hasil;
     }
 
     public void buangBahanSisa() {

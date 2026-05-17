@@ -29,12 +29,11 @@ public class GameManager {
         this.supplier     = new Supplier();
         this.eventManager = new EventManager(restaurant.getKitchen(), restaurant);
         this.currentDay   = 1;
-        setupGame();   // <<< inisialisasi konten default saat game baru dibuat
+        setupGame();
     }
 
     // ══ Setup awal konten game ═════════════════════════════════════════════
     private void setupGame() {
-        // ── Bahan baku default ─────────────────────────────────────────
         RawMaterial beras  = new RawMaterial("Beras");
         RawMaterial telor  = new RawMaterial("Telor");
         RawMaterial ayam   = new RawMaterial("Ayam");
@@ -43,7 +42,6 @@ public class GameManager {
         RawMaterial tepung = new RawMaterial("Tepung");
         RawMaterial bumbu  = new RawMaterial("Bumbu");
 
-        // ── Harga katalog supplier — bahan baku ────────────────────────
         supplier.setHargaBahanBaku(beras,  2000);
         supplier.setHargaBahanBaku(telor,  1500);
         supplier.setHargaBahanBaku(ayam,   5000);
@@ -52,8 +50,6 @@ public class GameManager {
         supplier.setHargaBahanBaku(tepung, 1500);
         supplier.setHargaBahanBaku(bumbu,  2500);
 
-
-        // ── Menu default ───────────────────────────────────────────────
         Menu nasiGoreng   = new Food ("NasiGoreng",   Set.of(beras, telor, bumbu));
         Menu kentangGoreng = new Snack("KentangGoreng", Set.of(tepung, telor, bumbu),
                                        JenisSnack.kentang_goreng);
@@ -64,7 +60,6 @@ public class GameManager {
         restaurant.addMenu(kentangGoreng,  8000);
         restaurant.addMenu(milkDrink,     10000);
 
-        // ── Stok awal bahan baku ───────────────────────────────────────
         restaurant.tambahBahanBaku(beras,  20);
         restaurant.tambahBahanBaku(telor,  15);
         restaurant.tambahBahanBaku(ayam,   15);
@@ -73,24 +68,17 @@ public class GameManager {
         restaurant.tambahBahanBaku(tepung, 10);
         restaurant.tambahBahanBaku(bumbu,  10);
 
-        // ── Kapasitas awal ─────────────────────────────────────────────
         restaurant.setKapasitas(10);
-        supplier.initKatalogJimat(); 
+        supplier.initKatalogJimat();
     }
 
-    // ══ Singleton ═════════════════════════════════════════════════════════
     public static GameManager getInstance() {
         if (instance == null) instance = new GameManager();
         return instance;
     }
 
-    // ══ Lifecycle ═════════════════════════════════════════════════════════
-
     public void startGame() {
         paused = false;
-        if (this.gameFrame == null) {
-            this.gameFrame = new Frame();
-        }
         System.out.println("Permainan Dimulai!");
         System.out.println("Hari ke-" + currentDay);
     }
@@ -98,105 +86,81 @@ public class GameManager {
     public void mulaiberjualan() {
         if (faseSekarang != Fase.PERSIAPAN) return;
         faseSekarang = Fase.BERJUALAN;
-        System.out.println("=== FASE BERJUALAN DIMULAI ===");
 
-        int[] activeItems = getActiveItems();
-        //eventManager.runDailyEvents(activeItems, restaurant);
+        Frame frame = gameFrame;
+        if (frame != null) {
+            frame.appendLog("═══ Fase Berjualan — Hari " + currentDay + " ═══");
+        }
+
+        for (String baris : eventManager.runDailyEvents(getActiveItems(), restaurant)) {
+            if (frame != null) {
+                frame.appendLog(baris);
+            }
+        }
 
         int kapasitas = restaurant.getKapasitas();
-        int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
-        System.out.println("Pembeli hari ini: " + jumlahPembeli);
+        int jumlahPembeli = (int) (Math.random() * (kapasitas * 1.5)) + 1;
+        if (frame != null) {
+            frame.appendLog("Pelanggan dijadwalkan: ~" + jumlahPembeli + " grup");
+        }
 
+        int nomor = 0;
         for (int i = 0; i < jumlahPembeli; i++) {
             Customer pelanggan = new Customer();
-            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan() > kapasitas * 1.5) break;
-            restaurant.layaniPelanggan(pelanggan);
+            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
+                    > kapasitas * 1.5) {
+                break;
+            }
+            nomor++;
+            var laporan = restaurant.layaniPelanggan(pelanggan);
+            if (frame != null) {
+                frame.appendLog(laporan.toLogBaris(nomor));
+            }
         }
 
         restaurant.akhirHari();
-        System.out.println("Total penjualan: Rp " +
-        String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
-        System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
+
+        if (frame != null) {
+            frame.updateStatusHari(
+                    restaurant.getJumlahGrupPelangganHariIni(),
+                    restaurant.getJumlahPengunjungHariIni(),
+                    restaurant.getJumlahPembeliKaburHariIni(),
+                    restaurant.getKeuntunganHariIni(),
+                    restaurant.isTikusMenyerangHariIni(),
+                    restaurant.isTikusDicegahJimatHariIni()
+            );
+            frame.appendLog("═══ Berjualan selesai — lihat tab Status ═══");
+        }
+
+        refreshUi();
     }
-
-
 
     public void nextDay() {
         this.currentDay++;
         restaurant.resetDataHarian();
         faseSekarang = Fase.PERSIAPAN;
         System.out.println("\n=== Hari ke-" + currentDay + " — FASE PERSIAPAN ===");
+        refreshUi();
     }
-    public Fase getFaseSekarang() { 
-    return faseSekarang; 
-}
 
-    public void mulaierjualan() {
-        if (faseSekarang != Fase.PERSIAPAN) return;
-        faseSekarang = Fase.BERJUALAN;
-        System.out.println("=== FASE BERJUALAN DIMULAI ===");
+    public Fase getFaseSekarang() {
+        return faseSekarang;
+    }
 
-        int[] activeItems = getActiveItems();
-        eventManager.runDailyEvents(activeItems, restaurant);
-
-        int kapasitas = restaurant.getKapasitas();
-        int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
-        System.out.println("Pembeli hari ini: " + jumlahPembeli);
-
-        for (int i = 0; i < jumlahPembeli; i++) {
-            Customer pelanggan = new Customer();
-            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
-                    > kapasitas * 1.5) break;
-            restaurant.layaniPelanggan(pelanggan);
+    public void setFaseDariSave(String namaFase) {
+        if ("BERJUALAN".equalsIgnoreCase(namaFase)) {
+            faseSekarang = Fase.BERJUALAN;
+        } else {
+            faseSekarang = Fase.PERSIAPAN;
         }
-
-        restaurant.akhirHari();
-        System.out.println("Total penjualan: Rp " +
-            String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
-        System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
     }
 
-<<<<<<< HEAD
-=======
-
-
-    public void nextDay() {
-        this.currentDay++;
-        restaurant.resetDataHarian();
-        faseSekarang = Fase.PERSIAPAN;
-        System.out.println("\n=== Hari ke-" + currentDay + " — FASE PERSIAPAN ===");
-    }
-    public Fase getFaseSekarang() { 
-    return faseSekarang; 
-}
-
-    public void mulaierjualan() {
-        if (faseSekarang != Fase.PERSIAPAN) return;
-        faseSekarang = Fase.BERJUALAN;
-        System.out.println("=== FASE BERJUALAN DIMULAI ===");
-
-        int[] activeItems = getActiveItems();
-        eventManager.runDailyEvents(activeItems, restaurant);
-
-        int kapasitas = restaurant.getKapasitas();
-        int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
-        System.out.println("Pembeli hari ini: " + jumlahPembeli);
-
-        for (int i = 0; i < jumlahPembeli; i++) {
-            Customer pelanggan = new Customer();
-            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
-                    > kapasitas * 1.5) break;
-            restaurant.layaniPelanggan(pelanggan);
+    private void refreshUi() {
+        if (gameFrame != null) {
+            javax.swing.SwingUtilities.invokeLater(gameFrame::refreshAll);
         }
-
-        restaurant.akhirHari();
-        System.out.println("Total penjualan: Rp " +
-            String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
-        System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
     }
 
->>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
-    /** Tandai game sebagai di-pause (misal saat kembali ke main menu). */
     public void pauseGame() {
         this.paused = true;
         System.out.println("Game di-pause pada hari ke-" + currentDay);
@@ -204,18 +168,10 @@ public class GameManager {
 
     public boolean isPaused() { return paused; }
 
-    /** Stub save — implementasi penuh ada di GameSave. */
     public void save() {
         GameSave.simpan(this);
     }
 
-    // ══ Helper internal ════════════════════════════════════════════════════
-
-    /**
-     * Ambil status jimat aktif sebagai array int[3]:
-     * [0] = keamanan, [1] = menarik, [2] = kebersihan.
-     * Nilai 1 = aktif, 0 = tidak aktif.
-     */
     private int[] getActiveItems() {
         return new int[]{
             restaurant.getPoinJimatKeamanan()   > 0 ? 1 : 0,
@@ -224,15 +180,15 @@ public class GameManager {
         };
     }
 
-    // ══ Getter ═════════════════════════════════════════════════════════════
-
     public Restaurant   getRestaurant()   { return restaurant; }
     public Supplier     getSupplier()     { return supplier; }
     public EventManager getEventManager() { return eventManager; }
     public int          getCurrentDay()   { return currentDay; }
     public Frame        getGameFrame()    { return gameFrame; }
 
-    // ══ Setter — dipakai GameSave saat restore ════════════════════════════
+    public void setGameFrame(Frame frame) {
+        if (frame != null) this.gameFrame = frame;
+    }
 
     public void setCurrentDay(int day)            { if (day > 0) this.currentDay = day; }
     public void setRestaurant(Restaurant resto)   { if (resto != null) this.restaurant = resto; }

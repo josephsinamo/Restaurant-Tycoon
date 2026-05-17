@@ -1,6 +1,7 @@
 package core;
 
 import entities.Customer;
+import entities.LaporanTransaksi;
 import java.util.*;
 import models.ISupplierItem;
 import models.RawMaterial;
@@ -35,6 +36,10 @@ public class Restaurant {
     private double       totalModalHariIni        = 0;   // belum dihitung otomatis; siap pakai
     private int          jumlahPengunjungHariIni  = 0;
     private int          jumlahItemTerjualHariIni = 0;
+    private int          jumlahPembeliKaburHariIni = 0;
+    private int          jumlahGrupPelangganHariIni = 0;
+    private boolean      tikusMenyerangHariIni = false;
+    private boolean      tikusDicegahJimatHariIni = false;
     /** Setiap elemen: { namaMenu(String), qty(int), hargaSatuan(double), subtotal(double) } */
     private final List<Object[]> daftarTransaksiHariIni = new ArrayList<>();
 
@@ -65,8 +70,17 @@ public class Restaurant {
         if (tambahan > 0) kapasitasRestoran += tambahan;
     }
 
+    /** Upgrade kapasitas tempat makan dengan biaya. */
+    public boolean upgradeKapasitasRestoran(int tambahan, double biaya) {
+        if (tambahan <= 0 || !kurangiUang(biaya)) {
+            return false;
+        }
+        kapasitasRestoran += tambahan;
+        return true;
+    }
+
     /** Kurangi uang; return false jika saldo tidak cukup. */
-    boolean kurangiUang(double jumlah) {
+    public boolean kurangiUang(double jumlah) {
         if (jumlah < 0 || money < jumlah) return false;
         money -= jumlah;
         return true;
@@ -132,6 +146,11 @@ public class Restaurant {
         if (menu == null) return;
         if (!daftarMenu.containsKey(menu.getName())) {
             menu.setHarga(harga);
+            for (RawMaterial rm : menu.getDaftarBahan()) {
+                if (menu.getReceipt().getOrDefault(rm, 0) < 1) {
+                    menu.setReceipt(rm, 1);
+                }
+            }
             daftarMenu.put(menu.getName(), menu);
         }
     }
@@ -255,11 +274,9 @@ public class Restaurant {
     //  PELAYANAN PELANGGAN
     // ══════════════════════════════════════════════════════════════════════
 
-    /**
-     * Melayani satu pelanggan: buat pesanan → masak → catat transaksi → terima bayaran.
-     */
-  public void layaniPelanggan(Customer pelanggan) {
+  public LaporanTransaksi layaniPelanggan(Customer pelanggan) {
         double totalBelanja = 0;
+        List<String> itemLog = new ArrayList<>();
         Menu[] daftarMenuArr = lihatDaftarMenu();
         pelanggan.buatPesanan(daftarMenuArr);
         pelanggan.tentukanKabur(this);
@@ -267,9 +284,7 @@ public class Restaurant {
         for (Menu menu : new HashMap<>(pelanggan.getPesanan()).keySet()) {
             int qty = pelanggan.getPesanan().getOrDefault(menu, 0);
 
-            // harga mahal → chance dilewati
             if (menu.getPrice() > 20000 && Math.random() < 0.4) {
-                System.out.println("[INFO] " + menu.getName() + " terlalu mahal, dilewati.");
                 continue;
             }
 
@@ -279,27 +294,49 @@ public class Restaurant {
                 pelanggan.gantiMenuAtauPulang(daftarMenuArr, menu);
             }
 
-            double harga = daftarMenu.get(menu.getName()).getPrice() * terpenuhi;
-            
-            // efek Charming → tips
+            if (terpenuhi <= 0) {
+                continue;
+            }
+
+            double hargaSatuan = daftarMenu.get(menu.getName()).getPrice();
+            double harga = hargaSatuan * terpenuhi;
+
             if (jimatMenarik != null) {
                 double tips = jimatMenarik.hitungTips(harga);
                 if (tips > 0) {
                     harga += tips;
-                    System.out.println("[JIMAT] Tips: Rp " + String.format("%.0f", tips));
                 }
             }
 
             totalBelanja += harga;
+            jumlahItemTerjualHariIni += terpenuhi;
+            itemLog.add(menu.getName() + " x" + terpenuhi
+                    + " (Rp " + String.format("%.0f", harga) + ")");
+            daftarTransaksiHariIni.add(new Object[]{
+                    menu.getName(), terpenuhi, hargaSatuan, harga
+            });
         }
 
-        // kabur = bahan terpakai tapi tidak bayar
-        if (!pelanggan.isKabur()) {
+        if (pelanggan.isKabur()) {
+            jumlahPembeliKaburHariIni++;
+        } else if (totalBelanja > 0) {
             money += totalBelanja;
             totalPenjualanHariIni += totalBelanja;
         }
 
         jumlahPengunjungHariIni += pelanggan.getJumlahPelanggan();
+        jumlahGrupPelangganHariIni++;
+
+        return new LaporanTransaksi(
+                pelanggan.getJumlahPelanggan(), itemLog, totalBelanja, pelanggan.isKabur());
+    }
+
+    public void catatTikusMenyerang() {
+        tikusMenyerangHariIni = true;
+    }
+
+    public void catatTikusDicegahJimat() {
+        tikusDicegahJimatHariIni = true;
     }
     public void akhirHari() {
         kitchen.buangBahanSisa();
@@ -316,6 +353,10 @@ public class Restaurant {
         totalModalHariIni        = 0;
         jumlahPengunjungHariIni  = 0;
         jumlahItemTerjualHariIni = 0;
+        jumlahPembeliKaburHariIni = 0;
+        jumlahGrupPelangganHariIni = 0;
+        tikusMenyerangHariIni = false;
+        tikusDicegahJimatHariIni = false;
         daftarTransaksiHariIni.clear();
     }
 
@@ -323,6 +364,14 @@ public class Restaurant {
     public double       getKeuntunganHariIni()        { return totalPenjualanHariIni - totalModalHariIni; }
     public int          getJumlahPengunjungHariIni()  { return jumlahPengunjungHariIni; }
     public int          getJumlahItemTerjualHariIni() { return jumlahItemTerjualHariIni; }
+    public int          getJumlahPembeliKaburHariIni() { return jumlahPembeliKaburHariIni; }
+    public boolean      isTikusMenyerangHariIni()     { return tikusMenyerangHariIni; }
+    public boolean      isTikusDicegahJimatHariIni()  { return tikusDicegahJimatHariIni; }
+
+    /** Jumlah kunjungan/grup pelanggan yang dilayani hari ini. */
+    public int getJumlahGrupPelangganHariIni() {
+        return jumlahGrupPelangganHariIni;
+    }
 
     public List<Object[]> getDaftarTransaksiHariIni() {
         return Collections.unmodifiableList(daftarTransaksiHariIni);

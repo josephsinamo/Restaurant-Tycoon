@@ -1,85 +1,164 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package view;
 
+import controller.GameManager;
+import core.Supplier;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import view.modelsDaftarPanel.*;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import models.RawMaterial;
+import models.jimat.Jimat;
+import view.modelsDaftarPanel.PanelUntukDaftarMenu;
 
-import controller.*;
-import models.*;
-import models.jimat.*;
-/**
- *
- * @author WINDOWS
- */
 public class PanelSuplierMenu extends javax.swing.JPanel {
-    GameManager gm;
-    /**
-     * Creates new form PanelSuplierMenu
-     */
+
+    private static final Color BG_GACHA = new Color(45, 35, 65);
+
+    private GameManager gm;
+    private JLabel lblHasilGacha;
+    private JLabel lblBiayaGacha;
+
     public PanelSuplierMenu() {
         initComponents();
-        
     }
-    
+
     public PanelSuplierMenu(GameManager gm) {
-        this.gm =gm;
+        this.gm = gm;
         initComponents();
-        
-        if (gm != null && gm.getSupplier().getBahanBaku() != null){
-            for (RawMaterial rw : gm.getSupplier().getBahanBaku()){
-                jPanel3.add(new PanelUntukDaftarMenu(rw,gm));
-            }   
-        }else{
-            jPanel3.add(new PanelUntukDaftarMenu());
+        setupUi();
+        loadBahanBaku();
+    }
+
+    private void setupUi() {
+        jLabel1.setText("SUPPLIER — Bahan Baku & Gacha Jimat");
+        jLabel1.setFont(new Font("SansSerif", Font.BOLD, 14));
+        jLabel1.setForeground(new Color(255, 204, 100));
+        jTabbedPane1.setTitleAt(0, "Bahan Baku");
+        jTabbedPane1.setTitleAt(1, "Gacha Jimat");
+        setupTabGacha();
+    }
+
+    private void loadBahanBaku() {
+        jPanel3.removeAll();
+        if (gm != null && gm.getSupplier() != null) {
+            for (RawMaterial rw : gm.getSupplier().getBahanBaku()) {
+                jPanel3.add(new PanelUntukDaftarMenu(rw, gm));
+            }
+        }
+        jPanel3.revalidate();
+        jPanel3.repaint();
+    }
+
+    private void setupTabGacha() {
+        jPanel2.removeAll();
+        jPanel2.setLayout(new BorderLayout());
+        jPanel2.setBackground(BG_GACHA);
+
+        JPanel gacha = new JPanel(new GridBagLayout());
+        gacha.setBackground(BG_GACHA);
+        gacha.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        JLabel title = new JLabel("🎰 GACHA JIMAT", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 22));
+        title.setForeground(new Color(255, 220, 120));
+        gacha.add(title, gbc);
+
+        JLabel desc = new JLabel(
+                "<html><center>Tarik jimat acak ke inventori.<br>"
+                + "Pasang di tab <b>Jimat</b>.</center></html>",
+                SwingConstants.CENTER);
+        desc.setForeground(new Color(220, 210, 240));
+        gacha.add(desc, gbc);
+
+        lblBiayaGacha = new JLabel(
+                "Biaya: Rp " + String.format("%.0f", Supplier.BIAYA_GACHA_JIMAT),
+                SwingConstants.CENTER);
+        lblBiayaGacha.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblBiayaGacha.setForeground(new Color(180, 255, 200));
+        gacha.add(lblBiayaGacha, gbc);
+
+        lblHasilGacha = new JLabel("Belum ada tarikan.", SwingConstants.CENTER);
+        lblHasilGacha.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        lblHasilGacha.setForeground(Color.WHITE);
+        gacha.add(lblHasilGacha, gbc);
+
+        JButton btnGacha = new JButton("✨ TARIK JIMAT");
+        btnGacha.setFont(new Font("SansSerif", Font.BOLD, 16));
+        btnGacha.setBackground(new Color(120, 80, 200));
+        btnGacha.setForeground(Color.WHITE);
+        btnGacha.setFocusPainted(false);
+        btnGacha.addActionListener(e -> lakukanGacha());
+        gbc.insets = new Insets(20, 8, 8, 8);
+        gacha.add(btnGacha, gbc);
+
+        gacha.add(Box.createVerticalStrut(8), gbc);
+
+        JLabel hint = new JLabel("Charming · Cleaner · Security (power acak)", SwingConstants.CENTER);
+        hint.setFont(new Font("SansSerif", Font.ITALIC, 11));
+        hint.setForeground(new Color(160, 150, 180));
+        gacha.add(hint, gbc);
+
+        jPanel2.add(gacha, BorderLayout.CENTER);
+    }
+
+    private void lakukanGacha() {
+        if (gm == null || gm.getSupplier() == null || gm.getRestaurant() == null) {
+            return;
+        }
+
+        Jimat hadiah = gm.getSupplier().gachaJimat(gm.getRestaurant());
+        if (hadiah == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Uang tidak cukup.\nBiaya gacha: Rp "
+                            + String.format("%.0f", Supplier.BIAYA_GACHA_JIMAT),
+                    "Gacha Gagal",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String tipe = hadiah.getClass().getSimpleName();
+        String ikon = switch (tipe) {
+            case "Charming" -> "✨";
+            case "Cleaner" -> "🧹";
+            case "Security" -> "🛡";
+            default -> "🧿";
+        };
+        lblHasilGacha.setText(String.format(
+                "%s %s — Power: %.0f (masuk inventaris)",
+                ikon, hadiah.getName(), hadiah.getPower()));
+
+        refreshFrame();
+        java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+        if (w instanceof Frame f) {
+            f.appendLog("Gacha: dapat " + tipe + " \"" + hadiah.getName()
+                    + "\" (power " + (int) hadiah.getPower() + ")");
         }
     }
 
-    public void masukJP3(PanelUntukDaftarMenu p){
-        jPanel3.add(p);
-    }
-    
-    public void masukJP4(){
-        
-    }
-
-    public JPanel getJPanel3(){
-        return jPanel3;
-    }
-    
-    //dumy method
-    private JPanel createItemCard(String name, String qty) {
-        JPanel card = new JPanel(new BorderLayout());
-        card.setBackground(new Color(255, 253, 228));
-        card.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 15, 0));
-        
-        // Icon (Hanya kotak placeholder, kamu bisa ganti dengan ImageIcon)
-        JLabel lblIcon = new JLabel("🍪", JLabel.CENTER);
-        lblIcon.setFont(new Font("Serif", Font.PLAIN, 40));
-        
-        // Label Angka/Qty (Pojok kanan bawah)
-        JLabel lblQty = new JLabel(qty + "  ", JLabel.RIGHT);
-        lblQty.setFont(new Font("Arial", Font.BOLD, 16));
-
-        card.add(lblIcon, BorderLayout.CENTER);
-        card.add(lblQty, BorderLayout.SOUTH);
-
-        return card;
+    private void refreshFrame() {
+        java.awt.Window window = SwingUtilities.getWindowAncestor(this);
+        if (window instanceof Frame f) {
+            f.refreshAll();
+        }
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
@@ -88,16 +167,12 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(26, 30, 42));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("jLabel1");
-        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 1, 20, 1));
+        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 1, 12, 1));
         add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -108,67 +183,20 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 1, 1, 1));
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
         jScrollPane1.setViewportView(jPanel3);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jTabbedPane1.addTab("tab1", jPanel1);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanel5.setLayout(null);
-
-        jLabel2.setText("jLabel2");
-        jPanel5.add(jLabel2);
-        jLabel2.setBounds(210, 60, 37, 16);
-
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanel5.add(jButton1);
-        jButton1.setBounds(190, 110, 75, 23);
-
-        jPanel2.add(jPanel5, java.awt.BorderLayout.CENTER);
-
-        jTabbedPane1.addTab("tab2", jPanel2);
+        jTabbedPane1.addTab("Bahan Baku", jPanel1);
+        jTabbedPane1.addTab("Gacha Jimat", jPanel2);
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        int p = (int) (Math.random()*3)+1;
-        switch (p) {
-            case 1:
-                gm.getRestaurant().beli(gm.getSupplier(), new Charming());
-                System.out.println(gm.getRestaurant().getMoney());
-            break;
-            case 2:
-                gm.getRestaurant().beli(gm.getSupplier(), new Security());
-            break;
-            case 3:
-                gm.getRestaurant().beli(gm.getSupplier(), new Cleaner());
-            break;
-        }
-        
-
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    // End of variables declaration//GEN-END:variables
 }

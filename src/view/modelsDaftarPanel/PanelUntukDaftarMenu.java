@@ -185,6 +185,7 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
                 java.awt.Window window = SwingUtilities.getWindowAncestor(this);
                 if (window instanceof Frame f) {
                     f.refreshAll();
+                    f.appendLog("Beli " + qty + "x " + rw.getName() + " dari supplier");
                 }
                 
             } else {

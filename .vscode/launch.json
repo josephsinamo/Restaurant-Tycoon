@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Frame",
+            "request": "launch",
+            "mainClass": "view.Frame",
+            "projectName": "Restaurant Tycoon_cdef38fb"
+        },
+        {
+            "type": "java",
+            "name": "Restaurant Tycoon (Frame)",
+            "request": "launch",
+            "mainClass": "view.Frame",
+            "projectName": "Restaurant Tycoon"
+        }
+    ]
+}

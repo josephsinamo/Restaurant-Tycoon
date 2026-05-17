@@ -2,19 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/view/Frame.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/view/PanelSuplierMenu.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/view/modelsDaftarPanel/PanelUntukDaftarMenu.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/view/modelsDaftarPanel/PanelUntukAturMenu.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/controller/GameManager.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/models/menu/Drink.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/view/PanelMakananMenu.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/view/PanelRestoranMenu.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/models/menu/JenisSnack.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/models/menu/Snack.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/models/menu/JenisDrink.java</file>
-            <file>file:/C:/Users/WINDOWS/OneDrive/Documents/NetBeansProjects/Restaurant%20Tycoon/src/models/menu/Food.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

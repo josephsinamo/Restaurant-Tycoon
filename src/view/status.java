@@ -17,8 +17,28 @@ public class status extends javax.swing.JPanel {
         initComponents();
     }
     
-    public javax.swing.JTextArea atur (){
+    public javax.swing.JTextArea atur() {
         return jTextArea1;
+    }
+
+    public void setRingkasanHari(int grupPelanggan, int totalOrang, int pembeliKabur,
+            double keuntungan, boolean tikusMenyerang, boolean tikusDicegahJimat) {
+        String tikus;
+        if (tikusMenyerang) {
+            tikus = "Ya (bahan baku berkurang)";
+        } else if (tikusDicegahJimat) {
+            tikus = "Tidak (dicegah jimat Cleaner)";
+        } else {
+            tikus = "Tidak";
+        }
+
+        jTextArea1.setText(
+                "Grup pelanggan dilayani : " + grupPelanggan + "\n"
+                + "Total orang datang      : " + totalOrang + "\n"
+                + "Pembeli kabur           : " + pembeliKabur + "\n"
+                + "Keuntungan hari ini     : Rp " + String.format("%.0f", keuntungan) + "\n"
+                + "Tikus menyerang         : " + tikus
+        );
     }
 
     /**

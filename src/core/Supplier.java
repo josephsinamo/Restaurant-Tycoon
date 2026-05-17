@@ -64,6 +64,26 @@ public class Supplier {
         System.out.println("Jimat " + jimat.getName() + " dibeli!");
         return true;
     }
+
+    public static final double BIAYA_GACHA_JIMAT = 35000.0;
+
+    /**
+     * Gacha jimat acak (power & harga random) langsung ke inventori restoran.
+     * @return jimat yang didapat, atau null jika gagal (uang tidak cukup)
+     */
+    public Jimat gachaJimat(Restaurant resto) {
+        if (resto == null || !resto.kurangiUang(BIAYA_GACHA_JIMAT)) {
+            return null;
+        }
+        java.util.Random rnd = new java.util.Random();
+        Jimat hadiah = switch (rnd.nextInt(3)) {
+            case 0 -> new models.jimat.Charming();
+            case 1 -> new models.jimat.Cleaner();
+            default -> new models.jimat.Security();
+        };
+        resto.tambahKeInventoriJimat(hadiah);
+        return hadiah;
+    }
     
     // coba ke void
     public boolean jual(Restaurant pembeli, ISupplierItem barang) {
@@ -76,7 +96,7 @@ public class Supplier {
         }
         Double hargaSatuan = null;
         if (barang instanceof Jimat j) {
-            hargaSatuan = (double) 50000;
+            hargaSatuan = j.getHarga();
         } else if (barang instanceof RawMaterial r) {
             hargaSatuan = daganganBahanBaku.get(r);
         }
