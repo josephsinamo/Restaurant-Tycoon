@@ -33,7 +33,7 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         
         if (gm != null && gm.getSupplier().getBahanBaku() != null){
             for (RawMaterial rw : gm.getSupplier().getBahanBaku()){
-                jPanel3.add(new PanelUntukDaftarMenu());
+                jPanel3.add(new PanelUntukDaftarMenu(rw,gm));
             }   
         }
     }

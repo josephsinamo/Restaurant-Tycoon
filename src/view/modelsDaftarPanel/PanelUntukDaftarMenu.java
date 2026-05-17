@@ -52,6 +52,9 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
         this.rw = rw;
         this.gm = gm;
         initComponents();
+        
+        jLabel2.setText(rw.getName());
+        jLabel3.setText("Rp "+String.valueOf(gm.getSupplier().getHargaBahanBaku(rw)));
     }
     
     public PanelUntukDaftarMenu() {
