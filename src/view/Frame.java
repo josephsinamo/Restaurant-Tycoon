@@ -137,7 +137,7 @@ public class Frame extends JFrame {
         // ── Centre: tabbed panels + NPC area ─────────────────────
         JSplitPane centre = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 buildLeftTabs(), buildNpcArea());
-        centre.setDividerLocation(680);
+        centre.setDividerLocation(1050);
         centre.setDividerSize(6);
         centre.setBackground(BG_DARK);
         root.add(centre, BorderLayout.CENTER);
@@ -323,9 +323,10 @@ public class Frame extends JFrame {
     }
 
     // ── NPC ANIMATION AREA ─────────────────────────────────────────────────
-    private JPanel buildNpcArea() {
+   private JPanel buildNpcArea() {
         JPanel wrap = darkPanel(new BorderLayout(0, 6));
         wrap.setBorder(new EmptyBorder(4, 4, 4, 4));
+        wrap.setPreferredSize(new Dimension(100, 0)); // tambah baris ini, atur angka 450
 
         JLabel heading = heading("🏪 Area Restoran");
         wrap.add(heading, BorderLayout.NORTH);
@@ -340,45 +341,95 @@ public class Frame extends JFrame {
 
     // ══ NPC PANEL (animation) ══════════════════════════════════════════════
     private static class Npc {
-        float x, y, vx, vy;
-        Color color;
-        String label;
-        int size;
+    float x, y;
+    Color color;
+    String label;
+    int size;
+    
+    // arah: 0=kanan, 1=kiri, 2=bawah, 3=atas
+    int arah;
+    int langkahSisa;
+    float speed = 1.5f;
+    private final Random rng = new Random();
 
-        Npc(float x, float y, Color color, String label) {
-            this.x = x; this.y = y;
-            this.color = color;
-            this.label = label;
-            this.size = 22 + (int)(Math.random() * 10);
-            this.vx = (float)(Math.random() * 2 - 1) * 1.8f;
-            this.vy = (float)(Math.random() * 2 - 1) * 1.8f;
-        }
-
-        void update(int W, int H) {
-            x += vx; y += vy;
-            if (x < 0)     { x = 0;     vx = Math.abs(vx); }
-            if (y < 0)     { y = 0;     vy = Math.abs(vy); }
-            if (x > W - size) { x = W - size; vx = -Math.abs(vx); }
-            if (y > H - size) { y = H - size; vy = -Math.abs(vy); }
-            // Slight random drift
-            vx += (Math.random() - 0.5) * 0.15;
-            vy += (Math.random() - 0.5) * 0.15;
-            float maxSpeed = 2.5f;
-            vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
-            vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
-        }
+    Npc(float x, float y, Color color, String label) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.label = label;
+        this.size = 32;
+        this.arah = rng.nextInt(4);
+        this.langkahSisa = 30 + rng.nextInt(50);
     }
+
+    void update(int W, int H, List<Rectangle> obstacles) {
+        // ganti arah kalau langkah habis
+        if (langkahSisa <= 0) {
+            arah = rng.nextInt(4);
+            langkahSisa = 30 + rng.nextInt(50);
+        }
+
+        float nx = x, ny = y;
+        switch (arah) {
+            case 0 -> nx += speed; // kanan
+            case 1 -> nx -= speed; // kiri
+            case 2 -> ny += speed; // bawah
+            case 3 -> ny -= speed; // atas
+        }
+
+        // batas layar
+        if (nx < 0 || nx > W - size || ny < 0 || ny > H - size) {
+            arah = rng.nextInt(4);
+            langkahSisa = 20;
+            return;
+        }
+
+        // cek tabrakan dengan obstacle (meja & kasir)
+        Rectangle npcRect = new Rectangle((int)nx, (int)ny, size, size);
+        for (Rectangle obs : obstacles) {
+            if (npcRect.intersects(obs)) {
+                arah = rng.nextInt(4); // ganti arah kalau nabrak
+                langkahSisa = 20;
+                return;
+            }
+        }
+
+        x = nx;
+        y = ny;
+        langkahSisa--;
+    }
+}
 
     class NpcPanel extends JPanel {
         private final List<Npc> npcs = new ArrayList<>();
+        private final List<Rectangle> obstacles = new ArrayList<>(); // tambah ini
         private Timer animTimer;
 
         NpcPanel() {
-            animTimer = new Timer(33, e -> { // ~30 FPS
-                for (Npc npc : npcs) npc.update(getWidth(), getHeight());
+            animTimer = new Timer(33, e -> {
+                buildObstacles(); // update obstacle tiap frame (kalau resize)
+                for (Npc npc : npcs) npc.update(getWidth(), getHeight(), obstacles);
                 repaint();
             });
             animTimer.start();
+        }
+
+        // posisi meja & kasir harus sama dengan yang di paintComponent
+        private void buildObstacles() {
+            obstacles.clear();
+            
+            // meja — sesuaikan koordinat dengan yang di paintComponent
+            int[][] tables = {{80,80},{200,80},{320,80},{80,200},{200,200},{320,200}};
+            for (int[] t : tables) {
+                obstacles.add(new Rectangle(t[0], t[1], 50, 35));
+            }
+            
+            // kasir
+            obstacles.add(new Rectangle(
+                getWidth()/2 - 60,  // x kasir
+                getHeight() - 70,   // y kasir
+                120, 70             // ukuran kasir
+            ));
         }
 
         void setNpcCount(int count) {
@@ -391,8 +442,9 @@ public class Frame extends JFrame {
             Random rng = new Random();
             for (int i = 0; i < count; i++) {
                 Color c = palette[i % palette.length];
-                float x = 40 + rng.nextFloat() * (getWidth() - 80);
-                float y = 40 + rng.nextFloat() * (getHeight() - 80);
+                // spawn di area aman (tengah layar, jauh dari meja)
+                float x = 100 + rng.nextFloat() * 200;
+                float y = 300 + rng.nextFloat() * 100;
                 npcs.add(new Npc(x, y, c, "P" + (i + 1)));
             }
         }
@@ -404,55 +456,47 @@ public class Frame extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // Floor grid
-            g2.setColor(new Color(40, 50, 65));
-            int gridSize = 40;
-            for (int gx = 0; gx < getWidth(); gx += gridSize)
-                g2.drawLine(gx, 0, gx, getHeight());
-            for (int gy = 0; gy < getHeight(); gy += gridSize)
-                g2.drawLine(0, gy, getWidth(), gy);
-
-            // Tables (static furniture)
-            g2.setColor(new Color(60, 45, 30));
-            int[][] tables = {{80, 80}, {200, 80}, {320, 80}, {80, 200}, {200, 200}, {320, 200}};
-            for (int[] t : tables) {
-                if (t[0] + 50 < getWidth() && t[1] + 35 < getHeight()) {
-                    g2.fillRoundRect(t[0], t[1], 50, 35, 8, 8);
-                    g2.setColor(new Color(90, 70, 45));
-                    g2.drawRoundRect(t[0], t[1], 50, 35, 8, 8);
-                    g2.setColor(new Color(60, 45, 30));
+            java.net.URL lantaiUrl = getClass().getResource("/view/Aset/Lantai.png");
+            if (lantaiUrl != null) {
+                Image lantaiImg = new ImageIcon(lantaiUrl).getImage();
+                int tileSize = 40; // ukuran tile lantai
+                for (int gx = 0; gx < getWidth(); gx += tileSize) {
+                    for (int gy = 0; gy < getHeight(); gy += tileSize) {
+                        g2.drawImage(lantaiImg, gx, gy, tileSize, tileSize, null);
+                    }
                 }
+            } else {
+                // fallback grid kalau gambar tidak ada
+                g2.setColor(new Color(40, 50, 65));
+                int gridSize = 40;
+                for (int gx = 0; gx < getWidth(); gx += gridSize)
+                    g2.drawLine(gx, 0, gx, getHeight());
+                for (int gy = 0; gy < getHeight(); gy += gridSize)
+                    g2.drawLine(0, gy, getWidth(), gy);
             }
 
-            // Counter
-            g2.setColor(new Color(100, 70, 30));
-            g2.fillRect(0, getHeight() - 50, getWidth(), 50);
-            g2.setColor(ACCENT);
-            g2.setFont(new Font("SansSerif", Font.BOLD, 13));
-            g2.drawString("🍽 KASIR / COUNTER", 20, getHeight() - 22);
+            // Tables
+            ImageIcon mejaImg = new ImageIcon(getClass().getResource("/view/Aset/Meja.png"));
+            int[][] tables = {{80,80},{200,80},{320,80},{80,200},{200,200},{320,200}};
+            for (int[] t : tables) {
+                g2.drawImage(mejaImg.getImage(), t[0], t[1], 50, 35, null);
+            }
+
+            // Kasir
+            ImageIcon kasirImg = new ImageIcon(getClass().getResource("/view/Aset/Kasir.png"));
+            g2.drawImage(kasirImg.getImage(),
+                getWidth()/2 - 60, getHeight() - 70, 120, 70, null);
 
             // NPCs
-            for (Npc npc : npcs) {
-                // Shadow
-                g2.setColor(new Color(0, 0, 0, 60));
-                g2.fillOval((int)npc.x + 3, (int)npc.y + npc.size - 4, npc.size - 6, 8);
-
-                // Body circle
-                g2.setColor(npc.color);
-                g2.fill(new Ellipse2D.Float(npc.x, npc.y, npc.size, npc.size));
-
-                // Highlight
-                g2.setColor(new Color(255, 255, 255, 80));
-                g2.fill(new Ellipse2D.Float(npc.x + 4, npc.y + 3, npc.size / 3f, npc.size / 4f));
-
-                // Label
-                g2.setColor(Color.WHITE);
-                g2.setFont(new Font("SansSerif", Font.BOLD, 9));
-                FontMetrics fm = g2.getFontMetrics();
-                int tw = fm.stringWidth(npc.label);
-                g2.drawString(npc.label, npc.x + (npc.size - tw) / 2f, npc.y + npc.size / 2f + 4);
+            ImageIcon npc1Img = new ImageIcon(getClass().getResource("/view/Aset/NPC1.png"));
+            ImageIcon npc2Img = new ImageIcon(getClass().getResource("/view/Aset/NPC2.png"));
+            for (int i = 0; i < npcs.size(); i++) {
+                Npc npc = npcs.get(i);
+                ImageIcon npcImg = (i % 2 == 0) ? npc1Img : npc2Img;
+                g2.drawImage(npcImg.getImage(), (int)npc.x, (int)npc.y, npc.size, npc.size, null);
             }
 
-            // Customer count badge
+            // Badge pelanggan
             g2.setColor(new Color(0, 0, 0, 120));
             g2.fillRoundRect(8, 8, 160, 28, 10, 10);
             g2.setColor(ACCENT);
@@ -460,16 +504,15 @@ public class Frame extends JFrame {
             g2.drawString("👥 Pelanggan: " + npcs.size(), 16, 27);
 
             g2.dispose();
-        }
     }
+}
 
     // ══ GAME LIFECYCLE ═════════════════════════════════════════════════════
     private void startGame() {
         gameManager = new GameManager();
-
         cardLayout.show(mainPanel, KARTU_PERMAINAN);
+        npcPanel.setNpcCount(5); // tambah baris ini
         refreshAll();
-        // gameManager.startGame();
     }
 
     // ══ REFRESH ════════════════════════════════════════════════════════════

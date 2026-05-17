@@ -8,6 +8,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.*;
+
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -32,33 +34,34 @@ public class PanelMakananMenu extends javax.swing.JPanel {
     
     public PanelMakananMenu() {
         initComponents();
-        Set <RawMaterial> tes = new HashSet<>();
-        tes.add(new RawMaterial("nigga"));
-        tes.add(new RawMaterial("asu"));
-        
-        container.add(new PanelUntukAturMenu(new Food("nigga",tes)));
+        container.add(createItemCard("Makanan", "makanan.png"));
+        container.add(createItemCard("Minuman", "minuman.png"));
     }
     public void addMenu(){
 
     }
     
     //dumy method
-        private JPanel createItemCard(String name, String qty) {
+    private JPanel createItemCard(String name, String namaFile) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(new Color(255, 253, 228));
-        card.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 15, 0));
-        
-        // Icon (Hanya kotak placeholder, kamu bisa ganti dengan ImageIcon)
-        JLabel lblIcon = new JLabel("🍪", JLabel.CENTER);
-        lblIcon.setFont(new Font("Serif", Font.PLAIN, 40));
-        
-        // Label Angka/Qty (Pojok kanan bawah)
-        JLabel lblQty = new JLabel(qty + "  ", JLabel.RIGHT);
-        lblQty.setFont(new Font("Arial", Font.BOLD, 16));
 
+        java.net.URL url = getClass().getResource("/view/Aset/" + namaFile);
+        JLabel lblIcon;
+        if (url != null) {
+            ImageIcon icon = new ImageIcon(
+                new ImageIcon(url).getImage()
+                    .getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH)
+            );
+            lblIcon = new JLabel(icon, JLabel.CENTER);
+        } else {
+            lblIcon = new JLabel("🍪", JLabel.CENTER);
+            lblIcon.setFont(new Font("Serif", Font.PLAIN, 40));
+        }
+
+        JLabel lblNama = new JLabel(name, JLabel.CENTER);
+        card.add(lblNama, BorderLayout.NORTH);
         card.add(lblIcon, BorderLayout.CENTER);
-        card.add(lblQty, BorderLayout.SOUTH);
-
         return card;
     }
 
