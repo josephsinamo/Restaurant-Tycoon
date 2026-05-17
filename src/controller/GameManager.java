@@ -43,13 +43,6 @@ public class GameManager {
         supplier.setHargaBahanBaku(tepung, 1500);
 
         // Jimat catalogue
-        Charming jimatPesona = new Charming("Jimat Pesona", 5);
-        Cleaner jimatBersih = new Cleaner("Jimat Kebersihan", 5);
-        Security jimatPagar = new Security("Jimat Pagar", 5);
-        supplier.setHargaJimat(jimatPesona, 8000);
-        supplier.setHargaJimat(jimatBersih, 7000);
-        supplier.setHargaJimat(jimatPagar, 9000);
-
 
         //Daftar Menu Dunia
         // Food
