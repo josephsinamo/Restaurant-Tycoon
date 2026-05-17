@@ -1,180 +1,166 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package view;
 
-import javax.swing.*;
+import controller.GameManager;
+import core.Restaurant;
 import java.awt.*;
-import models.*;
-import controller.*;
-import javax.swing.border.EmptyBorder;
-import models.*;
-/**
- *
- * @author WINDOWS
- */
-public class PanelRestoranMenu extends javax.swing.JPanel {
-    RawMaterial rw;
-    GameManager gm;
-    /**
-     * Creates new form PanelPermainan
-     */
-    public PanelRestoranMenu() {
-        initComponents();
-        
-        container.revalidate();
-        container.repaint();
+import javax.swing.*;
+import javax.swing.border.*;
+import models.RawMaterial;
+
+public class PanelRestoranMenu extends JPanel {
+
+    private static final Color BG_DARK      = new Color(26, 30, 42);
+    private static final Color ACCENT       = new Color(255, 180, 50);
+    private static final Color ACCENT2      = new Color(80, 200, 140);
+    private static final Color TEXT_MAIN    = new Color(230, 230, 240);
+    private static final Color BORDER_BROWN = new Color(139, 69, 19);
+
+    private static String getAsetPath(String namaBahan) {
+        return switch (namaBahan.toLowerCase()) {
+            case "beras"          -> "/view/Aset/Beras.png";
+            case "telor","telur"  -> "/view/Aset/Telur.png";
+            case "ayam"           -> "/view/Aset/Ayam.png";
+            case "kopi"           -> "/view/Aset/Kopi.png";
+            case "gula"           -> "/view/Aset/Gula.png";
+            case "tepung"         -> "/view/Aset/Tepung.png";
+            case "bumbu"          -> "/view/Aset/Bumbu.png";
+            default               -> "/view/Aset/makanan.png";
+        };
     }
-    
+
+    private GameManager gm;
+    private JPanel container;
+    private JLabel lblKapasitasInfo;
+
     public PanelRestoranMenu(GameManager gm) {
         this.gm = gm;
-        
-        initComponents();
-        for (RawMaterial material : gm.getRestaurant().getStok().keySet()){
-            container.add(createItemCard(material,gm));
+        setBackground(BG_DARK);
+        setBorder(new EmptyBorder(8, 8, 8, 8));
+        setLayout(new BorderLayout(0, 8));
+        add(buildTopBar(),    BorderLayout.NORTH);
+        add(buildInventori(), BorderLayout.CENTER);
+    }
+
+    private JPanel buildTopBar() {
+        JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 6));
+        bar.setBackground(new Color(34, 40, 56));
+        bar.setBorder(new CompoundBorder(
+            new MatteBorder(0, 0, 2, 0, ACCENT),
+            new EmptyBorder(4, 8, 4, 8)));
+
+        int kap = gm != null ? gm.getRestaurant().getKapasitas() : 0;
+        lblKapasitasInfo = new JLabel("🏠 Kapasitas Restoran: " + kap + " kursi");
+        lblKapasitasInfo.setFont(new Font("SansSerif", Font.BOLD, 13));
+        lblKapasitasInfo.setForeground(TEXT_MAIN);
+
+        JButton btnUpgrade = styledButton("⬆ Upgrade Kapasitas (+5 kursi  |  Rp 10.000)", ACCENT, new Color(34, 40, 56), 12);
+        btnUpgrade.addActionListener(e -> {
+            if (gm == null) return;
+            double biaya = 10000;
+            Restaurant resto = gm.getRestaurant();
+            if (resto.getMoney() < biaya) {
+                JOptionPane.showMessageDialog(this, "Uang tidak cukup! Dibutuhkan Rp " + (int)biaya, "Gagal", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            resto.kurangiUang(biaya);
+            resto.upgradeKapasitas(5);
+            int kapBaru = resto.getKapasitas();
+            lblKapasitasInfo.setText("🏠 Kapasitas Restoran: " + kapBaru + " kursi");
+            java.awt.Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof Frame f) f.refreshAll();
+            JOptionPane.showMessageDialog(this, "Kapasitas naik jadi " + kapBaru + " kursi!", "Upgrade Berhasil", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        JButton btnRefresh = styledButton("🔄 Refresh", ACCENT2, new Color(34, 40, 56), 12);
+        btnRefresh.addActionListener(e -> refreshInventori());
+
+        bar.add(lblKapasitasInfo);
+        bar.add(Box.createHorizontalStrut(16));
+        bar.add(btnUpgrade);
+        bar.add(btnRefresh);
+        return bar;
+    }
+
+    private JPanel buildInventori() {
+        JPanel wrap = new JPanel(new BorderLayout(0, 6));
+        wrap.setBackground(BG_DARK);
+        wrap.setBorder(new EmptyBorder(10, 0, 0, 0));
+
+        JLabel judul = new JLabel("INVENTORI", SwingConstants.CENTER);
+        judul.setFont(new Font("Showcard Gothic", Font.BOLD, 18));
+        judul.setForeground(Color.WHITE);
+        judul.setBorder(new EmptyBorder(0, 0, 8, 0));
+        wrap.add(judul, BorderLayout.NORTH);
+
+        container = new JPanel(new GridLayout(0, 4, 12, 12));
+        container.setBackground(new Color(41, 33, 45));
+        container.setBorder(new EmptyBorder(8, 8, 8, 8));
+
+        JScrollPane scroll = new JScrollPane(container);
+        scroll.setBorder(BorderFactory.createLineBorder(BORDER_BROWN, 3));
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.getViewport().setBackground(new Color(41, 33, 45));
+        wrap.add(scroll, BorderLayout.CENTER);
+
+        loadInventori();
+        return wrap;
+    }
+
+    public void loadInventori() {
+        if (container == null || gm == null) return;
+        container.removeAll();
+        for (RawMaterial rw : gm.getRestaurant().getStok().keySet()) {
+            container.add(createItemCard(rw));
         }
         container.revalidate();
         container.repaint();
     }
-    
-    
-    // masih uji coba
-    public JPanel createItemCard(RawMaterial rw, GameManager gm) {
-        JPanel card = new JPanel(new BorderLayout());
+
+    public void refreshInventori() {
+        if (gm != null && lblKapasitasInfo != null)
+            lblKapasitasInfo.setText("🏠 Kapasitas Restoran: " + gm.getRestaurant().getKapasitas() + " kursi");
+        loadInventori();
+    }
+
+    private JPanel createItemCard(RawMaterial rw) {
+        JPanel card = new JPanel(new BorderLayout(4, 4));
         card.setBackground(new Color(255, 253, 228));
-        
-        // Icon (Hanya kotak placeholder, kamu bisa ganti dengan ImageIcon)
-        JLabel lblIcon = new JLabel("🍪", JLabel.CENTER);
-        lblIcon.setFont(new Font("Serif", Font.PLAIN, 40));
-        
-        // Label Angka/Qty (Pojok kanan bawah)
-        JLabel lblQty = new JLabel(gm.getRestaurant().getStok().get(rw) + "  ", JLabel.RIGHT);
-        lblQty.setFont(new Font("Arial", Font.BOLD, 16));
-        
-        JLabel lblNama = new JLabel(rw.getName());
-        lblQty.setFont(new Font("Arial", Font.BOLD, 16));
-        
+        card.setBorder(BorderFactory.createLineBorder(new Color(200, 180, 100), 1));
+
+        JLabel lblNama = new JLabel(rw.getName(), SwingConstants.LEFT);
+        lblNama.setFont(new Font("SansSerif", Font.BOLD, 11));
+        lblNama.setForeground(new Color(60, 40, 20));
+        lblNama.setBorder(new EmptyBorder(4, 6, 0, 0));
+
+        JLabel lblIcon;
+        java.net.URL url = getClass().getResource(getAsetPath(rw.getName()));
+        if (url != null) {
+            Image scaled = new ImageIcon(url).getImage().getScaledInstance(52, 52, Image.SCALE_SMOOTH);
+            lblIcon = new JLabel(new ImageIcon(scaled), JLabel.CENTER);
+        } else {
+            lblIcon = new JLabel("🥚", JLabel.CENTER);
+            lblIcon.setFont(new Font("Serif", Font.PLAIN, 36));
+        }
+
+        int qty = gm != null ? gm.getRestaurant().getStok().getOrDefault(rw, 0) : 0;
+        JLabel lblQty = new JLabel(qty + "  ", JLabel.RIGHT);
+        lblQty.setFont(new Font("Arial", Font.BOLD, 15));
+        lblQty.setForeground(new Color(80, 60, 20));
+        lblQty.setBorder(new EmptyBorder(0, 0, 4, 4));
+
         card.add(lblNama, BorderLayout.NORTH);
         card.add(lblIcon, BorderLayout.CENTER);
-        card.add(lblQty, BorderLayout.SOUTH);
-
+        card.add(lblQty,  BorderLayout.SOUTH);
         return card;
     }
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        container = new javax.swing.JPanel(new GridLayout(0, 3, 15, 15));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 231, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(jPanel1);
-
-        setBackground(new java.awt.Color(26, 30, 42));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        setLayout(new java.awt.BorderLayout());
-
-        jSplitPane2.setBackground(new java.awt.Color(26, 30, 46));
-        jSplitPane2.setDividerLocation(0.5);
-        jSplitPane2.setDividerSize(6);
-        jSplitPane2.setResizeWeight(0.5);
-        jSplitPane2.setEnabled(false);
-
-        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
-
-        jButton2.setText("jButton2");
-        jPanel3.add(jButton2);
-
-        jLabel3.setText("jLabel3");
-        jPanel3.add(jLabel3);
-
-        jSplitPane2.setRightComponent(jPanel3);
-
-        jPanel4.setLayout(new java.awt.GridLayout(1, 0));
-
-        jButton1.setText("TOMBOL\nUPGRADE"); // NOI18N
-        jButton1.setMinimumSize(new java.awt.Dimension(131, 60));
-        jButton1.setPreferredSize(new java.awt.Dimension(131, 60));
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanel4.add(jButton1);
-
-        jLabel2.setBackground(new java.awt.Color(204, 255, 255));
-        jLabel2.setText("UPGRADE RUMAH");
-        jPanel4.add(jLabel2);
-
-        jSplitPane2.setLeftComponent(jPanel4);
-
-        add(jSplitPane2, java.awt.BorderLayout.PAGE_START);
-
-        jPanel2.setBackground(new java.awt.Color(26, 30, 42));
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 10, 1));
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Showcard Gothic", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("INVENTORI");
-        jPanel2.add(jLabel1, java.awt.BorderLayout.PAGE_START);
-
-        jScrollPane2.setBorder(BorderFactory.createLineBorder(new Color(139, 69, 19), 3));
-        jScrollPane2.getVerticalScrollBar().setUnitIncrement(16); // Scroll halus
-
-        container.setBackground(new java.awt.Color(41, 33, 45));
-        container.setLayout(new java.awt.GridLayout(1, 0));
-        container.setLayout(new java.awt.GridLayout(0, 4, 15, 15));
-        jScrollPane2.setViewportView(container);
-
-        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
-        add(jPanel2, java.awt.BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel container;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSplitPane jSplitPane2;
-    // End of variables declaration//GEN-END:variables
+    private JButton styledButton(String text, Color fg, Color bg, int size) {
+        JButton b = new JButton(text);
+        b.setFont(new Font("SansSerif", Font.BOLD, size));
+        b.setForeground(fg); b.setBackground(bg); b.setOpaque(true);
+        b.setBorderPainted(false); b.setFocusPainted(false);
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        b.setBorder(new EmptyBorder(6, 14, 6, 14));
+        return b;
+    }
 }

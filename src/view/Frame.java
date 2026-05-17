@@ -377,7 +377,7 @@ public class Frame extends JFrame {
         scroll.setBorder(null);
 
         JButton btnClear = styledButton("Clear", TEXT_DIM, BG_CARD, 10);
-        // btnClear.addActionListener(e -> txtLog.setText(""));
+        btnClear.addActionListener(e -> txtLog.setText(""));
 
         p.add(scroll, BorderLayout.CENTER);
         p.add(btnClear, BorderLayout.EAST);

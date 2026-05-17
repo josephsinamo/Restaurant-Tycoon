@@ -66,7 +66,7 @@ public class Restaurant {
     }
 
     /** Kurangi uang; return false jika saldo tidak cukup. */
-    boolean kurangiUang(double jumlah) {
+    public boolean kurangiUang(double jumlah) {
         if (jumlah < 0 || money < jumlah) return false;
         money -= jumlah;
         return true;
