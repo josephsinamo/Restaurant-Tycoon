@@ -40,6 +40,6 @@ public class Kitchen {
     }
 
     public void getDisasterTikusAttack(Double rate) {  
-        // tunggu GameEvent
+        stokBahanBaku.replaceAll((bahan, qty) -> (int) Math.floor(qty * rate));
     }
 }

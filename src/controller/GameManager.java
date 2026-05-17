@@ -110,18 +110,14 @@ public class GameManager {
     
     public void nextDay() {
         this.currentDay++;
-        
         System.out.println("\n=== Hari ke-" + currentDay + " ===");
         
         int[] activeItems = getActiveItems();
-        //eventManager.runDailyEvents(activeItems);
+        eventManager.runDailyEvents(activeItems);
         
-    
         Customer pelangganHariIni = new Customer();
         System.out.println("Melayani pelanggan...");
         restaurant.layaniPelanggan(pelangganHariIni);
-        
-        //System.out.println("Total Uang: " + restaurant.getMoney());
     }
     
     private int[] getActiveItems() {

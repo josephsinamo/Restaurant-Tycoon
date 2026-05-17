@@ -19,9 +19,9 @@ public class Rats implements GameEvent {
     @Override
     public void execute() {
         int fraction = FRACTIONS[random.nextInt(FRACTIONS.length)];
-        double rate = 1.0 / fraction;  // sisa bahan setelah dimakan tikus
+        double rate = 1.0 / fraction;
         kitchen.getDisasterTikusAttack(rate);
         System.out.println("[DISASTER] " + getEventName() +
-            "! Bahan baku berkurang menjadi 1/" + fraction);
+            "! Bahan baku tersisa 1/" + fraction);
     }
 }
