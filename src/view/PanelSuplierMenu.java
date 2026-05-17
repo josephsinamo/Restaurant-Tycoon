@@ -143,13 +143,24 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         switch (p) {
             case 1:
                 gm.getRestaurant().beli(gm.getSupplier(), new Charming());
-            return;
+                System.out.println(gm.getRestaurant().getMoney());
+            break;
             case 2:
                 gm.getRestaurant().beli(gm.getSupplier(), new Security());
-            return;
+            break;
             case 3:
                 gm.getRestaurant().beli(gm.getSupplier(), new Cleaner());
-            return;
+            break;
+        }
+        
+        java.awt.Window win = javax.swing.SwingUtilities.getWindowAncestor(this);
+    
+        // Cek apakah Window tersebut adalah MainFrame utama kita
+        if (win instanceof Frame) {
+            Frame frameUtama = (Frame) win;
+        
+        // --- PANGGIL METHOD REFRESHNYA ---
+        frameUtama.refreshAll(); 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -43,13 +43,13 @@ public class GameManager {
         RawMaterial bumbu  = new RawMaterial("Bumbu");
 
         // ── Harga katalog supplier — bahan baku ────────────────────────
-        supplier.setHargaBahanBaku(beras,  2_000);
-        supplier.setHargaBahanBaku(telor,  1_500);
-        supplier.setHargaBahanBaku(ayam,   5_000);
-        supplier.setHargaBahanBaku(kopi,   3_000);
-        supplier.setHargaBahanBaku(gula,   1_000);
-        supplier.setHargaBahanBaku(tepung, 1_500);
-        supplier.setHargaBahanBaku(bumbu,  2_500);
+        supplier.setHargaBahanBaku(beras,  2000);
+        supplier.setHargaBahanBaku(telor,  1500);
+        supplier.setHargaBahanBaku(ayam,   5000);
+        supplier.setHargaBahanBaku(kopi,   3000);
+        supplier.setHargaBahanBaku(gula,   1000);
+        supplier.setHargaBahanBaku(tepung, 1500);
+        supplier.setHargaBahanBaku(bumbu,  2500);
 
 
         // ── Menu default ───────────────────────────────────────────────

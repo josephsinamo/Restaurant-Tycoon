@@ -14,7 +14,7 @@ public class Restaurant {
 
     // ══ State utama ═══════════════════════════════════════════════════════
     private int    kapasitasRestoran = 0;
-    private double money             = 50_000.0;
+    private double money             = 50000.0;
 
     // ══ Menu & dapur ══════════════════════════════════════════════════════
     private final Map<String, Menu>           daftarMenu    = new HashMap<>();

@@ -39,7 +39,7 @@ public class Frame extends JFrame {
     private static final Font FONT_MONO     = new Font("Monospaced", Font.PLAIN, 11);
 
     // ── Game backend ───────────────────────────────────────────────────────
-    private GameManager gameManager;
+    private GameManager gameManager= new GameManager();
 
     // ── Status widgets ─────────────────────────────────────────────────────
     private JLabel lblMoney;
@@ -473,7 +473,7 @@ public class Frame extends JFrame {
     }
 
     // ══ REFRESH ════════════════════════════════════════════════════════════
-    private void refreshAll() {
+    public void refreshAll() {
         if (gameManager == null) return;
         // Restaurant resto = gameManager.getRestaurant();
 
@@ -498,7 +498,9 @@ public class Frame extends JFrame {
     
         Jimat s = gameManager.getRestaurant().getJimatSecurity();
         lblJimatKeamanan.setText(s != null ? s.getName() + " (" + s.getPower() + ")" : "—");
-            
+        
+        this.revalidate();
+        this.repaint();
     }
 
     private void appendLog(String msg) {
