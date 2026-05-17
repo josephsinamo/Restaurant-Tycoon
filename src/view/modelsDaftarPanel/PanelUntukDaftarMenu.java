@@ -34,13 +34,15 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
     
     GameManager gm;
     RawMaterial rw;
+    Frame frame;
     /**
      * Creates new form PanelUntukDaftarMenu
      */
-    public PanelUntukDaftarMenu(String png, String name, double price) {
+    public PanelUntukDaftarMenu(String png, String name, double price, Frame frame) {
         this.png = png;
         this.name = name;
         this.price = price;
+        this.frame = frame;
         initComponents();
         
         if (png != null && getClass().getResource(png) != null) {
@@ -170,6 +172,7 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
             // 3. Set kembali angka terbaru ke teks field
             jTextField1.setText(String.valueOf(qty));
             jButton1.setEnabled(true);
+            
         } catch (NumberFormatException e) {
             // Jika teks field kosong atau bukan angka, reset ke angka 1
             qty = 0;
@@ -201,12 +204,8 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
                 jTextField1.setText(String.valueOf(qty));
                 jButton1.setEnabled(false);
                 
-                // 3. ✨ PROSES REFRESH: Cari Frame Utama yang membungkus Panel ini
-                Component indukWindow = SwingUtilities.getWindowAncestor(this);
-                if (indukWindow instanceof Frame) {
-                    // Paksa Frame Utama menjalankan fungsi update tulisan uang
-                    ((Frame) indukWindow).refreshAll();
-                }
+                
+                
             } else {
                 // Jika return dari backend bernilai false (dana restoran tidak cukup)
                 JOptionPane.showMessageDialog(this, 

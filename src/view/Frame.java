@@ -75,6 +75,9 @@ public class Frame extends JFrame {
         setVisible(true);
     }
 
+    public void setLabelMoney(String x){
+        lblMoney.setText(x);
+    }
     // ══ MAIN MENU ══════════════════════════════════════════════════════════
     private JPanel buildMenuUtama() {
         JPanel p = new JPanel(new GridBagLayout()) {
@@ -170,8 +173,10 @@ public class Frame extends JFrame {
         JButton btnMenu = styledButton("← Menu", TEXT_DIM, BG_CARD, 11);
 
         btnMenu.addActionListener(e -> {
+            refreshAll();
             if (gameManager != null) gameManager.pauseGame();
             cardLayout.show(mainPanel, KARTU_MENU);
+            
         });
         
 
@@ -348,7 +353,7 @@ public class Frame extends JFrame {
 
     // Build Restoan Menu
     private JPanel buildRestoranPanel() {
-        JPanel p = new PanelRestoranMenu();
+        JPanel p = new PanelRestoranMenu(gameManager);
         
         return p;
     }
