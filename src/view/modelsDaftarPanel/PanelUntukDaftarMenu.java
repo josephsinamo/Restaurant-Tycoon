@@ -20,7 +20,9 @@ package view.modelsDaftarPanel;
 
 import models.*;
 import controller.*;
+import java.awt.Component;
 import javax.swing.*;
+import view.Frame;
 /**
  *
  * @author WINDOWS
@@ -188,9 +190,31 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        gm.getRestaurant().beli(gm.getSupplier(), rw,qty);
-        qty = 0;
-        jTextField1.setText(String.valueOf(qty));
+        if (qty > 0 && gm != null && gm.getRestaurant() != null) {
+            
+            // 1. Jalankan fungsi beli (Uang di Object Restaurant otomatis berkurang)
+            boolean suksesBeli = gm.getRestaurant().beli(gm.getSupplier(), rw, qty);
+            
+            if (suksesBeli) {
+                // 2. Reset tampilan counter menjadi 0 kembali
+                qty = 0;
+                jTextField1.setText(String.valueOf(qty));
+                jButton1.setEnabled(false);
+                
+                // 3. ✨ PROSES REFRESH: Cari Frame Utama yang membungkus Panel ini
+                Component indukWindow = SwingUtilities.getWindowAncestor(this);
+                if (indukWindow instanceof Frame) {
+                    // Paksa Frame Utama menjalankan fungsi update tulisan uang
+                    ((Frame) indukWindow).refreshAll();
+                }
+            } else {
+                // Jika return dari backend bernilai false (dana restoran tidak cukup)
+                JOptionPane.showMessageDialog(this, 
+                    "Maaf, Saldo Kas Restoran tidak mencukupi untuk pembelian ini!", 
+                    "Transaksi Dagal", 
+                    JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

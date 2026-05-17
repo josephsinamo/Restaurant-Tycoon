@@ -206,7 +206,7 @@ public class Frame extends JFrame {
     // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
     private JPanel buildBahanBakuPanel() {
         PanelSuplierMenu p = new PanelSuplierMenu(gameManager);
-
+        
         return p;
     }
 
@@ -589,7 +589,7 @@ public class Frame extends JFrame {
         refreshAll();
     }
     // ══ REFRESH ════════════════════════════════════════════════════════════
-    private void refreshAll() {
+    public void refreshAll() {
         if (gameManager == null) return;
         Restaurant resto = gameManager.getRestaurant();
 
@@ -614,7 +614,9 @@ public class Frame extends JFrame {
     
         Jimat s = gameManager.getRestaurant().getJimatSecurity();
         lblJimatKeamanan.setText(s != null ? s.getName() + " (" + s.getPower() + ")" : "—");
-            
+        
+        this.revalidate();
+        this.repaint();
     }
 
     private void appendLog(String msg) {
