@@ -13,6 +13,7 @@ public class Supplier {
 
     // private final HashMap<Jimat, Double> daganganJimat = new HashMap<>();
     private final HashMap<RawMaterial, Double> daganganBahanBaku = new HashMap<>();
+    private final List<Jimat> katalogJimat = new ArrayList<>();
 
 
     public HashMap<RawMaterial, Double> getDaganganBahanBaku() {
@@ -39,6 +40,31 @@ public class Supplier {
         return daganganBahanBaku.get(bahan);
     }
 
+    // init katalog jimat
+    public void initKatalogJimat() {
+        katalogJimat.clear();
+        katalogJimat.add(new models.jimat.Charming());
+        katalogJimat.add(new models.jimat.Charming());
+        katalogJimat.add(new models.jimat.Cleaner());
+        katalogJimat.add(new models.jimat.Cleaner());
+        katalogJimat.add(new models.jimat.Security());
+        katalogJimat.add(new models.jimat.Security());
+    }
+
+    public List<Jimat> getKatalogJimat() { return katalogJimat; }
+
+    public boolean beliJimat(Restaurant resto, Jimat jimat) {
+        if (!katalogJimat.contains(jimat)) return false;
+        if (!resto.kurangiUang(jimat.getHarga())) {
+            System.out.println("Uang tidak cukup!");
+            return false;
+        }
+        resto.tambahKeInventoriJimat(jimat);
+        katalogJimat.remove(jimat);
+        System.out.println("Jimat " + jimat.getName() + " dibeli!");
+        return true;
+    }
+    
     // coba ke void
     public boolean jual(Restaurant pembeli, ISupplierItem barang) {
         return jual(pembeli, barang, 1);
