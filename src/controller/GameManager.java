@@ -110,6 +110,7 @@ public class GameManager {
     
     public void nextDay() {
         this.currentDay++;
+        restaurant.resetDataHarian(); 
         System.out.println("\n=== Hari ke-" + currentDay + " ===");
         
         int[] activeItems = getActiveItems();
