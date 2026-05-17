@@ -6,9 +6,12 @@ import event.festival.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import core.Kitchen;
 import models.items.amulet.Security;
 import models.items.talisman.Charming;
 import models.items.talisman.Cleaner;
+import event.disaster.Rats;
 
 public class EventManager {
     private static final int FESTIVAL_CHANCE = 25;
@@ -18,8 +21,8 @@ public class EventManager {
     private final List<GameEvent> festivals = new ArrayList<>();
     private final List<GameEvent> itemEvents = new ArrayList<>();
 
-    public EventManager() {
-        disasters.add(new Rats());
+    public EventManager(Kitchen kitchen) { 
+        disasters.add(new Rats(kitchen));   
         disasters.add(new Storm());
         disasters.add(new SuperStorm());
 
@@ -31,6 +34,7 @@ public class EventManager {
         itemEvents.add(new Charming());
         itemEvents.add(new Cleaner());
     }
+    
 
     public GameEvent triggerRandomDisaster() {
         GameEvent disaster = disasters.get(random.nextInt(disasters.size()));
