@@ -7,8 +7,12 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.*;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import models.menu.*;
+import models.*;
 
 import view.modelsDaftarPanel.*;
 /**
@@ -20,14 +24,22 @@ public class PanelMakananMenu extends javax.swing.JPanel {
     /**
      * Creates new form PanelSuplierMenu
      */
-    public PanelMakananMenu() {
+    public PanelMakananMenu(Menu menu) {
         initComponents();
         
-        // dummy
-        for(int i = 0 ; i < 20 ; i++){
-            container.add(new PanelUntukDaftarMenu() );
-        }
+        container.add(new PanelUntukAturMenu());
+    }
+    
+    public PanelMakananMenu() {
+        initComponents();
+        Set <RawMaterial> tes = new HashSet<>();
+        tes.add(new RawMaterial("nigga"));
+        tes.add(new RawMaterial("asu"));
         
+        container.add(new PanelUntukAturMenu(new Food("nigga",tes)));
+    }
+    public void addMenu(){
+
     }
     
     //dumy method
@@ -67,14 +79,16 @@ public class PanelMakananMenu extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setFont(new java.awt.Font("Stencil", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 204, 102));
+        jLabel1.setText("MENU");
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 1, 20, 1));
         add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        container.setBackground(new java.awt.Color(26, 30, 42));
+        container.setBackground(new java.awt.Color(255, 255, 255));
         container.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 3, 10, 3));
         container.setAutoscrolls(true);
         container.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));

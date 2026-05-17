@@ -3,7 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package view.modelsDaftarPanel;
-
+import java.util.*;
+import javax.swing.*;
+import models.menu.*;
+import models.*;
 /**
  *
  * @author WINDOWS
@@ -15,7 +18,39 @@ public class PanelPopUpAturMenu extends javax.swing.JPanel {
      */
     public PanelPopUpAturMenu() {
         initComponents();
+        
+        for (int i = 0 ; i < 9; i++){
+            container.add(new PanelDaftarResep());
+        }
+    
+        container.revalidate();
+        container.repaint();
     }
+    
+    public PanelPopUpAturMenu(Menu menu) {
+        initComponents();
+        
+        if (menu != null && menu.getDaftarBahan() != null){
+            for (RawMaterial rw : menu.getDaftarBahan()){
+                container.add(new PanelDaftarResep(rw, menu.getReceipt().get(rw)));
+            }
+            
+        }
+    
+        container.revalidate();
+        container.repaint();
+    }
+    
+    public List<Integer> getSemuaNilai(){
+        List <Integer> daftar = new ArrayList<>();
+        for (java.awt.Component comp : container.getComponents()){
+            PanelDaftarResep panelResep = (PanelDaftarResep) comp;
+            daftar.add(panelResep.getNilaiKuantitas());
+        }
+        return daftar;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,20 +61,18 @@ public class PanelPopUpAturMenu extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         container = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(102, 102, 102));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        setMaximumSize(new java.awt.Dimension(300, 300));
+        setMinimumSize(new java.awt.Dimension(300, 300));
+        setPreferredSize(new java.awt.Dimension(300, 300));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
-
-        jLabel1.setText("jLabel1");
-        add(jLabel1);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -47,26 +80,14 @@ public class PanelPopUpAturMenu extends javax.swing.JPanel {
         jLabel2.setText("jLabel2");
         jLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 1, 5, 1));
         jPanel1.add(jLabel2, java.awt.BorderLayout.PAGE_START);
-
-        jButton1.setText("jButton1");
-        jPanel2.add(jButton1);
-
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
-        container.setLayout(containerLayout);
-        containerLayout.setHorizontalGroup(
-            containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 363, Short.MAX_VALUE)
-        );
-        containerLayout.setVerticalGroup(
-            containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 237, Short.MAX_VALUE)
-        );
-
+        container.setBackground(new java.awt.Color(255, 255, 255));
+        container.setLayout(new java.awt.GridBagLayout());
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
         jScrollPane1.setViewportView(container);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -77,8 +98,6 @@ public class PanelPopUpAturMenu extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel container;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

@@ -33,12 +33,18 @@ public class Restaurant {
      * ({@code ==}).
      */
     private final List<Jimat> inventarisJimat = new ArrayList<>();
-
+    
     public Restaurant() {
         this.daftarMenu = new HashMap<>();
         this.stokBahanBaku = new HashMap<>();
         this.kitchen = new Kitchen(stokBahanBaku);
     }
+
+    public List<Jimat> getDaftarJimat(){
+        return inventarisJimat;
+    }
+
+
 
     public void tambahKeInventoriJimat(Jimat jimat) {
         if (jimat != null) {
@@ -46,25 +52,22 @@ public class Restaurant {
         }
     }
 
-    // method kurang jelas
+    public Charming getJimatCharming(){ return jimatMenarik;}
+    public Cleaner getJimatCleaner(){ return jimatKebersihan;}
+    public Security getJimatSecurity(){ return jimatKeamanan;}
+
     public boolean pakaiJimatDariInventori(Jimat jimat) {
-        if (jimat == null || !hapusDariInventoriJimatIdentik(jimat)) {
+        if (jimat == null) {
             return false;
         }
         if (jimat instanceof Charming c) {
-            if (jimatMenarik != null) {
-                inventarisJimat.add(jimatMenarik);
-            }
+
             jimatMenarik = c;
         } else if (jimat instanceof Cleaner cl) {
-            if (jimatKebersihan != null) {
-                inventarisJimat.add(jimatKebersihan);
-            }
+
             jimatKebersihan = cl;
         } else if (jimat instanceof Security s) {
-            if (jimatKeamanan != null) {
-                inventarisJimat.add(jimatKeamanan);
-            }
+
             jimatKeamanan = s;
         } else {
             inventarisJimat.add(jimat);
@@ -73,25 +76,16 @@ public class Restaurant {
         return true;
     }
 
-    private boolean hapusDariInventoriJimatIdentik(Jimat target) {
-        for (int i = 0; i < inventarisJimat.size(); i++) {
-            if (inventarisJimat.get(i) == target) {
-                inventarisJimat.remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
 
-    public int getPoinJimatMenarik() {
+    public double getPoinJimatMenarik() {
         return jimatMenarik == null ? 0 : jimatMenarik.getPower();
     }
 
-    public int getPoinJimatKebersihan() {
+    public double getPoinJimatKebersihan() {
         return jimatKebersihan == null ? 0 : jimatKebersihan.getPower();
     }
 
-    public int getPoinJimatKeamanan() {
+    public double getPoinJimatKeamanan() {
         return jimatKeamanan == null ? 0 : jimatKeamanan.getPower();
     }
 
@@ -100,7 +94,7 @@ public class Restaurant {
      * referensi baru menggantikan yang lama).
      */
     public void equipJimatSlot(Jimat jimat) {
-        if (jimat == null) {
+        if (jimat == null || !inventarisJimat.contains(jimat)) {
             return;
         }
         if (jimat instanceof Charming c) {
@@ -115,10 +109,10 @@ public class Restaurant {
     // masih perlu di perbaiki
     
     public void jualJimat(Jimat jimat) {
-        if (jimat == null) {
+        if (jimat == null || !inventarisJimat.contains(jimat)) {
             return;
         }
-        hapusDariInventoriJimatIdentik(jimat);
+        inventarisJimat.remove(jimat);
         if (jimat instanceof Charming && jimatMenarik == jimat) {
             jimatMenarik = null;
         } else if (jimat instanceof Cleaner && jimatKebersihan == jimat) {
@@ -168,6 +162,10 @@ public class Restaurant {
         } else{
             daftarMenu.get(menu.getName()).setReceipt(rw, qty);
         }
+    }
+
+    public Set<RawMaterial> daftarResep(Menu menu){
+        return menu.getDaftarBahan();
     }
 
 

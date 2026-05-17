@@ -4,17 +4,55 @@
  */
 package view.modelsDaftarPanel;
 
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.*;
+import models.jimat.*;
 /**
  *
  * @author WINDOWS
  */
-public class PanelInventarisJimat extends javax.swing.JPanel {
+public class PanelInventarisJimat extends javax.swing.JPanel implements ListCellRenderer<Jimat> {
 
     /**
      * Creates new form PanelUntukDaftarMenu
      */
     public PanelInventarisJimat() {
+
         initComponents();
+    }
+    
+    @Override
+    public Component getListCellRendererComponent(
+            JList<? extends Jimat> list, 
+            Jimat jimat, 
+            int index, 
+            boolean isSelected, 
+            boolean cellHasFocus) {
+        
+        // Cek validasi data untuk menghindari NullPointerException
+        if (jimat != null) {
+            jLabel2.setText(jimat.getName());
+            jLabel3.setText(String.format("Power : %.1f", jimat.getPower()));
+            
+            // Contoh opsional: jika Anda punya ikon/gambar di class Jimat
+            // jLabel1.setIcon(jimat.getIcon()); 
+        }
+
+        // 2. Mengatur efek visual saat item dipilih (diklik) pengguna
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            jLabel2.setForeground(list.getSelectionForeground());
+            jLabel3.setForeground(list.getSelectionForeground());
+            setOpaque(true); // Agar background warna seleksi terlihat
+        } else {
+            setBackground(list.getBackground());
+            jLabel2.setForeground(list.getForeground());
+            jLabel3.setForeground(Color.GRAY); // Power diberi warna abu-abu agar estetik
+            setOpaque(false); // Mengembalikan ke settingan awal Anda (false)
+        }
+
+        return this; // Mengembalikan panel ini sebagai representasi visual baris list
     }
 
     /**
@@ -29,10 +67,6 @@ public class PanelInventarisJimat extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0))));
@@ -41,28 +75,16 @@ public class PanelInventarisJimat extends javax.swing.JPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel1.setText("jLabel1");
+        jLabel1.setMaximumSize(new java.awt.Dimension(50, 50));
+        jLabel1.setMinimumSize(new java.awt.Dimension(50, 50));
+        jLabel1.setPreferredSize(new java.awt.Dimension(50, 50));
         add(jLabel1);
 
         jPanel1.setOpaque(false);
 
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("Nama JImat");
 
-        jTextField1.setText("jTextField1");
-        jTextField1.setPreferredSize(new java.awt.Dimension(50, 20));
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
-
-        jButton1.setText("jButton1");
-        jButton1.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        jButton2.setText("jButton2");
-        jButton2.setPreferredSize(new java.awt.Dimension(20, 20));
-        jButton2.addActionListener(this::jButton2ActionPerformed);
-
-        jButton3.setText("jButton3");
-        jButton3.setPreferredSize(new java.awt.Dimension(30, 30));
-        jButton3.addActionListener(this::jButton3ActionPerformed);
-
-        jLabel3.setText("jLabel3");
+        jLabel3.setText("Power : 0");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -73,59 +95,26 @@ public class PanelInventarisJimat extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addContainerGap(264, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
         add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

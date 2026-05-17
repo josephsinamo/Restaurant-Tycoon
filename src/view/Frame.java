@@ -10,7 +10,9 @@ import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
-import models.jimat.Jimat;
+import models.jimat.*;
+import view.modelsDaftarPanel.PanelInventarisJimat;
+import view.modelsDaftarPanel.PanelUntukDaftarMenu;
 
 public class Frame extends JFrame {
 
@@ -49,9 +51,8 @@ public class Frame extends JFrame {
 
     // ── Jimat widgets ──────────────────────────────────────────────────────
     private JLabel lblJimatMenarik, lblJimatKebersihan, lblJimatKeamanan;
-    private DefaultListModel<Jimat> listModelInventaris;
+    private DefaultListModel<Jimat> model = new DefaultListModel<>();;
     private JList<Jimat> listInventaris;
-    private JPanel modelJimatShop;
 
     // ── Bahan baku shop ────────────────────────────────────────────────────
     private DefaultTableModel modelBahanShop;
@@ -210,8 +211,12 @@ public class Frame extends JFrame {
 
     // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
     private JPanel buildBahanBakuPanel() {
-        JPanel p = new PanelSuplierMenu();
+        PanelSuplierMenu p = new PanelSuplierMenu(gameManager);
         
+        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",3));
+        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",5));
+        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",5));
+        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",5));
         return p;
     }
 
@@ -233,32 +238,47 @@ public class Frame extends JFrame {
         // Inventory
         JPanel invPanel = darkPanel(new BorderLayout(4, 4));
         invPanel.setBorder(titled("Inventaris Jimat"));
-        listModelInventaris = new DefaultListModel<>();
-        listInventaris = new JList<>(listModelInventaris);
-        listInventaris.setBackground(BG_CARD);
-        listInventaris.setForeground(TEXT_MAIN);
-        listInventaris.setFont(FONT_BODY);
-        listInventaris.setCellRenderer(new JimatListRenderer());
+
+        listInventaris = new JList<>(model); 
+        listInventaris.setCellRenderer(new PanelInventarisJimat());
+        
         invPanel.add(new JScrollPane(listInventaris), BorderLayout.CENTER);
 
         JPanel invBtns = darkPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton btnPasang = styledButton("Pasang", ACCENT3, BG_CARD, 11);
         JButton btnJual   = styledButton("Jual", DANGER, BG_CARD, 11);
 
-        // btnPasang.addActionListener(e -> {
-        //     Jimat sel = listInventaris.getSelectedValue();
-        //     if (sel == null) { showMsg("Pilih jimat dari inventaris."); return; }
-        //     boolean ok = gameManager.getRestaurant().pakaiJimatDariInventori(sel);
-        //     if (!ok) showMsg("Tidak bisa memasang jimat ini.");
-        //     refreshAll();
-        // });
+        btnPasang.addActionListener(e -> {
+            Jimat sel = listInventaris.getSelectedValue();
+            if (sel == null) { 
+                showMsg("Pilih jimat dari inventaris."); 
+                return; 
+            }
 
-        // btnJual.addActionListener(e -> {
-        //     Jimat sel = listInventaris.getSelectedValue();
-        //     if (sel == null) { showMsg("Pilih jimat dari inventaris."); return; }
-        //     gameManager.getRestaurant().jualJimat(sel);
-        //     refreshAll();
-        // });
+            // Memastikan gameManager dan Restaurant tidak null sebelum eksekusi
+            if (gameManager != null && gameManager.getRestaurant() != null) {
+                boolean ok = gameManager.getRestaurant().pakaiJimatDariInventori(sel);
+                if (!ok) {
+                    showMsg("Tidak bisa memasang jimat ini.");
+                } else {
+                    refreshAll(); // Muat ulang UI jika berhasil terpasang
+                }
+            }
+        });
+
+        btnJual.addActionListener(e -> {
+            Jimat sel = listInventaris.getSelectedValue();
+            if (sel == null) { 
+                showMsg("Pilih jimat dari inventaris."); 
+                return; 
+            }
+
+            if (gameManager != null && gameManager.getRestaurant() != null) {
+                gameManager.getRestaurant().jualJimat(sel);
+                refreshAll(); // Muat ulang UI setelah jimat terjual (hilang dari list)
+            }
+        });
+
 
         invBtns.add(btnPasang);
         invBtns.add(btnJual);
@@ -521,7 +541,24 @@ public class Frame extends JFrame {
         lblMoney.setText("💰 Rp " + String.format("%.0f",gameManager.getRestaurant().getMoney()));
         lblKapasitas.setText("🏠 Kapasitas: "+ String.format("%d", gameManager.getRestaurant().getKapasitas()) );
         lblDay.setText("📅 Day: "+String.format("%d", gameManager.getCurrentDay()));
+
+
+        // jimat manager
+        model.clear();
+
+        for (Jimat j : gameManager.getRestaurant().getDaftarJimat()){
+            model.addElement(j);
+        }
         
+        Jimat m = gameManager.getRestaurant().getJimatCharming();
+        lblJimatMenarik.setText(m != null ? m.getName() + " (" + m.getPower() + ")" : "—");
+    
+        Jimat c = gameManager.getRestaurant().getJimatCleaner();
+        lblJimatKebersihan.setText(c != null ? c.getName() + " (" + c.getPower() + ")" : "—");
+    
+        Jimat s = gameManager.getRestaurant().getJimatSecurity();
+        lblJimatKeamanan.setText(s != null ? s.getName() + " (" + s.getPower() + ")" : "—");
+            
     }
 
     private void appendLog(String msg) {

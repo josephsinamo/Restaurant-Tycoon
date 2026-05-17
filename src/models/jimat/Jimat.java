@@ -12,7 +12,7 @@ import models.ISupplierItem;
 public abstract class Jimat implements ISupplierItem {
 
     private final String name;
-    private int power;
+    private double power;
 
     protected Jimat(String name, int power) {
         this.name = name;
@@ -23,7 +23,7 @@ public abstract class Jimat implements ISupplierItem {
         return name;
     }
 
-    public int getPower() {
+    public double  getPower() {
         return power;
     }
 

@@ -1,7 +1,9 @@
 
 package core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import models.ISupplierItem;
 import models.RawMaterial;
 import models.jimat.Jimat;
@@ -18,6 +20,11 @@ public class Supplier {
 
     public HashMap<RawMaterial, Double> getDaganganBahanBaku() {
         return daganganBahanBaku;
+    }
+
+    public List<RawMaterial> getBahanBaku(){
+        List<RawMaterial> list = new ArrayList<>(daganganBahanBaku.keySet());
+        return list;
     }
 
 

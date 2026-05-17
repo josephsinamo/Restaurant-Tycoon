@@ -1,18 +1,59 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int getIconWidth() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int getIconHeight() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package view.modelsDaftarPanel;
 
+import models.*;
+import controller.*;
+import javax.swing.*;
 /**
  *
  * @author WINDOWS
  */
 public class PanelUntukDaftarMenu extends javax.swing.JPanel {
-
+    String png;
+    String name;
+    double price;
+    
+    GameManager gm;
+    RawMaterial rw;
     /**
      * Creates new form PanelUntukDaftarMenu
      */
+    public PanelUntukDaftarMenu(String png, String name, double price) {
+        this.png = png;
+        this.name = name;
+        this.price = price;
+        initComponents();
+        
+        if (png != null && getClass().getResource(png) != null) {
+            javax.swing.ImageIcon iconAsli = new javax.swing.ImageIcon(getClass().getResource(png));
+            java.awt.Image gambarSesuai = iconAsli.getImage().getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+            jLabel1.setIcon(new javax.swing.ImageIcon(gambarSesuai));
+        }
+    }
+    
+    public PanelUntukDaftarMenu(RawMaterial rw, GameManager gm) {
+        this.rw = rw;
+        this.gm = gm;
+        initComponents();
+    }
+    
     public PanelUntukDaftarMenu() {
         initComponents();
     }
@@ -35,34 +76,41 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0))));
+        setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(3, 1, 3, 1), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0))), javax.swing.BorderFactory.createEmptyBorder(1, 4, 2, 1)));
+        setMaximumSize(new java.awt.Dimension(1000, 70));
+        setMinimumSize(new java.awt.Dimension(227, 70));
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(400, 70));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setMaximumSize(new java.awt.Dimension(40, 40));
+        jLabel1.setPreferredSize(new java.awt.Dimension(40, 40));
         add(jLabel1);
 
         jPanel1.setOpaque(false);
 
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("labe2");
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("0");
         jTextField1.setPreferredSize(new java.awt.Dimension(50, 20));
         jTextField1.addActionListener(this::jTextField1ActionPerformed);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("-");
         jButton1.setPreferredSize(new java.awt.Dimension(20, 20));
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
-        jButton2.setText("jButton2");
+        jButton2.setText("+");
         jButton2.setPreferredSize(new java.awt.Dimension(20, 20));
         jButton2.addActionListener(this::jButton2ActionPerformed);
 
-        jButton3.setText("jButton3");
+        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jButton3.setText("BUY");
+        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton3.setIconTextGap(0);
         jButton3.setPreferredSize(new java.awt.Dimension(30, 30));
         jButton3.addActionListener(this::jButton3ActionPerformed);
 
-        jLabel3.setText("jLabel3");
+        jLabel3.setText("label3");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -73,7 +121,7 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -99,23 +147,78 @@ public class PanelUntukDaftarMenu extends javax.swing.JPanel {
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
-
+    int qty = 0;
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+       // TODO add your handling code here:
+        try {
+            // 1. Ambil teks dari field dan konversi ke integer
+            int currentVal = Integer.parseInt(jTextField1.getText().trim());
+            
+            // 2. Tambahkan nilainya
+            qty = currentVal + 1;
+        
+            // 3. Set kembali angka terbaru ke teks field
+            jTextField1.setText(String.valueOf(qty));
+            jButton1.setEnabled(true);
+        } catch (NumberFormatException e) {
+            // Jika teks field kosong atau bukan angka, reset ke angka 1
+            qty = 0;
+            jTextField1.setText("0");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
+        try {
+            // Ambil nilai yang diketik manual oleh user
+            qty = Integer.parseInt(jTextField1.getText().trim());
+        } catch (NumberFormatException e) {
+            // Jika yang diketik bukan angka, kembalikan ke nilai aman terakhir
+            jTextField1.setText(String.valueOf(qty));
+        }
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        gm.getRestaurant().beli(gm.getSupplier(), rw,qty);
+        qty = 0;
+        jTextField1.setText(String.valueOf(qty));
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            
+                // 1. Ambil teks dari field dan konversi ke integer
+            int currentVal = Integer.parseInt(jTextField1.getText().trim());
+            
+            // 2. Kurangi nilainya jika masih di atas 1 (Batas minimal angka 1)
+            if (currentVal > 1) {
+                qty = currentVal - 1;
+            } else {
+                qty = 0; 
+            }
+        
+            // 3. Set kembali angka terbaru ke teks field
+            jTextField1.setText(String.valueOf(qty));
+        
+            // 4. CEK KONDISI SEKARANG: Jika hasil akhirnya sudah 1, langsung matikan tombol
+            if (qty <= 0) {
+                jButton1.setEnabled(false);
+            } else {
+                jButton1.setEnabled(true);
+            }
+        } catch (NumberFormatException e) {
+            // Jika teks field kosong atau bukan angka, reset ke angka 1
+            qty = 0;
+            jTextField1.setText("0");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

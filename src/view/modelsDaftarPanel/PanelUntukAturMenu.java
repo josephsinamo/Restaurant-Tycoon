@@ -3,19 +3,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package view.modelsDaftarPanel;
-
+import models.*;
+import models.menu.*;
+import java.util.*;
+import controller.*;
 /**
  *
  * @author WINDOWS
  */
 public class PanelUntukAturMenu extends javax.swing.JPanel {
-
+    String png,name,jenis;
+    Menu menu;
+    
+    int harga = 0;
     /**
      * Creates new form PanelUntukDaftarMenu
      */
     public PanelUntukAturMenu() {
+
         initComponents();
     }
+    
+    public PanelUntukAturMenu(Menu menu) {
+        this.menu = menu;
+        initComponents();
+        jLabel2.setText(menu.getName());
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,60 +42,166 @@ public class PanelUntukAturMenu extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0))));
+        setMaximumSize(new java.awt.Dimension(32808, 70));
+        setMinimumSize(new java.awt.Dimension(41, 70));
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(400, 70));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel1.setText("jLabel1");
+        jLabel1.setMaximumSize(new java.awt.Dimension(60, 60));
+        jLabel1.setMinimumSize(new java.awt.Dimension(60, 60));
+        jLabel1.setPreferredSize(new java.awt.Dimension(60, 60));
         add(jLabel1);
 
         jPanel1.setOpaque(false);
         jPanel1.setLayout(null);
 
-        jLabel2.setText("jLabel2");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(20, 10, 50, 20);
-
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("0");
         jTextField1.setPreferredSize(new java.awt.Dimension(50, 20));
         jTextField1.addActionListener(this::jTextField1ActionPerformed);
         jPanel1.add(jTextField1);
-        jTextField1.setBounds(260, 10, 50, 20);
+        jTextField1.setBounds(250, 20, 70, 20);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("-");
         jButton1.setPreferredSize(new java.awt.Dimension(20, 20));
+        jButton1.addActionListener(this::jButton1ActionPerformed);
         jPanel1.add(jButton1);
-        jButton1.setBounds(230, 10, 20, 20);
+        jButton1.setBounds(220, 20, 20, 20);
 
-        jButton2.setText("jButton2");
+        jButton2.setText("+");
         jButton2.setPreferredSize(new java.awt.Dimension(20, 20));
         jButton2.addActionListener(this::jButton2ActionPerformed);
         jPanel1.add(jButton2);
-        jButton2.setBounds(320, 10, 20, 20);
+        jButton2.setBounds(330, 20, 20, 20);
+
+        jButton3.setText("⚙️");
+        jButton3.setMaximumSize(new java.awt.Dimension(50, 50));
+        jButton3.setMinimumSize(new java.awt.Dimension(50, 50));
+        jButton3.setPreferredSize(new java.awt.Dimension(50, 50));
+        jButton3.addActionListener(this::jButton3ActionPerformed);
+        jPanel1.add(jButton3);
+        jButton3.setBounds(370, 20, 40, 30);
+
+        jLabel2.setText("jLabel2");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(30, 10, 37, 16);
+
+        jLabel3.setText("jLabel3");
+        jPanel1.add(jLabel3);
+        jLabel3.setBounds(30, 40, 37, 16);
 
         add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        try {
+            // 1. Ambil teks dari field dan konversi ke integer
+            int currentVal = Integer.parseInt(jTextField1.getText().trim());
+            
+            // 2. Tambahkan nilainya
+            harga = currentVal + 1000;
+        
+            // 3. Set kembali angka terbaru ke teks field
+            jTextField1.setText(String.valueOf(harga));
+            jButton1.setEnabled(true);
+        } catch (NumberFormatException e) {
+            // Jika teks field kosong atau bukan angka, reset ke angka 1
+            harga = 0;
+            jTextField1.setText("0");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
+        try {
+            // Ambil nilai yang diketik manual oleh user
+            harga = Integer.parseInt(jTextField1.getText().trim());
+        } catch (NumberFormatException e) {
+            // Jika yang diketik bukan angka, kembalikan ke nilai aman terakhir
+            jTextField1.setText(String.valueOf(harga));
+        }
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        PanelPopUpAturMenu pop = new PanelPopUpAturMenu(menu);
+        
+        int pilihan = javax.swing.JOptionPane.showConfirmDialog(
+            this, 
+            pop, // <-- Di sini panel Anda langsung dipasang menjadi isi pop-up
+            "Pengaturan Menu - " + this.name, 
+            javax.swing.JOptionPane.OK_CANCEL_OPTION, 
+            javax.swing.JOptionPane.PLAIN_MESSAGE
+        );
+        
+        if (pilihan == javax.swing.JOptionPane.OK_OPTION) {
+            int i = 0;
+            for (RawMaterial rw : menu.getDaftarBahan()){
+                
+                menu.setReceipt(rw,pop.getSemuaNilai().get(i));
+                i++;
+            }
+            // Di sini Anda tinggal mengambil data yang diketik user dari panel Anda.
+            // Contoh: jika di panel Anda ada fungsi untuk mengambil text:
+            // String bahan = panelMilikAnda.getBahanInput();
+            // int qty = panelMilikAnda.getQtyInput();
+        
+            // Lalu hubungkan ke logika Restaurant Anda:
+            // gameManager.getRestaurant().racikMenu(..., ..., ...);
+            System.out.println("User menekan OK dan data dari panel Anda siap diproses!");
+        
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        try {
+            
+                // 1. Ambil teks dari field dan konversi ke integer
+            int currentVal = Integer.parseInt(jTextField1.getText().trim());
+            
+            // 2. Kurangi nilainya jika masih di atas 1 (Batas minimal angka 1)
+            if (currentVal > 1000) {
+                harga = currentVal - 1000;
+            } else {
+                harga = 0; 
+            }
+        
+            // 3. Set kembali angka terbaru ke teks field
+            jTextField1.setText(String.valueOf(harga));
+        
+            // 4. CEK KONDISI SEKARANG: Jika hasil akhirnya sudah 1, langsung matikan tombol
+            if (harga <= 0) {
+                jButton1.setEnabled(false);
+            } else {
+                jButton1.setEnabled(true);
+            }
+        } catch (NumberFormatException e) {
+            // Jika teks field kosong atau bukan angka, reset ke angka 1
+            harga = 0;
+            jTextField1.setText("0");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

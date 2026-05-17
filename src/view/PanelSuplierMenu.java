@@ -9,29 +9,49 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import view.modelsDaftarPanel.*;
+
+import controller.*;
+import models.*;
 /**
  *
  * @author WINDOWS
  */
 public class PanelSuplierMenu extends javax.swing.JPanel {
-
+    GameManager gm;
     /**
      * Creates new form PanelSuplierMenu
      */
     public PanelSuplierMenu() {
         initComponents();
         
-        // dummy
-    for(int i = 0 ; i < 20 ; i++){
-            jPanel3.add(new PanelUntukDaftarMenu() );
-        }
+    }
+    
+    public PanelSuplierMenu(GameManager gm) {
+        this.gm =gm;
+        initComponents();
         
+        if (gm != null && gm.getSupplier().getBahanBaku() != null){
+            for (RawMaterial rw : gm.getSupplier().getBahanBaku()){
+                jPanel3.add(new PanelUntukDaftarMenu());
+            }   
+        }
+    }
+
+    public void masukJP3(PanelUntukDaftarMenu p){
+        jPanel3.add(p);
+    }
+    
+    public void masukJP4(){
+        
+    }
+
+    public JPanel getJPanel3(){
+        return jPanel3;
     }
     
     //dumy method
-        private JPanel createItemCard(String name, String qty) {
+    private JPanel createItemCard(String name, String qty) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(new Color(255, 253, 228));
         card.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 15, 0));
@@ -65,8 +85,9 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(26, 30, 42));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -95,16 +116,19 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanel5.setLayout(null);
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 3, 1, 1));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
-        jScrollPane2.setViewportView(jPanel4);
+        jLabel2.setText("jLabel2");
+        jPanel5.add(jLabel2);
+        jLabel2.setBounds(210, 60, 37, 16);
 
-        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        jButton1.setText("jButton1");
+        jPanel5.add(jButton1);
+        jButton1.setBounds(190, 110, 75, 23);
+
+        jPanel2.add(jPanel5, java.awt.BorderLayout.CENTER);
 
         jTabbedPane1.addTab("tab2", jPanel2);
 
@@ -113,13 +137,14 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
