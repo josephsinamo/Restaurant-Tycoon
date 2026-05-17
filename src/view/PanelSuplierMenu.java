@@ -149,7 +149,15 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
             f.appendLog("Gacha: dapat " + tipe + " \"" + hadiah.getName()
                     + "\" (power " + (int) hadiah.getPower() + ")");
         }
+
+        JScrollPane scroll = new JScrollPane(listBahan);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        wrap.add(scroll, BorderLayout.CENTER);
+        return wrap;
     }
+<<<<<<< HEAD
 
     private void refreshFrame() {
         java.awt.Window window = SwingUtilities.getWindowAncestor(this);
@@ -199,4 +207,6 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+=======
+>>>>>>> 5c4b727a1081151ae82c99c08722716c56cfaf13
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package view;
 
 import controller.GameManager;
@@ -78,6 +74,7 @@ public class PanelRestoranMenu extends javax.swing.JPanel {
         container.repaint();
     }
 
+<<<<<<< HEAD
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         if (gm == null || gm.getRestaurant() == null) return;
 
@@ -183,4 +180,53 @@ public class PanelRestoranMenu extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane2;
+=======
+    public void refreshInventori() {
+        if (gm != null && lblKapasitasInfo != null)
+            lblKapasitasInfo.setText("🏠 Kapasitas Restoran: " + gm.getRestaurant().getKapasitas() + " kursi");
+        loadInventori();
+    }
+
+    private JPanel createItemCard(RawMaterial rw) {
+        JPanel card = new JPanel(new BorderLayout(4, 4));
+        card.setBackground(new Color(255, 253, 228));
+        card.setBorder(BorderFactory.createLineBorder(new Color(200, 180, 100), 1));
+
+        JLabel lblNama = new JLabel(rw.getName(), SwingConstants.LEFT);
+        lblNama.setFont(new Font("SansSerif", Font.BOLD, 11));
+        lblNama.setForeground(new Color(60, 40, 20));
+        lblNama.setBorder(new EmptyBorder(4, 6, 0, 0));
+
+        JLabel lblIcon;
+        java.net.URL url = getClass().getResource(getAsetPath(rw.getName()));
+        if (url != null) {
+            Image scaled = new ImageIcon(url).getImage().getScaledInstance(52, 52, Image.SCALE_SMOOTH);
+            lblIcon = new JLabel(new ImageIcon(scaled), JLabel.CENTER);
+        } else {
+            lblIcon = new JLabel("🥚", JLabel.CENTER);
+            lblIcon.setFont(new Font("Serif", Font.PLAIN, 36));
+        }
+
+        int qty = gm != null ? gm.getRestaurant().getStok().getOrDefault(rw, 0) : 0;
+        JLabel lblQty = new JLabel(qty + "  ", JLabel.RIGHT);
+        lblQty.setFont(new Font("Arial", Font.BOLD, 15));
+        lblQty.setForeground(new Color(80, 60, 20));
+        lblQty.setBorder(new EmptyBorder(0, 0, 4, 4));
+
+        card.add(lblNama, BorderLayout.NORTH);
+        card.add(lblIcon, BorderLayout.CENTER);
+        card.add(lblQty,  BorderLayout.SOUTH);
+        return card;
+    }
+
+    private JButton styledButton(String text, Color fg, Color bg, int size) {
+        JButton b = new JButton(text);
+        b.setFont(new Font("SansSerif", Font.BOLD, size));
+        b.setForeground(fg); b.setBackground(bg); b.setOpaque(true);
+        b.setBorderPainted(false); b.setFocusPainted(false);
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        b.setBorder(new EmptyBorder(6, 14, 6, 14));
+        return b;
+    }
+>>>>>>> 5c4b727a1081151ae82c99c08722716c56cfaf13
 }

@@ -1,40 +1,50 @@
 package view.modelsDaftarPanel;
 
-import models.*;
-import controller.*;
-import java.awt.Component;
+import controller.GameManager;
+import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.*;
+import models.RawMaterial;
 import view.Frame;
+
 /**
- *
- * @author WINDOWS
+ * Satu baris item di tab Supplier — nama bahan, harga, kontrol qty, tombol BUY.
  */
-public class PanelUntukDaftarMenu extends javax.swing.JPanel {
-    String png;
-    String name;
-    double price;
-    
-    GameManager gm;
-    RawMaterial rw;
-    Frame frame;
-    /**
-     * Creates new form PanelUntukDaftarMenu
-     */
-    public PanelUntukDaftarMenu(String png, String name, double price, Frame frame) {
-        this.png = png;
-        this.name = name;
-        this.price = price;
-        this.frame = frame;
-        initComponents();
-        
-        if (png != null && getClass().getResource(png) != null) {
-            javax.swing.ImageIcon iconAsli = new javax.swing.ImageIcon(getClass().getResource(png));
-            java.awt.Image gambarSesuai = iconAsli.getImage().getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
-            jLabel1.setIcon(new javax.swing.ImageIcon(gambarSesuai));
-        }
+public class PanelUntukDaftarMenu extends JPanel {
+
+    private static final Color BG_ROW_EVEN  = new Color(248, 248, 252);
+    private static final Color BG_ROW_ODD   = new Color(238, 236, 248);
+    private static final Color TEXT_DARK    = new Color(40, 35, 60);
+    private static final Color ACCENT       = new Color(255, 140, 30);
+    private static final Color ACCENT2      = new Color(60, 180, 120);
+
+    // ── Nama bahan → path gambar ──────────────────────────────────────────
+    private static String getAsetPath(String nama) {
+        return switch (nama.toLowerCase()) {
+            case "beras"          -> "/view/Aset/Beras.png";
+            case "telor","telur"  -> "/view/Aset/Telur.png";
+            case "ayam"           -> "/view/Aset/Ayam.png";
+            case "kopi"           -> "/view/Aset/Kopi.png";
+            case "gula"           -> "/view/Aset/Gula.png";
+            case "tepung"         -> "/view/Aset/Tepung.png";
+            case "bumbu"          -> "/view/Aset/Bumbu.png";
+            default               -> "/view/Aset/makanan.png";
+        };
     }
-    
-   public PanelUntukDaftarMenu(RawMaterial rw, GameManager gm) {
+
+    private GameManager gm;
+    private RawMaterial rw;
+    private int qty = 0;
+    private JTextField txtQty;
+    private JButton btnMinus;
+
+    // ── Constructor default ───────────────────────────────────────────────
+    public PanelUntukDaftarMenu() {
+        setOpaque(false);
+    }
+
+    // ── Constructor utama (bahan baku + GameManager) ──────────────────────
+    public PanelUntukDaftarMenu(RawMaterial rw, GameManager gm) {
         this.rw = rw;
         this.gm = gm;
         // tambah ini — ambil frame dari window

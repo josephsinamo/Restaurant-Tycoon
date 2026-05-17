@@ -56,7 +56,7 @@ public class GameManager {
         Menu milkDrink    = new Drink("MilkDrink",    Set.of(gula, tepung),
                                        JenisDrink.Milk);
 
-        restaurant.addMenu(nasiGoreng,    15000);
+                restaurant.addMenu(nasiGoreng,    15000);
         restaurant.addMenu(kentangGoreng,  8000);
         restaurant.addMenu(milkDrink,     10000);
 
@@ -83,7 +83,7 @@ public class GameManager {
         System.out.println("Hari ke-" + currentDay);
     }
 
-    public void mulaiberjualan() {
+    public void mulaiBerjualan() {
         if (faseSekarang != Fase.PERSIAPAN) return;
         faseSekarang = Fase.BERJUALAN;
 
@@ -136,9 +136,11 @@ public class GameManager {
     }
 
     public void nextDay() {
+        if (faseSekarang != Fase.BERJUALAN) return;
         this.currentDay++;
         restaurant.resetDataHarian();
         faseSekarang = Fase.PERSIAPAN;
+<<<<<<< HEAD
         System.out.println("\n=== Hari ke-" + currentDay + " — FASE PERSIAPAN ===");
         refreshUi();
     }
@@ -161,9 +163,34 @@ public class GameManager {
         }
     }
 
+=======
+        notifyUI(); // ← tambahkan ini
+    }
+
+    public Fase getFaseSekarang() { 
+    return faseSekarang; 
+}
+
+    /** Tandai game sebagai di-pause (misal saat kembali ke main menu). */
+>>>>>>> 5c4b727a1081151ae82c99c08722716c56cfaf13
     public void pauseGame() {
         this.paused = true;
         System.out.println("Game di-pause pada hari ke-" + currentDay);
+    }
+    // Tambah di dalam class GameManager, setelah field paused:
+    public interface GameStateListener {
+        void onStateChanged();
+    }
+    private GameStateListener stateListener;
+
+    public void setGameStateListener(GameStateListener listener) {
+        this.stateListener = listener;
+    }
+
+    private void notifyUI() {
+        if (stateListener != null) {
+            javax.swing.SwingUtilities.invokeLater(() -> stateListener.onStateChanged());
+        }
     }
 
     public boolean isPaused() { return paused; }

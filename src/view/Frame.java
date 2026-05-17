@@ -14,7 +14,6 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import models.jimat.*;
 import view.modelsDaftarPanel.PanelInventarisJimat;
-import javax.swing.SwingUtilities;
 
 public class Frame extends JFrame {
 
@@ -201,12 +200,18 @@ public class Frame extends JFrame {
         bar.add(sep());
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
+<<<<<<< HEAD
 
+=======
+        bar.add(btnMulaiHari);
+    
+    // tombol fase
+>>>>>>> 5c4b727a1081151ae82c99c08722716c56cfaf13
         JButton btnFase = styledButton("▶ Mulai Berjualan", ACCENT2, BG_CARD, 12);
         btnFase.addActionListener(e -> {
             if (gameManager == null) return;
             if (gameManager.getFaseSekarang() == GameManager.Fase.PERSIAPAN) {
-                gameManager.mulaiberjualan();
+                gameManager.mulaiBerjualan();
                 btnFase.setText("➡ Hari Berikutnya");
                 refreshAll();
             } else {
@@ -218,11 +223,14 @@ public class Frame extends JFrame {
         });
         bar.add(sep());
         bar.add(btnFase);
+<<<<<<< HEAD
 
         JButton btnSimpan = styledButton("💾 Simpan", ACCENT3, BG_CARD, 11);
         btnSimpan.addActionListener(e -> simpanPermainan());
         bar.add(btnSimpan);
 
+=======
+>>>>>>> 5c4b727a1081151ae82c99c08722716c56cfaf13
         bar.add(btnMenu);
 
         return bar;
@@ -372,7 +380,7 @@ public class Frame extends JFrame {
         scroll.setBorder(null);
 
         JButton btnClear = styledButton("Clear", TEXT_DIM, BG_CARD, 10);
-        // btnClear.addActionListener(e -> txtLog.setText(""));
+        btnClear.addActionListener(e -> txtLog.setText(""));
 
         p.add(scroll, BorderLayout.CENTER);
         p.add(btnClear, BorderLayout.EAST);
@@ -814,6 +822,171 @@ public class Frame extends JFrame {
         java.net.URL url = getClass().getResource(path);
         return url != null ? new ImageIcon(url).getImage() : null;
     }
+<<<<<<< HEAD
+=======
+}
+    // ══ GAME LIFECYCLE ═════════════════════════════════════════════════════
+    private void startGame() {
+        gameManager = new GameManager();
+        gameManager.setGameStateListener(() -> refreshAll());
+        cardLayout.show(mainPanel, KARTU_PERMAINAN);
+        npcPanel.setNpcCount(5);
+        refreshAll();
+    }
+    // ══ REFRESH ════════════════════════════════════════════════════════════
+    public void refreshAll() {
+        if (gameManager == null) return;
+        Restaurant resto = gameManager.getRestaurant();
+
+        // Top bar
+        lblMoney.setText("💰 Rp " + String.format("%.0f",resto.getMoney()));
+        lblKapasitas.setText("🏠 Kapasitas: "+ String.format("%d", resto.getKapasitas()) );
+        lblDay.setText("📅 Day: "+String.format("%d", gameManager.getCurrentDay()));
+
+
+        // jimat manager
+        model.clear();
+
+        for (Jimat j : gameManager.getRestaurant().getDaftarJimat()){
+            model.addElement(j);
+        }
+        
+        Jimat m = gameManager.getRestaurant().getJimatCharming();
+        lblJimatMenarik.setText(m != null ? m.getName() + " (" + m.getPower() + ")" : "—");
+    
+        Jimat c = gameManager.getRestaurant().getJimatCleaner();
+        lblJimatKebersihan.setText(c != null ? c.getName() + " (" + c.getPower() + ")" : "—");
+    
+        Jimat s = gameManager.getRestaurant().getJimatSecurity();
+        lblJimatKeamanan.setText(s != null ? s.getName() + " (" + s.getPower() + ")" : "—");
+        
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void appendLog(String msg) {
+        if (msg == null || msg.isBlank()) return;
+        txtLog.append("[" + java.time.LocalTime.now().withNano(0) + "] " + msg + "\n");
+        txtLog.setCaretPosition(txtLog.getDocument().getLength());
+    }
+
+    // ══ UI HELPERS ═════════════════════════════════════════════════════════
+    private JButton styledButton(String text, Color fg, Color bg, int size) {
+        JButton b = new JButton(text);
+        b.setFont(new Font("SansSerif", Font.BOLD, size));
+        b.setForeground(fg);
+        b.setBackground(bg);
+        b.setOpaque(true);
+        b.setBorderPainted(false);
+        b.setFocusPainted(false);
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        b.setBorder(new EmptyBorder(6, 16, 6, 16));
+        b.addMouseListener(new MouseAdapter() {
+            Color orig = bg;
+            @Override public void mouseEntered(MouseEvent e) {
+                b.setBackground(orig.brighter());
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                b.setBackground(orig);
+            }
+        });
+        return b;
+    }
+
+    private JPanel darkPanel(LayoutManager lm) {
+        JPanel p = new JPanel(lm);
+        p.setBackground(BG_PANEL);
+        return p;
+    }
+
+    private JLabel heading(String text) {
+        JLabel l = new JLabel(text);
+        l.setFont(FONT_HEADING);
+        l.setForeground(ACCENT);
+        l.setBorder(new EmptyBorder(0, 0, 6, 0));
+        return l;
+    }
+
+    private JLabel lbl(String text) {
+        JLabel l = new JLabel(text);
+        l.setFont(FONT_BODY);
+        l.setForeground(TEXT_MAIN);
+        return l;
+    }
+
+    private JLabel statusLabel(String text) {
+        JLabel l = new JLabel(text);
+        l.setFont(new Font("SansSerif", Font.BOLD, 13));
+        l.setForeground(TEXT_MAIN);
+        return l;
+    }
+
+    private JLabel jimatSlotLabel(String type, String value) {
+        JLabel l = new JLabel(value, SwingConstants.CENTER);
+        l.setFont(FONT_BODY);
+        l.setForeground(ACCENT3);
+        return l;
+    }
+
+    private JPanel wrapJimatSlot(String type, JLabel valueLabel) {
+        JPanel p = darkPanel(new BorderLayout(2, 2));
+        p.setBackground(BG_CARD);
+        p.setBorder(new CompoundBorder(
+            new LineBorder(ACCENT3.darker(), 1, true),
+            new EmptyBorder(6, 8, 6, 8)));
+        JLabel title = new JLabel(type, SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 11));
+        title.setForeground(TEXT_DIM);
+        p.add(title, BorderLayout.NORTH);
+        p.add(valueLabel, BorderLayout.CENTER);
+        return p;
+    }
+
+    private JTable styledTable(DefaultTableModel model) {
+        JTable t = new JTable(model);
+        t.setBackground(BG_CARD);
+        t.setForeground(TEXT_MAIN);
+        t.setFont(FONT_BODY);
+        t.setGridColor(new Color(50, 60, 80));
+        t.setRowHeight(24);
+        t.getTableHeader().setBackground(BG_PANEL);
+        t.getTableHeader().setForeground(ACCENT);
+        t.getTableHeader().setFont(FONT_HEADING);
+        t.setSelectionBackground(ACCENT.darker().darker());
+        t.setSelectionForeground(Color.WHITE);
+        return t;
+    }
+
+    private JTextField darkField() {
+        JTextField f = new JTextField(14);
+        f.setBackground(BG_CARD);
+        f.setForeground(TEXT_MAIN);
+        f.setCaretColor(TEXT_MAIN);
+        f.setFont(FONT_BODY);
+        f.setBorder(new CompoundBorder(
+            new LineBorder(new Color(60, 70, 100), 1),
+            new EmptyBorder(3, 6, 3, 6)));
+        return f;
+    }
+
+    private Border titled(String title) {
+        TitledBorder b = BorderFactory.createTitledBorder(
+            new LineBorder(new Color(60, 70, 100), 1), title);
+        b.setTitleColor(TEXT_DIM);
+        b.setTitleFont(new Font("SansSerif", Font.BOLD, 11));
+        return new CompoundBorder(b, new EmptyBorder(4, 4, 4, 4));
+    }
+
+    private JSeparator sep() {
+        JSeparator s = new JSeparator(JSeparator.VERTICAL);
+        s.setForeground(new Color(60, 70, 100));
+        s.setPreferredSize(new Dimension(1, 20));
+        return s;
+    }
+
+    private void showMsg(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Info", JOptionPane.INFORMATION_MESSAGE);
+>>>>>>> 5c4b727a1081151ae82c99c08722716c56cfaf13
     }
 
     // ── Custom list cell renderer ──────────────────────────────────────────
