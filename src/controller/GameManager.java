@@ -5,7 +5,6 @@ import core.Supplier;
 import entities.Customer;
 import java.util.Set;
 import models.RawMaterial;
-import models.jimat.*;
 import models.menu.*;
 import view.Frame;
 
@@ -101,7 +100,7 @@ public class GameManager {
         System.out.println("=== FASE BERJUALAN DIMULAI ===");
 
         int[] activeItems = getActiveItems();
-        eventManager.runDailyEvents(activeItems, restaurant);
+        //eventManager.runDailyEvents(activeItems, restaurant);
 
         int kapasitas = restaurant.getKapasitas();
         int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
@@ -109,14 +108,13 @@ public class GameManager {
 
         for (int i = 0; i < jumlahPembeli; i++) {
             Customer pelanggan = new Customer();
-            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
-                    > kapasitas * 1.5) break;
+            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan() > kapasitas * 1.5) break;
             restaurant.layaniPelanggan(pelanggan);
         }
 
         restaurant.akhirHari();
         System.out.println("Total penjualan: Rp " +
-            String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
+        String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
         System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
     }
 

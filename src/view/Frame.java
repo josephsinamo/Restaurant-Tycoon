@@ -169,7 +169,8 @@ public class Frame extends JFrame {
         lblKapasitas = statusLabel("🏠 Kapasitas: 0");
         lblDay     = statusLabel("📅 Day: 1");
 
-
+        JButton btnMulaiHari = styledButton("Mulai Hari", TEXT_DIM, BG_CARD, 11);
+        
         JButton btnMenu = styledButton("← Menu", TEXT_DIM, BG_CARD, 11);
 
         btnMenu.addActionListener(e -> {
@@ -178,6 +179,13 @@ public class Frame extends JFrame {
             cardLayout.show(mainPanel, KARTU_MENU);
             
         });
+        
+        btnMulaiHari.addActionListener(e -> {
+            refreshAll();
+            if (gameManager != null) gameManager.mulaiberjualan();
+            
+            
+        });  
         
 
         bar.add(logo);
@@ -189,6 +197,7 @@ public class Frame extends JFrame {
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
 
+        bar.add(btnMulaiHari);
         bar.add(btnMenu);
 
         return bar;
@@ -213,7 +222,7 @@ public class Frame extends JFrame {
     // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
     private JPanel buildBahanBakuPanel() {
         PanelSuplierMenu p = new PanelSuplierMenu(gameManager);
-        
+            
         return p;
     }
 
@@ -293,7 +302,7 @@ public class Frame extends JFrame {
 
     // ── PANEL: Status ──────────────────────────────────────────────────────
     private JPanel buildStatusPanel() {
-        JPanel p = new PanelRekapanHari();
+        JPanel p = new status();
 
 
         return p;

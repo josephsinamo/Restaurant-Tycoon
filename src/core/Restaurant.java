@@ -262,7 +262,7 @@ public class Restaurant {
         double totalBelanja = 0;
         Menu[] daftarMenuArr = lihatDaftarMenu();
         pelanggan.buatPesanan(daftarMenuArr);
-        pelanggan.tentukanKabur(getPoinJimatKeamanan(), jimatKeamanan);
+        pelanggan.tentukanKabur(this);
 
         for (Menu menu : new HashMap<>(pelanggan.getPesanan()).keySet()) {
             int qty = pelanggan.getPesanan().getOrDefault(menu, 0);
@@ -280,7 +280,7 @@ public class Restaurant {
             }
 
             double harga = daftarMenu.get(menu.getName()).getPrice() * terpenuhi;
-
+            
             // efek Charming → tips
             if (jimatMenarik != null) {
                 double tips = jimatMenarik.hitungTips(harga);
