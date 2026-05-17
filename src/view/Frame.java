@@ -178,6 +178,7 @@ public class Frame extends JFrame {
             cardLayout.show(mainPanel, KARTU_MENU);
             
         });
+        
 
         bar.add(logo);
         bar.add(sep());
@@ -187,6 +188,7 @@ public class Frame extends JFrame {
         bar.add(sep());
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
+
         bar.add(btnMenu);
 
         return bar;
@@ -291,7 +293,7 @@ public class Frame extends JFrame {
 
     // ── PANEL: Status ──────────────────────────────────────────────────────
     private JPanel buildStatusPanel() {
-        JPanel p = darkPanel(new BorderLayout(6, 6));
+        JPanel p = new PanelRekapanHari();
 
 
         return p;
