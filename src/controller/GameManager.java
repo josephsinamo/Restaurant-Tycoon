@@ -59,9 +59,9 @@ public class GameManager {
         Menu milkDrink    = new Drink("MilkDrink",    Set.of(gula, tepung),
                                        JenisDrink.Milk);
 
-        restaurant.addMenu(nasiGoreng,    15_000);
-        restaurant.addMenu(kentangGoreng,  8_000);
-        restaurant.addMenu(milkDrink,     10_000);
+        restaurant.addMenu(nasiGoreng,    15000);
+        restaurant.addMenu(kentangGoreng,  8000);
+        restaurant.addMenu(milkDrink,     10000);
 
         // ── Stok awal bahan baku ───────────────────────────────────────
         restaurant.tambahBahanBaku(beras,  20);
@@ -93,13 +93,8 @@ public class GameManager {
         System.out.println("Hari ke-" + currentDay);
     }
 
-    /**
-     * Jalankan satu hari penuh:
-     * 1. Tambah nomor hari
-     * 2. Reset tracking harian di restaurant
-     * 3. Jalankan event harian (cuaca, insiden, dll.)
-     * 4. Buat & layani pelanggan
-     */
+
+
     public void nextDay() {
         paused = false;
         this.currentDay++;

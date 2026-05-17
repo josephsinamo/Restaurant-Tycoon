@@ -36,6 +36,8 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
             for (RawMaterial rw : gm.getSupplier().getBahanBaku()){
                 jPanel3.add(new PanelUntukDaftarMenu(rw,gm));
             }   
+        }else{
+            jPanel3.add(new PanelUntukDaftarMenu());
         }
     }
 
@@ -153,15 +155,8 @@ public class PanelSuplierMenu extends javax.swing.JPanel {
             break;
         }
         
-        java.awt.Window win = javax.swing.SwingUtilities.getWindowAncestor(this);
-    
-        // Cek apakah Window tersebut adalah MainFrame utama kita
-        if (win instanceof Frame) {
-            Frame frameUtama = (Frame) win;
+
         
-        // --- PANGGIL METHOD REFRESHNYA ---
-        frameUtama.refreshAll(); 
-        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

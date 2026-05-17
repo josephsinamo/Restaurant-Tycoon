@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameManager;
+import core.Restaurant;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
@@ -39,7 +40,7 @@ public class Frame extends JFrame {
     private static final Font FONT_MONO     = new Font("Monospaced", Font.PLAIN, 11);
 
     // ── Game backend ───────────────────────────────────────────────────────
-    private GameManager gameManager;
+    private GameManager gameManager ;
 
     // ── Status widgets ─────────────────────────────────────────────────────
     private JLabel lblMoney;
@@ -57,6 +58,7 @@ public class Frame extends JFrame {
 
     // ══════════════════════════════════════════════════════════════════════
     public Frame() {
+        gameManager = new GameManager();
         setTitle("🍜 Warung Nusantara — Restaurant Management");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -589,11 +591,11 @@ public class Frame extends JFrame {
     // ══ REFRESH ════════════════════════════════════════════════════════════
     private void refreshAll() {
         if (gameManager == null) return;
-        // Restaurant resto = gameManager.getRestaurant();
+        Restaurant resto = gameManager.getRestaurant();
 
         // Top bar
-        lblMoney.setText("💰 Rp " + String.format("%.0f",gameManager.getRestaurant().getMoney()));
-        lblKapasitas.setText("🏠 Kapasitas: "+ String.format("%d", gameManager.getRestaurant().getKapasitas()) );
+        lblMoney.setText("💰 Rp " + String.format("%.0f",resto.getMoney()));
+        lblKapasitas.setText("🏠 Kapasitas: "+ String.format("%d", resto.getKapasitas()) );
         lblDay.setText("📅 Day: "+String.format("%d", gameManager.getCurrentDay()));
 
 
