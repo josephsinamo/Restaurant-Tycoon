@@ -1,4 +1,3 @@
-
 package core;
 
 import entities.Customer;
@@ -12,214 +11,295 @@ import models.jimat.Security;
 import models.menu.Menu;
 
 public class Restaurant {
-    private int kapasitasRestoran; // banyaknya pelanggan yang bisa di terima dalam satu waktu
-    private double money = 50000.0;
-    private Map <String,Menu> daftarMenu;
 
-    private final HashMap<RawMaterial, Integer> stokBahanBaku;
-    private int maxStorage;
-    private final Kitchen kitchen;
+    // ══ State utama ═══════════════════════════════════════════════════════
+    private int    kapasitasRestoran = 0;
+    private double money             = 50_000.0;
 
-    /**
-     * Maksimal satu referensi per kategori; poin efek =
-     * {@link Jimat#kekuatanEfekPerSatuan()} yang terpasang.
-     */
+    // ══ Menu & dapur ══════════════════════════════════════════════════════
+    private final Map<String, Menu>           daftarMenu    = new HashMap<>();
+    private final HashMap<RawMaterial, Integer> stokBahanBaku = new HashMap<>();
+    private final Kitchen                      kitchen;
+
+    // ══ Jimat — slot aktif (maks. satu per tipe) ══════════════════════════
     private Charming jimatMenarik;
-    private Cleaner jimatKebersihan;
+    private Cleaner  jimatKebersihan;
     private Security jimatKeamanan;
 
-    /**
-     * Jimat yang dibeli; hapus/pakai memakai referensi objek yang sama
-     * ({@code ==}).
-     */
+    /** Semua jimat yang dimiliki pemain (termasuk yang belum dipasang). */
     private final List<Jimat> inventarisJimat = new ArrayList<>();
-    
+
+    // ══ Tracking data harian (di-reset tiap nextDay) ══════════════════════
+    private double       totalPenjualanHariIni    = 0;
+    private double       totalModalHariIni        = 0;   // belum dihitung otomatis; siap pakai
+    private int          jumlahPengunjungHariIni  = 0;
+    private int          jumlahItemTerjualHariIni = 0;
+    /** Setiap elemen: { namaMenu(String), qty(int), hargaSatuan(double), subtotal(double) } */
+    private final List<Object[]> daftarTransaksiHariIni = new ArrayList<>();
+
+    // ══ Constructor ═══════════════════════════════════════════════════════
     public Restaurant() {
-        this.daftarMenu = new HashMap<>();
-        this.stokBahanBaku = new HashMap<>();
         this.kitchen = new Kitchen(stokBahanBaku);
     }
 
-    public List<Jimat> getDaftarJimat(){
-        return inventarisJimat;
+    // ══════════════════════════════════════════════════════════════════════
+    //  GETTER / SETTER — state utama
+    // ══════════════════════════════════════════════════════════════════════
+
+    public double getMoney()          { return money; }
+    public int    getKapasitas()      { return kapasitasRestoran; }
+    public Kitchen getKitchen()       { return kitchen; }
+
+    /** Dipakai GameSave untuk restore uang dari file. */
+    public void setMoney(double money) {
+        if (money >= 0) this.money = money;
     }
 
-    public Map<RawMaterial,Integer> getStok(){
-        return stokBahanBaku;
-    }
-    public Kitchen getKitchen() {
-        return kitchen;
+    /** Dipakai GameSave untuk restore kapasitas dari file. */
+    public void setKapasitas(int kapasitas) {
+        if (kapasitas >= 0) this.kapasitasRestoran = kapasitas;
     }
 
-
-
-    public void tambahKeInventoriJimat(Jimat jimat) {
-        if (jimat != null) {
-            inventarisJimat.add(jimat);
-        }
+    public void upgradeKapasitas(int tambahan) {
+        if (tambahan > 0) kapasitasRestoran += tambahan;
     }
 
-    public Charming getJimatCharming(){ return jimatMenarik;}
-    public Cleaner getJimatCleaner(){ return jimatKebersihan;}
-    public Security getJimatSecurity(){ return jimatKeamanan;}
-
-    public boolean pakaiJimatDariInventori(Jimat jimat) {
-        if (jimat == null) {
-            return false;
-        }
-        if (jimat instanceof Charming c) {
-
-            jimatMenarik = c;
-        } else if (jimat instanceof Cleaner cl) {
-
-            jimatKebersihan = cl;
-        } else if (jimat instanceof Security s) {
-
-            jimatKeamanan = s;
-        } else {
-            inventarisJimat.add(jimat);
-            return false;
-        }
+    /** Kurangi uang; return false jika saldo tidak cukup. */
+    boolean kurangiUang(double jumlah) {
+        if (jumlah < 0 || money < jumlah) return false;
+        money -= jumlah;
         return true;
     }
 
+    // ══════════════════════════════════════════════════════════════════════
+    //  BAHAN BAKU
+    // ══════════════════════════════════════════════════════════════════════
 
-    public double getPoinJimatMenarik() {
-        return jimatMenarik == null ? 0 : jimatMenarik.getPower();
-    }
-
-    public double getPoinJimatKebersihan() {
-        return jimatKebersihan == null ? 0 : jimatKebersihan.getPower();
-    }
-
-    public double getPoinJimatKeamanan() {
-        return jimatKeamanan == null ? 0 : jimatKeamanan.getPower();
+    /** Dipakai Frame & internal — key berupa objek RawMaterial. */
+    public Map<RawMaterial, Integer> getStok() {
+        return Collections.unmodifiableMap(stokBahanBaku);
     }
 
     /**
-     * Pasang jimat pada slot tipenya. Hanya satu referensi per kategori (ganti =
-     * referensi baru menggantikan yang lama).
+     * Representasi stok dengan key String (nama bahan).
+     * Dipakai GameSave agar bisa ditulis tanpa serialisasi objek penuh.
      */
-    public void equipJimatSlot(Jimat jimat) {
-        if (jimat == null || !inventarisJimat.contains(jimat)) {
-            return;
+    public Map<String, Integer> getStokBahanBaku() {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        for (Map.Entry<RawMaterial, Integer> e : stokBahanBaku.entrySet()) {
+            result.put(e.getKey().getName(), e.getValue());
         }
+        return result;
+    }
+
+    /**
+     * Restore stok dari save file.
+     * Cocokkan nama String ke RawMaterial yang sudah ada;
+     * jika belum ada, buat entri baru.
+     */
+    public void setStokBahanBaku(Map<String, Integer> stokBaru) {
+        Map<String, RawMaterial> namaKeObjek = new HashMap<>();
+        for (RawMaterial rm : stokBahanBaku.keySet()) {
+            namaKeObjek.put(rm.getName(), rm);
+        }
+        stokBahanBaku.clear();
+        for (Map.Entry<String, Integer> entry : stokBaru.entrySet()) {
+            RawMaterial rm = namaKeObjek.getOrDefault(
+                    entry.getKey(), new RawMaterial(entry.getKey()));
+            stokBahanBaku.put(rm, entry.getValue());
+        }
+    }
+
+    public void tambahBahanBaku(RawMaterial bahan, int jumlah) {
+        if (jumlah < 1) return;
+        stokBahanBaku.merge(bahan, jumlah, Integer::sum);
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  MENU
+    // ══════════════════════════════════════════════════════════════════════
+
+    public Menu[] lihatDaftarMenu() {
+        return daftarMenu.values().toArray(new Menu[0]);
+    }
+
+    public Map<String, Menu> getDaftarMenuMap() {
+        return Collections.unmodifiableMap(daftarMenu);
+    }
+
+    public void addMenu(Menu menu, double harga) {
+        if (menu == null) return;
+        if (!daftarMenu.containsKey(menu.getName())) {
+            menu.setHarga(harga);
+            daftarMenu.put(menu.getName(), menu);
+        }
+    }
+
+    public void setHarga(Menu menu, double harga) {
+        if (menu != null && daftarMenu.containsKey(menu.getName())) {
+            menu.setHarga(harga);
+            daftarMenu.put(menu.getName(), menu);
+        }
+    }
+
+    public void racikMenu(Menu menu, RawMaterial rw, Integer qty) {
+        if (menu == null || !daftarMenu.containsKey(menu.getName())) return;
+        daftarMenu.get(menu.getName()).setReceipt(rw, qty);
+    }
+
+    public Set<RawMaterial> daftarResep(Menu menu) {
+        return menu.getDaftarBahan();
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  JIMAT — inventaris
+    // ══════════════════════════════════════════════════════════════════════
+
+    public List<Jimat> getDaftarJimat() {
+        return Collections.unmodifiableList(inventarisJimat);
+    }
+
+    public void tambahKeInventoriJimat(Jimat jimat) {
+        if (jimat != null) inventarisJimat.add(jimat);
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  JIMAT — slot aktif
+    // ══════════════════════════════════════════════════════════════════════
+
+    public Charming getJimatCharming()  { return jimatMenarik; }
+    public Cleaner  getJimatCleaner()   { return jimatKebersihan; }
+    public Security getJimatSecurity()  { return jimatKeamanan; }
+
+    public double getPoinJimatMenarik()    { return jimatMenarik    == null ? 0 : jimatMenarik.getPower(); }
+    public double getPoinJimatKebersihan() { return jimatKebersihan == null ? 0 : jimatKebersihan.getPower(); }
+    public double getPoinJimatKeamanan()   { return jimatKeamanan   == null ? 0 : jimatKeamanan.getPower(); }
+
+    /**
+     * Pasang jimat dari inventaris ke slot aktifnya.
+     * Jimat lama di slot yang sama langsung digantikan (tidak kembali ke inventaris).
+     *
+     * @return true jika berhasil dipasang, false jika tipe tidak dikenal
+     */
+    public boolean pakaiJimatDariInventori(Jimat jimat) {
+        if (jimat == null) return false;
+
         if (jimat instanceof Charming c) {
             jimatMenarik = c;
         } else if (jimat instanceof Cleaner cl) {
             jimatKebersihan = cl;
         } else if (jimat instanceof Security s) {
             jimatKeamanan = s;
+        } else {
+            return false;
         }
-    }
-
-    // masih perlu di perbaiki
-    
-    public void jualJimat(Jimat jimat) {
-        if (jimat == null || !inventarisJimat.contains(jimat)) {
-            return;
-        }
+        // Hapus dari inventaris setelah terpasang
         inventarisJimat.remove(jimat);
-        if (jimat instanceof Charming && jimatMenarik == jimat) {
-            jimatMenarik = null;
-        } else if (jimat instanceof Cleaner && jimatKebersihan == jimat) {
-            jimatKebersihan = null;
-        } else if (jimat instanceof Security && jimatKeamanan == jimat) {
-            jimatKeamanan = null;
-        }
+        return true;
     }
 
-    public Menu[] lihatDaftarMenu() {
-        Menu[] daftarMenus = daftarMenu.keySet().toArray(new Menu[0]);
-        return daftarMenus;
+    /**
+     * Pasang jimat yang sudah ada di inventaris (versi alternatif — cek dulu contains).
+     */
+    public void equipJimatSlot(Jimat jimat) {
+        if (jimat == null || !inventarisJimat.contains(jimat)) return;
+        pakaiJimatDariInventori(jimat);
     }
 
-    public void upgradeKapasitas(int t) {
-        kapasitasRestoran += t;
+    /**
+     * Jual jimat dari inventaris. Jimat yang terpasang di slot aktif
+     * juga dilepas jika referensinya sama.
+     */
+    public void jualJimat(Jimat jimat) {
+        if (jimat == null) return;
+
+        // Lepas dari slot aktif jika terpasang
+        if (jimat instanceof Charming  && jimatMenarik    == jimat) jimatMenarik    = null;
+        if (jimat instanceof Cleaner   && jimatKebersihan == jimat) jimatKebersihan = null;
+        if (jimat instanceof Security  && jimatKeamanan   == jimat) jimatKeamanan   = null;
+
+        // Hapus dari inventaris (baik yang belum maupun yang sudah dipasang)
+        inventarisJimat.remove(jimat);
     }
 
-    public int getKapasitas(){
-        return kapasitasRestoran;
-    }
+    // ══════════════════════════════════════════════════════════════════════
+    //  PEMBELIAN DARI SUPPLIER
+    // ══════════════════════════════════════════════════════════════════════
 
-
-    // bisa di satukan dengan setHarga
-    public void addMenu(Menu menu, double harga) {
-        if (!daftarMenu.containsKey(menu.getName())) {
-            menu.setHarga(harga);
-            daftarMenu.put(menu.getName(),menu);
-        } else {
-            //System.out.println("Menu sudah ada di daftar");
-        }
-    }
-    
-    // konsep sama dengan addMenu
-    public void setHarga(Menu menu, double harga) {
-        if (daftarMenu.containsKey(menu.getName())) {
-            menu.setHarga(harga);
-            daftarMenu.put(menu.getName(),menu);
-        } else {
-            //System.out.println("Menu tidak tersedia di daftar menu");
-        }
-    }
-
-    public void racikMenu(Menu menu,RawMaterial rw, Integer qty) {
-        if (!daftarMenu.containsKey(menu.getName())){
-            return;
-        } else{
-            daftarMenu.get(menu.getName()).setReceipt(rw, qty);
-        }
-    }
-
-    public Set<RawMaterial> daftarResep(Menu menu){
-        return menu.getDaftarBahan();
-    }
-
-
-    // coba ke void
     public boolean beli(Supplier supplier, ISupplierItem item) {
         return beli(supplier, item, 1);
     }
 
     public boolean beli(Supplier supplier, ISupplierItem item, int jumlah) {
-        if (supplier == null || item == null) {
-            return false;
-        }
+        if (supplier == null || item == null) return false;
         return supplier.jual(this, item, jumlah);
     }
 
-    public void tambahBahanBaku(RawMaterial bahan, int jumlah) {
-        if (jumlah < 1) {
-            return;
-        }
-        stokBahanBaku.merge(bahan, jumlah, Integer::sum);
-    }
+    // ══════════════════════════════════════════════════════════════════════
+    //  PELAYANAN PELANGGAN
+    // ══════════════════════════════════════════════════════════════════════
 
-    boolean kurangiUang(double jumlah) {
-        if (jumlah < 0 || money < jumlah) {
-            return false;
-        }
-        money -= jumlah;
-        return true;
-    }
-
-    public double getMoney() {
-        return money;
-    }
-
+    /**
+     * Melayani satu pelanggan: buat pesanan → masak → catat transaksi → terima bayaran.
+     */
     public void layaniPelanggan(Customer pelanggan) {
-        double totalBelanja = 0;
-        pelanggan.buatPesanan(lihatDaftarMenu());
-        // masih harus di integrasikan dengan dapur
+        if (pelanggan == null) return;
 
-        for (Menu menu : pelanggan.getPesanan().keySet()){
-            int totPesan = kitchen.masak(menu, pelanggan.getPesanan().get(menu));
-            totalBelanja += (double)(daftarMenu.get(menu.getName()).getPrice()*totPesan);
+        pelanggan.buatPesanan(lihatDaftarMenu());
+        jumlahPengunjungHariIni++;
+
+        double totalBelanjaPelanggan = 0;
+
+        for (Map.Entry<Menu, Integer> pesanan : pelanggan.getPesanan().entrySet()) {
+            Menu menu      = pesanan.getKey();
+            int  qtyDiminta = pesanan.getValue();
+
+            // Dapur mencoba memasak sejumlah qty; kembalikan qty yang benar-benar jadi
+            int qtyJadi = kitchen.masak(menu, qtyDiminta);
+            if (qtyJadi <= 0) continue;
+
+            double hargaSatuan = daftarMenu.get(menu.getName()).getPrice();
+            double subtotal    = hargaSatuan * qtyJadi;
+
+            totalBelanjaPelanggan    += subtotal;
+            jumlahItemTerjualHariIni += qtyJadi;
+
+            // Simpan ke log transaksi: { namaMenu, qty, hargaSatuan, subtotal }
+            daftarTransaksiHariIni.add(new Object[]{
+                menu.getName(), qtyJadi, hargaSatuan, subtotal
+            });
         }
-        getPayment(pelanggan, money);
+
+        // Terima pembayaran — perbaikan: gunakan this.money bukan parameter lokal
+        double pembayaran = pelanggan.bayarPesanan(totalBelanjaPelanggan);
+        this.money             += pembayaran;
+        totalPenjualanHariIni  += pembayaran;
     }
 
-    private void getPayment(Customer pelanggan, double money) {
-        money += pelanggan.bayarPesanan(money);
+    // ══════════════════════════════════════════════════════════════════════
+    //  TRACKING DATA HARIAN
+    // ══════════════════════════════════════════════════════════════════════
+
+    /** Dipanggil oleh GameManager.nextDay() sebelum melayani pelanggan baru. */
+    public void resetDataHarian() {
+        totalPenjualanHariIni    = 0;
+        totalModalHariIni        = 0;
+        jumlahPengunjungHariIni  = 0;
+        jumlahItemTerjualHariIni = 0;
+        daftarTransaksiHariIni.clear();
+    }
+
+    public double       getTotalPenjualanHariIni()    { return totalPenjualanHariIni; }
+    public double       getKeuntunganHariIni()        { return totalPenjualanHariIni - totalModalHariIni; }
+    public int          getJumlahPengunjungHariIni()  { return jumlahPengunjungHariIni; }
+    public int          getJumlahItemTerjualHariIni() { return jumlahItemTerjualHariIni; }
+
+    public List<Object[]> getDaftarTransaksiHariIni() {
+        return Collections.unmodifiableList(daftarTransaksiHariIni);
+    }
+
+    /** Tambah modal (harga bahan baku terpakai) — dipanggil dari Kitchen jika diintegrasikan. */
+    public void tambahModal(double modal) {
+        if (modal > 0) totalModalHariIni += modal;
     }
 }
