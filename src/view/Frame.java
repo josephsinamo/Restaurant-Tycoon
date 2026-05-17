@@ -212,11 +212,7 @@ public class Frame extends JFrame {
     // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
     private JPanel buildBahanBakuPanel() {
         PanelSuplierMenu p = new PanelSuplierMenu(gameManager);
-        
-        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",3));
-        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",5));
-        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",5));
-        p.masukJP3(new PanelUntukDaftarMenu("/view/Aset/tes.png","lol",5));
+
         return p;
     }
 

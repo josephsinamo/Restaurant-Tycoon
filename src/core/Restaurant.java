@@ -44,6 +44,10 @@ public class Restaurant {
         return inventarisJimat;
     }
 
+    public Map<RawMaterial,Integer> getStok(){
+        return stokBahanBaku;
+    }
+
 
 
     public void tambahKeInventoriJimat(Jimat jimat) {
