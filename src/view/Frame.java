@@ -173,6 +173,7 @@ public class Frame extends JFrame {
             if (gameManager != null) gameManager.pauseGame();
             cardLayout.show(mainPanel, KARTU_MENU);
         });
+        
 
         bar.add(logo);
         bar.add(sep());
@@ -182,6 +183,7 @@ public class Frame extends JFrame {
         bar.add(sep());
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
+
         bar.add(btnMenu);
 
         return bar;

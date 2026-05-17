@@ -29,6 +29,18 @@ public abstract class Jimat implements ISupplierItem {
         return power;
     }
 
+    public double hitungTips(double hargaMenu) {
+        return 0;
+    }
+
+    public boolean cegahTikus() {
+        return false;
+    }
+
+    public boolean cegahPembeliKabur() {
+        return false;
+    }
+
     public void kurangiKekuatan(int jumlah) {
         if (jumlah < 0) {
             return;

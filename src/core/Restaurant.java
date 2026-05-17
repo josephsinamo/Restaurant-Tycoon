@@ -14,7 +14,8 @@ public class Restaurant {
 
     // ══ State utama ═══════════════════════════════════════════════════════
     private int    kapasitasRestoran = 0;
-    private double money             = 50000.0;
+    private double money = 50000.0;
+    
 
     // ══ Menu & dapur ══════════════════════════════════════════════════════
     private final Map<String, Menu>           daftarMenu    = new HashMap<>();
@@ -151,6 +152,21 @@ public class Restaurant {
         return menu.getDaftarBahan();
     }
 
+    // upgrade harga jual menu
+    public boolean upgradeMenu(Menu menu, double biayaUpgrade) {
+        if (!daftarMenu.containsKey(menu.getName())) return false;
+        if (!kurangiUang(biayaUpgrade)) {
+            System.out.println("Uang tidak cukup untuk upgrade!");
+            return false;
+        }
+        // upgrade = naikkan harga jual 10%
+        double hargaBaru = menu.getPrice() * 1.1;
+        menu.setHarga(hargaBaru);
+        System.out.println("Menu " + menu.getName() + 
+            " di-upgrade! Harga baru: Rp " + String.format("%.0f", hargaBaru));
+        return true;
+    }
+
     // ══════════════════════════════════════════════════════════════════════
     //  JIMAT — inventaris
     // ══════════════════════════════════════════════════════════════════════
@@ -242,38 +258,52 @@ public class Restaurant {
     /**
      * Melayani satu pelanggan: buat pesanan → masak → catat transaksi → terima bayaran.
      */
-    public void layaniPelanggan(Customer pelanggan) {
-        if (pelanggan == null) return;
+  public void layaniPelanggan(Customer pelanggan) {
+        double totalBelanja = 0;
+        Menu[] daftarMenuArr = lihatDaftarMenu();
+        pelanggan.buatPesanan(daftarMenuArr);
+        pelanggan.tentukanKabur(getPoinJimatKeamanan(), jimatKeamanan);
 
-        pelanggan.buatPesanan(lihatDaftarMenu());
-        jumlahPengunjungHariIni++;
+        for (Menu menu : new HashMap<>(pelanggan.getPesanan()).keySet()) {
+            int qty = pelanggan.getPesanan().getOrDefault(menu, 0);
 
-        double totalBelanjaPelanggan = 0;
+            // harga mahal → chance dilewati
+            if (menu.getPrice() > 20000 && Math.random() < 0.4) {
+                System.out.println("[INFO] " + menu.getName() + " terlalu mahal, dilewati.");
+                continue;
+            }
 
-        for (Map.Entry<Menu, Integer> pesanan : pelanggan.getPesanan().entrySet()) {
-            Menu menu      = pesanan.getKey();
-            int  qtyDiminta = pesanan.getValue();
+            int terpenuhi = kitchen.masak(menu, qty);
 
-            // Dapur mencoba memasak sejumlah qty; kembalikan qty yang benar-benar jadi
-            int qtyJadi = kitchen.masak(menu, qtyDiminta);
-            if (qtyJadi <= 0) continue;
+            if (terpenuhi < qty) {
+                pelanggan.gantiMenuAtauPulang(daftarMenuArr, menu);
+            }
 
-            double hargaSatuan = daftarMenu.get(menu.getName()).getPrice();
-            double subtotal    = hargaSatuan * qtyJadi;
+            double harga = daftarMenu.get(menu.getName()).getPrice() * terpenuhi;
 
-            totalBelanjaPelanggan    += subtotal;
-            jumlahItemTerjualHariIni += qtyJadi;
+            // efek Charming → tips
+            if (jimatMenarik != null) {
+                double tips = jimatMenarik.hitungTips(harga);
+                if (tips > 0) {
+                    harga += tips;
+                    System.out.println("[JIMAT] Tips: Rp " + String.format("%.0f", tips));
+                }
+            }
 
-            // Simpan ke log transaksi: { namaMenu, qty, hargaSatuan, subtotal }
-            daftarTransaksiHariIni.add(new Object[]{
-                menu.getName(), qtyJadi, hargaSatuan, subtotal
-            });
+            totalBelanja += harga;
         }
 
-        // Terima pembayaran — perbaikan: gunakan this.money bukan parameter lokal
-        double pembayaran = pelanggan.bayarPesanan(totalBelanjaPelanggan);
-        this.money             += pembayaran;
-        totalPenjualanHariIni  += pembayaran;
+        // kabur = bahan terpakai tapi tidak bayar
+        if (!pelanggan.isKabur()) {
+            money += totalBelanja;
+            totalPenjualanHariIni += totalBelanja;
+        }
+
+        jumlahPengunjungHariIni += pelanggan.getJumlahPelanggan();
+    }
+    public void akhirHari() {
+        kitchen.buangBahanSisa();
+        System.out.println("[INFO] Bahan sisa hari ini dibuang.");
     }
 
     // ══════════════════════════════════════════════════════════════════════
