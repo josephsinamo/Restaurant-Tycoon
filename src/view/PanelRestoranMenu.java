@@ -6,22 +6,31 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import models.*;
+import controller.*;
 import javax.swing.border.EmptyBorder;
 /**
  *
  * @author WINDOWS
  */
 public class PanelRestoranMenu extends javax.swing.JPanel {
-
+    RawMaterial rw;
+    GameManager gm;
     /**
      * Creates new form PanelPermainan
      */
     public PanelRestoranMenu() {
         initComponents();
         
-    for (int i = 1; i <= 20; i++) {
-            container.add(createItemCard("l","lo"));
-        }
+        container.revalidate();
+        container.repaint();
+    }
+    
+    public PanelRestoranMenu(RawMaterial rw, GameManager gm) {
+        this.rw = rw;
+        this.gm = gm;
+        
+        initComponents();
         
         container.revalidate();
         container.repaint();
@@ -29,7 +38,7 @@ public class PanelRestoranMenu extends javax.swing.JPanel {
     
     
     // masih uji coba
-    private JPanel createItemCard(String name, String qty) {
+    private JPanel createItemCard(RawMaterial rw, GameManager gm) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(new Color(255, 253, 228));
         
@@ -38,9 +47,13 @@ public class PanelRestoranMenu extends javax.swing.JPanel {
         lblIcon.setFont(new Font("Serif", Font.PLAIN, 40));
         
         // Label Angka/Qty (Pojok kanan bawah)
-        JLabel lblQty = new JLabel(qty + "  ", JLabel.RIGHT);
+        JLabel lblQty = new JLabel(gm.getRestaurant().getStok().get(rw) + "  ", JLabel.RIGHT);
         lblQty.setFont(new Font("Arial", Font.BOLD, 16));
-
+        
+        JLabel lblNama = new JLabel(rw.getName());
+        lblQty.setFont(new Font("Arial", Font.BOLD, 16));
+        
+        card.add(lblNama, BorderLayout.NORTH);
         card.add(lblIcon, BorderLayout.CENTER);
         card.add(lblQty, BorderLayout.SOUTH);
 
