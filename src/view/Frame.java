@@ -39,7 +39,7 @@ public class Frame extends JFrame {
     private static final Font FONT_MONO     = new Font("Monospaced", Font.PLAIN, 11);
 
     // ── Game backend ───────────────────────────────────────────────────────
-    private GameManager gameManager= new GameManager();
+    private GameManager gameManager;
 
     // ── Status widgets ─────────────────────────────────────────────────────
     private JLabel lblMoney;
@@ -341,182 +341,253 @@ public class Frame extends JFrame {
 
     // ══ NPC PANEL (animation) ══════════════════════════════════════════════
     private static class Npc {
-    float x, y;
-    Color color;
-    String label;
-    int size;
-    
-    // arah: 0=kanan, 1=kiri, 2=bawah, 3=atas
-    int arah;
-    int langkahSisa;
-    float speed = 1.5f;
-    private final Random rng = new Random();
+        enum State { MASUK, KE_KASIR, KE_MEJA, DUDUK, KELUAR }
+        enum Hadap { KIRI, KANAN, ATAS, BAWAH }
 
-    Npc(float x, float y, Color color, String label) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.label = label;
-        this.size = 32;
-        this.arah = rng.nextInt(4);
-        this.langkahSisa = 30 + rng.nextInt(50);
-    }
+        float x, y;
+        int size = 32;
+        int index;
+        State state;
+        Hadap hadap = Hadap.KIRI; // default hadap kiri (masuk dari kanan)
 
-    void update(int W, int H, List<Rectangle> obstacles) {
-        // ganti arah kalau langkah habis
-        if (langkahSisa <= 0) {
-            arah = rng.nextInt(4);
-            langkahSisa = 30 + rng.nextInt(50);
+        float targetX, targetY;
+        float speed = 1.5f;
+        int dudukTimer = 0;
+        int mejaTujuan = -1;
+
+        Npc(float startX, float startY, int index) {
+            this.x = startX;
+            this.y = startY;
+            this.index = index;
+            this.state = State.MASUK;
+            this.hadap = Hadap.KIRI; // masuk dari kanan, hadap kiri
         }
 
-        float nx = x, ny = y;
-        switch (arah) {
-            case 0 -> nx += speed; // kanan
-            case 1 -> nx -= speed; // kiri
-            case 2 -> ny += speed; // bawah
-            case 3 -> ny -= speed; // atas
-        }
+        boolean gerakKe(float tx, float ty) {
+            float dx = tx - x;
+            float dy = ty - y;
+            float dist = (float) Math.sqrt(dx * dx + dy * dy);
 
-        // batas layar
-        if (nx < 0 || nx > W - size || ny < 0 || ny > H - size) {
-            arah = rng.nextInt(4);
-            langkahSisa = 20;
-            return;
-        }
-
-        // cek tabrakan dengan obstacle (meja & kasir)
-        Rectangle npcRect = new Rectangle((int)nx, (int)ny, size, size);
-        for (Rectangle obs : obstacles) {
-            if (npcRect.intersects(obs)) {
-                arah = rng.nextInt(4); // ganti arah kalau nabrak
-                langkahSisa = 20;
-                return;
+            // update arah hadap berdasarkan gerakan
+            if (Math.abs(dx) > Math.abs(dy)) {
+                hadap = dx > 0 ? Hadap.KANAN : Hadap.KIRI;
+            } else {
+                hadap = dy > 0 ? Hadap.BAWAH : Hadap.ATAS;
             }
-        }
 
-        x = nx;
-        y = ny;
-        langkahSisa--;
+            if (dist < speed + 1) {
+                x = tx; y = ty;
+                return true;
+            }
+            if (Math.abs(dx) > Math.abs(dy)) {
+                x += dx > 0 ? speed : -speed;
+            } else {
+                y += dy > 0 ? speed : -speed;
+            }
+            return false;
+        }
     }
-}
 
     class NpcPanel extends JPanel {
-        private final List<Npc> npcs = new ArrayList<>();
-        private final List<Rectangle> obstacles = new ArrayList<>(); // tambah ini
-        private Timer animTimer;
+    private final List<Npc> npcs = new ArrayList<>();
+    private final boolean[] mejaTerisi; // track meja yang sudah ditempati
+    private Timer animTimer;
 
-        NpcPanel() {
-            animTimer = new Timer(33, e -> {
-                buildObstacles(); // update obstacle tiap frame (kalau resize)
-                for (Npc npc : npcs) npc.update(getWidth(), getHeight(), obstacles);
-                repaint();
-            });
-            animTimer.start();
-        }
+    // posisi kasir (tengah bawah)
+    private int kasirX() { return getWidth() / 2 - 60; }
+    private int kasirY() { return getHeight() - 70; }
 
-        // posisi meja & kasir harus sama dengan yang di paintComponent
-        private void buildObstacles() {
-            obstacles.clear();
-            
-            // meja — sesuaikan koordinat dengan yang di paintComponent
-            int[][] tables = {{80,80},{200,80},{320,80},{80,200},{200,200},{320,200}};
-            for (int[] t : tables) {
-                obstacles.add(new Rectangle(t[0], t[1], 50, 35));
-            }
-            
-            // kasir
-            obstacles.add(new Rectangle(
-                getWidth()/2 - 60,  // x kasir
-                getHeight() - 70,   // y kasir
-                120, 70             // ukuran kasir
-            ));
-        }
+    // posisi meja — harus sama dengan yang digambar
+    private int[][] getMejaPosisi() {
+        return new int[][]{{80,80},{200,80},{320,80},{80,200},{200,200},{320,200}};
+    }
 
-        void setNpcCount(int count) {
-            npcs.clear();
-            Color[] palette = {
-                new Color(255, 180, 50), new Color(80, 200, 140),
-                new Color(100, 150, 255), new Color(220, 100, 160),
-                new Color(255, 120, 80),  new Color(160, 100, 255)
-            };
-            Random rng = new Random();
-            for (int i = 0; i < count; i++) {
-                Color c = palette[i % palette.length];
-                // spawn di area aman (tengah layar, jauh dari meja)
-                float x = 100 + rng.nextFloat() * 200;
-                float y = 300 + rng.nextFloat() * 100;
-                npcs.add(new Npc(x, y, c, "P" + (i + 1)));
-            }
-        }
+    NpcPanel() {
+        mejaTerisi = new boolean[6]; // 6 meja
+        animTimer = new Timer(33, e -> {
+            updateNpcs();
+            repaint();
+        });
+        animTimer.start();
+    }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    void spawnNpc(int index) {
+        // spawn dari kanan frame
+        float startX = getWidth() + 10;
+        float startY = getHeight() / 2f;
+        npcs.add(new Npc(startX, startY, index));
+    }
 
-            // Floor grid
-            java.net.URL lantaiUrl = getClass().getResource("/view/Aset/Lantai.png");
-            if (lantaiUrl != null) {
-                Image lantaiImg = new ImageIcon(lantaiUrl).getImage();
-                int tileSize = 40; // ukuran tile lantai
-                for (int gx = 0; gx < getWidth(); gx += tileSize) {
-                    for (int gy = 0; gy < getHeight(); gy += tileSize) {
-                        g2.drawImage(lantaiImg, gx, gy, tileSize, tileSize, null);
+    void setNpcCount(int count) {
+        npcs.clear();
+        // spawn terus menerus dengan jeda random
+        Timer spawnTimer = new Timer(0, null);
+        spawnTimer.addActionListener(e -> {
+            spawnNpc(new Random().nextInt(2)); // NPC1 atau NPC2 random
+            int jedaBerikutnya = 2000 + new Random().nextInt(4000); // jeda 2-6 detik
+            spawnTimer.setDelay(jedaBerikutnya);
+        });
+        spawnTimer.setRepeats(true);
+        spawnTimer.start();
+    }
+
+    private void updateNpcs() {
+        List<Npc> selesai = new ArrayList<>();
+        int[][] mejaPosisi = getMejaPosisi();
+
+        for (Npc npc : npcs) {
+            switch (npc.state) {
+
+                case MASUK -> {
+                    // jalan masuk dari kanan ke tengah layar
+                    float targetMasukX = getWidth() - 150;
+                    float targetMasukY = getHeight() / 2f;
+                    if (npc.gerakKe(targetMasukX, targetMasukY)) {
+                        npc.state = Npc.State.KE_KASIR;
                     }
                 }
+
+                case KE_KASIR -> {
+                    // jalan ke kasir
+                    float kx = kasirX() + 60;
+                    float ky = kasirY() - 40;
+                    if (npc.gerakKe(kx, ky)) {
+                        // sampai kasir, cari meja kosong
+                        npc.mejaTujuan = cariMejaKosong();
+                        if (npc.mejaTujuan >= 0) {
+                            mejaTerisi[npc.mejaTujuan] = true;
+                            npc.state = Npc.State.KE_MEJA;
+                        } else {
+                            // tidak ada meja kosong, langsung keluar
+                            npc.state = Npc.State.KELUAR;
+                        }
+                    }
+                }
+
+                case KE_MEJA -> {
+                    int[] meja = mejaPosisi[npc.mejaTujuan];
+                    float mx = meja[0] + 10;
+                    float my = meja[1] - 30; 
+                    if (npc.gerakKe(mx, my)) {
+                        npc.state = Npc.State.DUDUK;
+                        npc.dudukTimer = 150;
+                    }
+                }
+
+                case DUDUK -> {
+                    npc.dudukTimer--;
+                    if (npc.dudukTimer <= 0) {
+                        // selesai makan, bebaskan meja
+                        if (npc.mejaTujuan >= 0) {
+                            mejaTerisi[npc.mejaTujuan] = false;
+                        }
+                        npc.state = Npc.State.KELUAR;
+                    }
+                }
+
+                case KELUAR -> {
+                    // jalan keluar ke kanan
+                    if (npc.gerakKe(getWidth() + 50, npc.y)) {
+                        selesai.add(npc); // hapus dari list
+                    }
+                }
+            }
+        }
+        npcs.removeAll(selesai);
+    }
+
+    private int cariMejaKosong() {
+        for (int i = 0; i < mejaTerisi.length; i++) {
+            if (!mejaTerisi[i]) return i;
+        }
+        return -1; // semua penuh
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Lantai
+        java.net.URL lantaiUrl = getClass().getResource("/view/Aset/Lantai.png");
+        if (lantaiUrl != null) {
+            Image lantaiImg = new ImageIcon(lantaiUrl).getImage();
+            int tileSize = 40;
+            for (int gx = 0; gx < getWidth(); gx += tileSize)
+                for (int gy = 0; gy < getHeight(); gy += tileSize)
+                    g2.drawImage(lantaiImg, gx, gy, tileSize, tileSize, null);
+        }
+
+        // Load semua gambar
+        Image mejaImg   = loadImg("/view/Aset/Meja.png");
+        Image kursiImg  = loadImg("/view/Aset/Kursi.png");
+        Image kasirImg  = loadImg("/view/Aset/Kasir.png");
+        Image npc1      = loadImg("/view/Aset/NPC1.png");
+        Image npc2      = loadImg("/view/Aset/NPC2.png");
+        Image npc1Kiri   = loadImg("/view/Aset/NPC1.png");
+        Image npc2Kiri   = loadImg("/view/Aset/NPC2.png");
+        Image npc1Duduk = loadImg("/view/Aset/NPC1_duduk.png");
+        Image npc2Duduk = loadImg("/view/Aset/NPC2_duduk.png");
+
+        // Meja + Kursi
+        int[][] mejaPosisi = getMejaPosisi();
+        for (int[] t : mejaPosisi) {
+            if (mejaImg != null)
+                g2.drawImage(mejaImg, t[0], t[1], 60, 40, null);
+           if (kursiImg != null)
+                g2.drawImage(kursiImg, t[0] + 10, t[1] - 30, 30, 30, null); // kursi di atas meja
+        }
+
+        // Kasir
+        if (kasirImg != null)
+            g2.drawImage(kasirImg, kasirX(), kasirY(), 120, 70, null);
+
+        // NPC
+
+    for (Npc npc : npcs) {
+        Image img;
+        if (npc.state == Npc.State.DUDUK) {
+            img = npc.index == 0 ? npc1Duduk : npc2Duduk;
+            g2.drawImage(img, (int)npc.x, (int)npc.y, npc.size, npc.size, null);
+        }
+        else {
+            img = npc.index == 0 ? npc1Kiri : npc2Kiri;
+            if (npc.hadap == Npc.Hadap.KANAN) {
+                g2.drawImage(img,
+                    (int)npc.x + npc.size, (int)npc.y,
+                    -npc.size, npc.size,
+                    null);
             } else {
-                // fallback grid kalau gambar tidak ada
-                g2.setColor(new Color(40, 50, 65));
-                int gridSize = 40;
-                for (int gx = 0; gx < getWidth(); gx += gridSize)
-                    g2.drawLine(gx, 0, gx, getHeight());
-                for (int gy = 0; gy < getHeight(); gy += gridSize)
-                    g2.drawLine(0, gy, getWidth(), gy);
+                g2.drawImage(img, (int)npc.x, (int)npc.y, npc.size, npc.size, null);
             }
+        }
+    }
 
-            // Tables
-            ImageIcon mejaImg = new ImageIcon(getClass().getResource("/view/Aset/Meja.png"));
-            int[][] tables = {{80,80},{200,80},{320,80},{80,200},{200,200},{320,200}};
-            for (int[] t : tables) {
-                g2.drawImage(mejaImg.getImage(), t[0], t[1], 50, 35, null);
-            }
+        // Badge
+        g2.setColor(new Color(0, 0, 0, 120));
+        g2.fillRoundRect(8, 8, 160, 28, 10, 10);
+        g2.setColor(ACCENT);
+        g2.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g2.drawString("👥 Pelanggan: " + npcs.size(), 16, 27);
 
-            // Kasir
-            ImageIcon kasirImg = new ImageIcon(getClass().getResource("/view/Aset/Kasir.png"));
-            g2.drawImage(kasirImg.getImage(),
-                getWidth()/2 - 60, getHeight() - 70, 120, 70, null);
+        g2.dispose();
+    }
 
-            // NPCs
-            ImageIcon npc1Img = new ImageIcon(getClass().getResource("/view/Aset/NPC1.png"));
-            ImageIcon npc2Img = new ImageIcon(getClass().getResource("/view/Aset/NPC2.png"));
-            for (int i = 0; i < npcs.size(); i++) {
-                Npc npc = npcs.get(i);
-                ImageIcon npcImg = (i % 2 == 0) ? npc1Img : npc2Img;
-                g2.drawImage(npcImg.getImage(), (int)npc.x, (int)npc.y, npc.size, npc.size, null);
-            }
-
-            // Badge pelanggan
-            g2.setColor(new Color(0, 0, 0, 120));
-            g2.fillRoundRect(8, 8, 160, 28, 10, 10);
-            g2.setColor(ACCENT);
-            g2.setFont(new Font("SansSerif", Font.BOLD, 12));
-            g2.drawString("👥 Pelanggan: " + npcs.size(), 16, 27);
-
-            g2.dispose();
+    private Image loadImg(String path) {
+        java.net.URL url = getClass().getResource(path);
+        return url != null ? new ImageIcon(url).getImage() : null;
     }
 }
-
     // ══ GAME LIFECYCLE ═════════════════════════════════════════════════════
     private void startGame() {
         gameManager = new GameManager();
         cardLayout.show(mainPanel, KARTU_PERMAINAN);
-        npcPanel.setNpcCount(5); // tambah baris ini
+        npcPanel.setNpcCount(5);
         refreshAll();
     }
-
     // ══ REFRESH ════════════════════════════════════════════════════════════
-    public void refreshAll() {
+    private void refreshAll() {
         if (gameManager == null) return;
         // Restaurant resto = gameManager.getRestaurant();
 
@@ -541,9 +612,7 @@ public class Frame extends JFrame {
     
         Jimat s = gameManager.getRestaurant().getJimatSecurity();
         lblJimatKeamanan.setText(s != null ? s.getName() + " (" + s.getPower() + ")" : "—");
-        
-        this.revalidate();
-        this.repaint();
+            
     }
 
     private void appendLog(String msg) {
