@@ -5,7 +5,6 @@ import core.Supplier;
 import entities.Customer;
 import java.util.Set;
 import models.RawMaterial;
-import models.jimat.*;
 import models.menu.*;
 import view.Frame;
 
@@ -102,7 +101,7 @@ public class GameManager {
         System.out.println("=== FASE BERJUALAN DIMULAI ===");
 
         int[] activeItems = getActiveItems();
-        eventManager.runDailyEvents(activeItems, restaurant);
+        //eventManager.runDailyEvents(activeItems, restaurant);
 
         int kapasitas = restaurant.getKapasitas();
         int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
@@ -110,14 +109,13 @@ public class GameManager {
 
         for (int i = 0; i < jumlahPembeli; i++) {
             Customer pelanggan = new Customer();
-            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
-                    > kapasitas * 1.5) break;
+            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan() > kapasitas * 1.5) break;
             restaurant.layaniPelanggan(pelanggan);
         }
 
         restaurant.akhirHari();
         System.out.println("Total penjualan: Rp " +
-            String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
+        String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
         System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
     }
 
@@ -158,6 +156,46 @@ public class GameManager {
         System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
     }
 
+<<<<<<< HEAD
+=======
+
+
+    public void nextDay() {
+        this.currentDay++;
+        restaurant.resetDataHarian();
+        faseSekarang = Fase.PERSIAPAN;
+        System.out.println("\n=== Hari ke-" + currentDay + " — FASE PERSIAPAN ===");
+    }
+    public Fase getFaseSekarang() { 
+    return faseSekarang; 
+}
+
+    public void mulaierjualan() {
+        if (faseSekarang != Fase.PERSIAPAN) return;
+        faseSekarang = Fase.BERJUALAN;
+        System.out.println("=== FASE BERJUALAN DIMULAI ===");
+
+        int[] activeItems = getActiveItems();
+        eventManager.runDailyEvents(activeItems, restaurant);
+
+        int kapasitas = restaurant.getKapasitas();
+        int jumlahPembeli = (int)(Math.random() * (kapasitas * 1.5)) + 1;
+        System.out.println("Pembeli hari ini: " + jumlahPembeli);
+
+        for (int i = 0; i < jumlahPembeli; i++) {
+            Customer pelanggan = new Customer();
+            if (restaurant.getJumlahPengunjungHariIni() + pelanggan.getJumlahPelanggan()
+                    > kapasitas * 1.5) break;
+            restaurant.layaniPelanggan(pelanggan);
+        }
+
+        restaurant.akhirHari();
+        System.out.println("Total penjualan: Rp " +
+            String.format("%.0f", restaurant.getTotalPenjualanHariIni()));
+        System.out.println("Pengunjung: " + restaurant.getJumlahPengunjungHariIni());
+    }
+
+>>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
     /** Tandai game sebagai di-pause (misal saat kembali ke main menu). */
     public void pauseGame() {
         this.paused = true;

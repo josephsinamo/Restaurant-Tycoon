@@ -1,8 +1,8 @@
 package entities;
 
+import core.*;
 import java.util.*;
 import models.menu.Menu;
-import models.jimat.Security;
 
 public class Customer {
 
@@ -37,15 +37,15 @@ public class Customer {
         }
     }
 
-    public void tentukanKabur(double poinKeamanan, Security jimatKeamanan) {
+    public void tentukanKabur(Restaurant resto) {
         // cek jimat Security dulu
-        if (jimatKeamanan != null && jimatKeamanan.cegahPembeliKabur()) {
+        if (resto.getJimatSecurity() != null && resto.getJimatSecurity().cegahPembeliKabur()) {
             System.out.println("[JIMAT] Security mencegah pembeli kabur!");
             this.kabur = false;
             return;
         }
         // chance kabur = 20% dikurangi poin keamanan
-        double chanceKabur = Math.max(0, 20.0 - poinKeamanan);
+        double chanceKabur = Math.max(0, 20.0 - resto.getPoinJimatKeamanan());
         this.kabur = Math.random() * 100 < chanceKabur;
         if (kabur) {
             System.out.println("[DISASTER] Pembeli kabur! Bahan terpakai tapi tidak bayar.");

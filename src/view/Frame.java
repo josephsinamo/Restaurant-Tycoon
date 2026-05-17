@@ -170,7 +170,8 @@ public class Frame extends JFrame {
         lblKapasitas = statusLabel("🏠 Kapasitas: 0");
         lblDay     = statusLabel("📅 Day: 1");
 
-
+        JButton btnMulaiHari = styledButton("Mulai Hari", TEXT_DIM, BG_CARD, 11);
+        
         JButton btnMenu = styledButton("← Menu", TEXT_DIM, BG_CARD, 11);
 
         btnMenu.addActionListener(e -> {
@@ -179,6 +180,13 @@ public class Frame extends JFrame {
             cardLayout.show(mainPanel, KARTU_MENU);
             
         });
+        
+        btnMulaiHari.addActionListener(e -> {
+            refreshAll();
+            if (gameManager != null) gameManager.mulaiberjualan();
+            
+            
+        });  
         
 
         bar.add(logo);
@@ -189,6 +197,13 @@ public class Frame extends JFrame {
         bar.add(sep());
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+        bar.add(btnMulaiHari);
+=======
+=======
+>>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
     // tombol fase
         JButton btnFase = styledButton("▶ Mulai Berjualan", ACCENT2, BG_CARD, 12);
         btnFase.addActionListener(e -> {
@@ -207,6 +222,10 @@ public class Frame extends JFrame {
         });
         bar.add(sep());
         bar.add(btnFase);
+<<<<<<< HEAD
+>>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
+=======
+>>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
         bar.add(btnMenu);
 
         return bar;
@@ -231,7 +250,7 @@ public class Frame extends JFrame {
     // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
     private JPanel buildBahanBakuPanel() {
         PanelSuplierMenu p = new PanelSuplierMenu(gameManager);
-        
+            
         return p;
     }
 
@@ -346,7 +365,7 @@ public class Frame extends JFrame {
 
     // ── PANEL: Status ──────────────────────────────────────────────────────
     private JPanel buildStatusPanel() {
-        JPanel p = new PanelRekapanHari();
+        JPanel p = new status();
 
 
         return p;
