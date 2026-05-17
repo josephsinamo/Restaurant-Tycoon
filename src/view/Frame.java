@@ -198,9 +198,12 @@ public class Frame extends JFrame {
         bar.add(lblDay);
         bar.add(Box.createHorizontalGlue());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         bar.add(btnMulaiHari);
 =======
+=======
+>>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
     // tombol fase
         JButton btnFase = styledButton("▶ Mulai Berjualan", ACCENT2, BG_CARD, 12);
         btnFase.addActionListener(e -> {
@@ -219,6 +222,9 @@ public class Frame extends JFrame {
         });
         bar.add(sep());
         bar.add(btnFase);
+<<<<<<< HEAD
+>>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
+=======
 >>>>>>> 30f82899fc0154052d2dc4b0447abeafe4c6ebd0
         bar.add(btnMenu);
 
