@@ -12,7 +12,6 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import models.jimat.*;
 import view.modelsDaftarPanel.PanelInventarisJimat;
-import view.modelsDaftarPanel.PanelUntukDaftarMenu;
 
 public class Frame extends JFrame {
 
@@ -47,20 +46,13 @@ public class Frame extends JFrame {
     private JLabel lblKapasitas;
     private JLabel lblDay;
     private JTextArea txtLog;
-    private DefaultTableModel modelStok;
+
 
     // ── Jimat widgets ──────────────────────────────────────────────────────
     private JLabel lblJimatMenarik, lblJimatKebersihan, lblJimatKeamanan;
     private DefaultListModel<Jimat> model = new DefaultListModel<>();;
     private JList<Jimat> listInventaris;
 
-    // ── Bahan baku shop ────────────────────────────────────────────────────
-    private DefaultTableModel modelBahanShop;
-
-    // ── Menu management ────────────────────────────────────────────────────
-    private DefaultTableModel modelMenu;
-
-    // ── NPC animation panel ────────────────────────────────────────────────
     private NpcPanel npcPanel;
 
     // ══════════════════════════════════════════════════════════════════════
@@ -293,28 +285,7 @@ public class Frame extends JFrame {
     // ── PANEL: Status ──────────────────────────────────────────────────────
     private JPanel buildStatusPanel() {
         JPanel p = darkPanel(new BorderLayout(6, 6));
-        p.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Stok table
-        String[] stokCols = {"Bahan Baku", "Jumlah Stok"};
-        modelStok = new DefaultTableModel(stokCols, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JTable tblStok = styledTable(modelStok);
-        JScrollPane stokScroll = new JScrollPane(tblStok);
-        stokScroll.setBorder(titled("Stok Bahan Baku"));
-
-        // Upgrade capacity button
-        JButton btnUpgrade = styledButton("⬆ Upgrade Kapasitas (+10)", ACCENT3, BG_CARD, 11);
-        // btnUpgrade.addActionListener(e -> {
-        //     gameManager.getRestaurant().upgradeKapasitas(10);
-        //     refreshAll();
-        // });
-
-        JPanel north = darkPanel(new BorderLayout());
-        north.add(stokScroll, BorderLayout.CENTER);
-        north.add(btnUpgrade, BorderLayout.SOUTH);
-        p.add(north, BorderLayout.CENTER);
 
         return p;
     }
@@ -495,33 +466,6 @@ public class Frame extends JFrame {
     // ══ GAME LIFECYCLE ═════════════════════════════════════════════════════
     private void startGame() {
         gameManager = new GameManager();
-
-        // Connect IO bus → log area
-        // IO.addListener(event -> SwingUtilities.invokeLater(() -> {
-        //     appendLog(event.getMessage());
-        //     refreshAll();
-        // }));
-
-        // gameManager.setRoundListener(new GameManager.RoundListener() {
-        //     @Override public void onRoundChange(int round, int total) {
-        //         SwingUtilities.invokeLater(() -> {
-        //             lblRound.setText("📅 Ronde: " + round + "/" + total);
-        //             // Simulate customers arriving visually
-        //             int count = (int)(Math.random() * 8) + 2;
-        //             npcPanel.setNpcCount(count);
-        //         });
-        //     }
-        //     @Override public void onGameOver(boolean won, double finalMoney) {
-        //         SwingUtilities.invokeLater(() -> {
-        //             String msg = won
-        //                 ? "🎉 SELAMAT! Anda menang!\nUang akhir: Rp " + String.format("%.0f", finalMoney)
-        //                 : "😢 Game Over!\nUang akhir: Rp " + String.format("%.0f", finalMoney);
-        //             JOptionPane.showMessageDialog(Frame.this, msg,
-        //                 won ? "Menang!" : "Game Over",
-        //                 won ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
-        //         });
-        //     }
-        // });
 
         cardLayout.show(mainPanel, KARTU_PERMAINAN);
         refreshAll();

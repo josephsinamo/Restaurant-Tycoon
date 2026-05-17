@@ -3,12 +3,11 @@ package controller;
 import core.Restaurant;
 import core.Supplier;
 import entities.Customer;
-import event.disaster.Rats;
+import java.util.Set;
 import models.RawMaterial;
-import models.menu.Food;
-import models.menu.Snack;
-import view.Frame;
 import models.jimat.*;
+import models.menu.*;
+import view.Frame;
 
 public class GameManager {
     
@@ -30,10 +29,12 @@ public class GameManager {
     private void setupGame() {
         // Default raw materials
         RawMaterial beras = new RawMaterial("Beras");
+        RawMaterial telor = new RawMaterial("Telor");
         RawMaterial ayam = new RawMaterial("Ayam");
         RawMaterial kopi = new RawMaterial("Kopi");
         RawMaterial gula = new RawMaterial("Gula");
         RawMaterial tepung = new RawMaterial("Tepung");
+        RawMaterial bumbu = new RawMaterial("Bumbu");
 
         // Stock supplier catalogue
         supplier.setHargaBahanBaku(beras, 2000);
@@ -50,10 +51,31 @@ public class GameManager {
         supplier.setHargaJimat(jimatBersih, 7000);
         supplier.setHargaJimat(jimatPagar, 9000);
 
+
+        //Daftar Menu Dunia
+        // Food
+        Menu NasiGoreng = new Food ("NasiGoreng",Set.of(
+            beras,
+            telor,
+            bumbu
+        ));
+
+        Menu KentangGoreng = new Snack ("KentangGoreng",Set.of(
+            beras,
+            telor,
+            bumbu
+        ), JenisSnack.kentang_goreng);
+
+        Menu MilkSnack = new Drink ("NasiGoreng",Set.of(
+            beras,
+            telor,
+            bumbu
+        ), JenisDrink.Milk); 
+
         // Default menu
-        restaurant.addMenu(new Food("Nasi Ayam", 15000), 15000);
-        restaurant.addMenu(new Snack("Kentang Goreng", 8000), 8000);
-        restaurant.addMenu(new Coffe("Kopi Hitam", 10000), 10000);
+        restaurant.addMenu(NasiGoreng, 15000);
+        restaurant.addMenu(KentangGoreng, 8000);
+        restaurant.addMenu(MilkSnack, 10000);
 
         // Give starting stock
         restaurant.tambahBahanBaku(beras, 20);
