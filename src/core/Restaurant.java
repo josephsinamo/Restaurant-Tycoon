@@ -47,6 +47,9 @@ public class Restaurant {
     public Map<RawMaterial,Integer> getStok(){
         return stokBahanBaku;
     }
+    public Kitchen getKitchen() {
+        return kitchen;
+    }
 
 
 

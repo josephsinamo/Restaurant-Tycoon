@@ -22,9 +22,10 @@ public class GameManager {
     public GameManager() {
         this.restaurant = new Restaurant();
         this.supplier = new Supplier();
-        this.eventManager = new EventManager();
+        this.eventManager = new EventManager(restaurant.getKitchen());
         this.currentDay = 1;    
     }
+    
 
     private void setupGame() {
         // Default raw materials

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import models.RawMaterial;
 import models.menu.Menu;
 
+
 public class Kitchen {
     private final HashMap<RawMaterial, Integer> stokBahanBaku;
 
@@ -19,6 +20,7 @@ public class Kitchen {
     public void addBahanBaku(RawMaterial bahan, Integer qty) {
         stokBahanBaku.put(bahan, stokBahanBaku.getOrDefault(bahan, 0) + qty);
     }
+    
 
     public int masak(Menu menu, int qty) {
         int hasil = 0;
