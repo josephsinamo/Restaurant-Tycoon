@@ -18,14 +18,14 @@ import javax.swing.SwingUtilities;
 
 public class Frame extends JFrame {
 
-    // ── Card layout constants ──────────────────────────────────────────────
+    
     public static final String KARTU_MENU       = "menu";
     public static final String KARTU_PERMAINAN  = "permainan";
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
-    // ── Colours & fonts ────────────────────────────────────────────────────
+    
     private static final Color BG_DARK      = new Color(18, 20, 28);
     private static final Color BG_PANEL     = new Color(26, 30, 42);
     private static final Color BG_CARD      = new Color(34, 40, 56);
@@ -41,17 +41,17 @@ public class Frame extends JFrame {
     private static final Font FONT_BODY     = new Font("Monospaced", Font.PLAIN, 12);
     private static final Font FONT_MONO     = new Font("Monospaced", Font.PLAIN, 11);
 
-    // ── Game backend ───────────────────────────────────────────────────────
+    
     private GameManager gameManager ;
 
-    // ── Status widgets ─────────────────────────────────────────────────────
+    
     private JLabel lblMoney;
     private JLabel lblKapasitas;
     private JLabel lblDay;
     private JTextArea txtLog;
 
 
-    // ── Jimat widgets ──────────────────────────────────────────────────────
+    
     private JLabel lblJimatMenarik, lblJimatKebersihan, lblJimatKeamanan;
     private DefaultListModel<Jimat> model = new DefaultListModel<>();;
     private JList<Jimat> listInventaris;
@@ -61,7 +61,7 @@ public class Frame extends JFrame {
     private PanelRestoranMenu panelRestoran;
     private PanelMakananMenu panelMenu;
 
-    // ══════════════════════════════════════════════════════════════════════
+   
     public Frame() {
         gameManager = new GameManager();
         gameManager.setGameFrame(this);
@@ -87,7 +87,7 @@ public class Frame extends JFrame {
     public void setLabelMoney(String x){
         lblMoney.setText(x);
     }
-    // ══ MAIN MENU ══════════════════════════════════════════════════════════
+    
     private JPanel buildMenuUtama() {
         JPanel p = new JPanel(new GridBagLayout()) {
             @Override 
@@ -117,9 +117,9 @@ public class Frame extends JFrame {
         title.setFont(FONT_TITLE);
         title.setForeground(ACCENT);
 
-        JLabel sub = new JLabel("Restaurant Management Game", SwingConstants.CENTER);
-        sub.setFont(new Font("SansSerif", Font.ITALIC, 18));
-        sub.setForeground(TEXT_DIM);
+        // JLabel sub = new JLabel("Restaurant Management Game", SwingConstants.CENTER);
+        // sub.setFont(new Font("SansSerif", Font.ITALIC, 18));
+        // sub.setForeground(TEXT_DIM);
 
         JButton btnStart = styledButton("▶  MULAI GAME", ACCENT, BG_DARK, 18);
         btnStart.setPreferredSize(new Dimension(280, 56));
@@ -138,7 +138,7 @@ public class Frame extends JFrame {
 
         p.add(emoji, gbc);
         p.add(title, gbc);
-        p.add(sub, gbc);
+        //p.add(sub, gbc);
         p.add(Box.createVerticalStrut(20), gbc);
         p.add(btnStart, gbc);
         p.add(btnQuit, gbc);
@@ -146,16 +146,14 @@ public class Frame extends JFrame {
         return p;
     }
 
-    // ══ GAME PANEL ═════════════════════════════════════════════════════════
     private JPanel buildPermainan() {
         JPanel root = new JPanel(new BorderLayout(6, 6));
         root.setBackground(BG_DARK);
         root.setBorder(new EmptyBorder(8, 8, 8, 8));
 
-        // ── Top bar ──────────────────────────────────────────────
         root.add(buildTopBar(), BorderLayout.NORTH);
 
-        // ── Centre: tabbed panels + NPC area ─────────────────────
+
         JSplitPane centre = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 buildLeftTabs(), buildNpcArea());
         centre.setDividerLocation(1050);
@@ -163,13 +161,12 @@ public class Frame extends JFrame {
         centre.setBackground(BG_DARK);
         root.add(centre, BorderLayout.CENTER);
 
-        // ── Bottom: log ──────────────────────────────────────────
+ 
         root.add(buildLogPanel(), BorderLayout.SOUTH);
 
         return root;
     }
 
-    // ── Top bar ────────────────────────────────────────────────────────────
     private JPanel buildTopBar() {
         JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 6));
         bar.setBackground(BG_PANEL);
@@ -238,7 +235,7 @@ public class Frame extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // ── Left tabs ──────────────────────────────────────────────────────────
+
     private JTabbedPane buildLeftTabs() {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
         tabs.setBackground(BG_PANEL);
@@ -254,14 +251,13 @@ public class Frame extends JFrame {
         return tabs;
     }
 
-    // ── PANEL: Bahan Baku Shop ─────────────────────────────────────────────
+
     private JPanel buildBahanBakuPanel() {
         PanelSuplierMenu p = new PanelSuplierMenu(gameManager);
             
         return p;
     }
 
-    // ── PANEL: Jimat ──────────────────────────────────────────────────────
     private JPanel buildJimatPanel() {
         JPanel p = darkPanel(new BorderLayout(6, 6));
         p.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -336,13 +332,11 @@ public class Frame extends JFrame {
         return p;
     }
 
-    // ── PANEL: Menu Management ─────────────────────────────────────────────
     private JPanel buildMenuPanel() {
         panelMenu = new PanelMakananMenu(gameManager);
         return panelMenu;
     }
 
-    // ── PANEL: Status ──────────────────────────────────────────────────────
     private JPanel buildStatusPanel() {
         panelStatus = new status();
         return panelStatus;
@@ -354,7 +348,6 @@ public class Frame extends JFrame {
         return panelRestoran;
     }
 
-    // ── LOG PANEL ──────────────────────────────────────────────────────────
     private JPanel buildLogPanel() {
         JPanel p = darkPanel(new BorderLayout());
         p.setPreferredSize(new Dimension(0, 140));
@@ -379,7 +372,6 @@ public class Frame extends JFrame {
         return p;
     }
 
-    // ── NPC ANIMATION AREA ─────────────────────────────────────────────────
    private JPanel buildNpcArea() {
         JPanel wrap = darkPanel(new BorderLayout(0, 6));
         wrap.setBorder(new EmptyBorder(4, 4, 4, 4));
@@ -396,7 +388,7 @@ public class Frame extends JFrame {
         return wrap;
     }
 
-    // ══ GAME LIFECYCLE ═════════════════════════════════════════════════════
+
     private void startGame() {
         gameManager.setGameFrame(this);
         gameManager.startGame();
@@ -408,7 +400,6 @@ public class Frame extends JFrame {
         }
     }
 
-    // ══ REFRESH ════════════════════════════════════════════════════════════
     public void refreshAll() {
         if (gameManager == null) return;
         Restaurant resto = gameManager.getRestaurant();
@@ -457,7 +448,7 @@ public class Frame extends JFrame {
         }
     }
 
-    // ══ UI HELPERS ═════════════════════════════════════════════════════════
+
     private JButton styledButton(String text, Color fg, Color bg, int size) {
         JButton b = new JButton(text);
         b.setFont(new Font("SansSerif", Font.BOLD, size));
@@ -839,8 +830,8 @@ public class Frame extends JFrame {
         }
     }
 
-    // ══ Entry point ════════════════════════════════════════════════════════
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Frame::new);
+        Frame frame = new Frame();
     }
 }

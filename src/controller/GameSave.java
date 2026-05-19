@@ -11,55 +11,15 @@ import models.RawMaterial;
 import models.jimat.*;
 import models.menu.Menu;
 
-/**
- * GameSave — simpan & muat state game dalam format JSON.
- *
- * Tidak memerlukan library eksternal; JSON dibangun dan dibaca secara manual.
- *
- * Struktur file save.json:
- * {
- *   "day": 3,
- *   "paused": false,
- *   "money": 75000.0,
- *   "kapasitas": 10,
- *   "stokBahanBaku": {
- *     "Beras": 20,
- *     "Ayam": 15
- *   },
- *   "hargaBahanBaku": {
- *     "Beras": 2000.0,
- *     "Ayam": 5000.0
- *   },
- *   "hargaMenu": {
- *     "NasiGoreng": 15000.0,
- *     "KentangGoreng": 8000.0
- *   },
- *   "inventarisJimat": [
- *     {"nama": "Jimat Pesona", "tipe": "Charming", "power": 5.0, "aktifDiSlot": true}
- *   ]
- * }
- */
+
 public class GameSave {
 
     private static final String SAVE_FILE = "save.json";
 
     private GameSave() {}
 
-    // ══════════════════════════════════════════════════════════════════════
-    //  SIMPAN
-    // ══════════════════════════════════════════════════════════════════════
 
-    /**
-     * Simpan seluruh state GameManager ke {@value #SAVE_FILE}.
-     *
-     * Yang disimpan:
-     *  - Hari saat ini & status pause
-     *  - Uang & kapasitas restoran
-     *  - Stok bahan baku (nama → jumlah)
-     *  - Harga bahan baku di supplier (nama → harga)
-     *  - Harga setiap menu (nama → harga)
-     *  - Inventaris jimat lengkap (nama, tipe, power, apakah sedang aktif di slot)
-     */
+
     public static void simpan(GameManager gm) {
         if (gm == null) return;
         Restaurant resto    = gm.getRestaurant();
@@ -68,19 +28,17 @@ public class GameSave {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
 
-        // ── Data dasar ────────────────────────────────────────────────
         sb.append("  \"day\": ").append(gm.getCurrentDay()).append(",\n");
         sb.append("  \"fase\": \"").append(gm.getFaseSekarang().name()).append("\",\n");
         sb.append("  \"paused\": ").append(gm.isPaused()).append(",\n");
         sb.append("  \"money\": ").append(resto.getMoney()).append(",\n");
         sb.append("  \"kapasitas\": ").append(resto.getKapasitas()).append(",\n");
 
-        // ── Stok bahan baku ───────────────────────────────────────────
+  
         sb.append("  \"stokBahanBaku\": ");
         sb.append(mapIntToJson(resto.getStokBahanBaku()));
         sb.append(",\n");
 
-        // ── Harga bahan baku di supplier ──────────────────────────────
         sb.append("  \"hargaBahanBaku\": ");
         // Konversi HashMap<RawMaterial, Double> → Map<String, Double>
         Map<String, Double> hargaBahanMap = new LinkedHashMap<>();
@@ -90,7 +48,7 @@ public class GameSave {
 sb.append(mapDoubleToJson(hargaBahanMap));
         sb.append(",\n");
 
-        // ── Harga setiap menu ─────────────────────────────────────────
+
         Map<String, Double> hargaMenu = new LinkedHashMap<>();
         for (Map.Entry<String, Menu> e : resto.getDaftarMenuMap().entrySet()) {
             hargaMenu.put(e.getKey(), e.getValue().getPrice());
@@ -99,7 +57,7 @@ sb.append(mapDoubleToJson(hargaBahanMap));
         sb.append(mapDoubleToJson(hargaMenu));
         sb.append(",\n");
 
-        // ── Inventaris jimat ──────────────────────────────────────────
+
         // Tentukan jimat mana yang sedang aktif di slot
         Jimat slotCharming  = resto.getJimatCharming();
         Jimat slotCleaner   = resto.getJimatCleaner();
@@ -124,7 +82,7 @@ sb.append(mapDoubleToJson(hargaBahanMap));
 
         sb.append("}");
 
-        // ── Tulis ke file ─────────────────────────────────────────────
+    
         try (Writer w = Files.newBufferedWriter(
                 Paths.get(SAVE_FILE), StandardCharsets.UTF_8)) {
             w.write(sb.toString());
@@ -134,15 +92,8 @@ sb.append(mapDoubleToJson(hargaBahanMap));
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════
-    //  MUAT
-    // ══════════════════════════════════════════════════════════════════════
 
-    /**
-     * Muat state dari {@value #SAVE_FILE} dan terapkan ke GameManager.
-     *
-     * @return true jika berhasil, false jika file tidak ada atau rusak
-     */
+
     public static boolean muat(GameManager gm) {
         if (gm == null) return false;
 
@@ -164,23 +115,23 @@ sb.append(mapDoubleToJson(hargaBahanMap));
         Supplier   supplier = gm.getSupplier();
 
         try {
-            // ── Data dasar ────────────────────────────────────────────
+        
             gm.setCurrentDay((int) extractLong(json, "day"));
             gm.setFaseDariSave(extractString(json, "fase"));
             resto.setMoney(extractDouble(json, "money"));
             resto.setKapasitas((int) extractLong(json, "kapasitas"));
 
-            // ── Stok bahan baku ───────────────────────────────────────
+            
             Map<String, Integer> stok = parseMapInt(extractBlock(json, "stokBahanBaku"));
             if (!stok.isEmpty()) resto.setStokBahanBaku(stok);
 
-            // ── Harga bahan baku supplier ─────────────────────────────
+            
             Map<String, Double> hargaBahan = parseMapDouble(extractBlock(json, "hargaBahanBaku"));
             for (Map.Entry<String, Double> e : hargaBahan.entrySet()) {
                 supplier.setHargaBahanBaku(new RawMaterial(e.getKey()), e.getValue());
             }
 
-            // ── Harga menu ────────────────────────────────────────────
+            
             Map<String, Double> hargaMenu = parseMapDouble(extractBlock(json, "hargaMenu"));
             for (Map.Entry<String, Menu> e : resto.getDaftarMenuMap().entrySet()) {
                 if (hargaMenu.containsKey(e.getKey())) {
@@ -188,7 +139,7 @@ sb.append(mapDoubleToJson(hargaBahanMap));
                 }
             }
 
-            // ── Inventaris jimat ──────────────────────────────────────
+            
             List<Map<String, String>> jimatList = parseJimatArray(
                     extractArrayBlock(json, "inventarisJimat"));
 

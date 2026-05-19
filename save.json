@@ -1,10 +1,18 @@
 {
-  "day": 2,
+  "day": 8,
   "fase": "BERJUALAN",
   "paused": false,
-  "money": 46000.0,
+  "money": 61000.443853224555,
   "kapasitas": 10,
-  "stokBahanBaku": {},
+  "stokBahanBaku": {
+    "Gula": 14,
+    "Beras": 20,
+    "Telor": 15,
+    "Bumbu": 10,
+    "Tepung": 10,
+    "Ayam": 15,
+    "Kopi": 10
+  },
   "hargaBahanBaku": {
     "Gula": 1000.0,
     "Beras": 2000.0,
@@ -15,11 +23,13 @@
     "Kopi": 3000.0
   },
   "hargaMenu": {
-    "NasiGoreng": 19000.0,
-    "MilkDrink": 15000.0,
-    "KentangGoreng": 15000.0
+    "NasiGoreng": 4003.0,
+    "MilkDrink": 2.6,
+    "KentangGoreng": 220000.0
   },
   "inventarisJimat": [
-    {"nama": "Security 3", "tipe": "Security", "power": 44.0, "aktifDiSlot": true}
+    {"nama": "Charming 3", "tipe": "Charming", "power": 79.0, "aktifDiSlot": true},
+    {"nama": "Cleaner 3", "tipe": "Cleaner", "power": 38.0, "aktifDiSlot": true},
+    {"nama": "Security 3", "tipe": "Security", "power": 100.0, "aktifDiSlot": true}
   ]
 }
